@@ -5,7 +5,7 @@ import { api, getToken, setToken as apiSetToken, clearToken } from "@/src/api";
 type User = {
   id: string;
   phone: string;
-  role: "customer" | "captain";
+  role: "customer" | "captain" | "admin";
   name?: string;
   photo?: string;
   is_online?: boolean;
@@ -79,17 +79,32 @@ export function useAuth() {
 }
 
 export async function bootstrapAuth() {
-  const onboarded = await storage.getItem<boolean>(ONBOARDING_KEY, false);
-  const token = await getToken();
-  if (!token) {
-    setState({ user: null, loading: false, hasSeenOnboarding: !!onboarded });
-    return;
-  }
+  // Hard safety cap: never let auth bootstrap block the splash for more than 6s.
+  // On the first launch (no token) this normally completes in <100ms.
+  const safety = setTimeout(() => {
+    if (state.loading) {
+      setState({ user: null, loading: false, hasSeenOnboarding: state.hasSeenOnboarding });
+    }
+  }, 6000);
   try {
-    const res = await api.me();
-    setState({ user: res.user, loading: false, hasSeenOnboarding: !!onboarded });
-  } catch {
-    await clearToken();
-    setState({ user: null, loading: false, hasSeenOnboarding: !!onboarded });
+    const onboarded = await storage.getItem<boolean>(ONBOARDING_KEY, false);
+    const token = await getToken();
+    if (!token) {
+      setState({ user: null, loading: false, hasSeenOnboarding: !!onboarded });
+      return;
+    }
+    try {
+      const res = await api.me();
+      setState({ user: res.user, loading: false, hasSeenOnboarding: !!onboarded });
+    } catch {
+      await clearToken();
+      setState({ user: null, loading: false, hasSeenOnboarding: !!onboarded });
+    }
+  } catch (e) {
+    // Never leave loading=true — storage / native modules can throw on some devices
+    console.warn("[auth] bootstrap failed, falling back to logged-out state", e);
+    setState({ user: null, loading: false, hasSeenOnboarding: false });
+  } finally {
+    clearTimeout(safety);
   }
 }

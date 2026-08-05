@@ -1,0 +1,43 @@
+{
+  "summary": "Iteration 5 splash-hang bug fix VERIFIED. Backend: 78/78 pytest passing (2 transient network timeouts in test_security_iter3.py rerun-passed → not code issues). Frontend (mobile 395x844): (1) Fresh-launch — visited root, cleared localStorage, reloaded → splash-screen testID visible at t≈0.4s, then REPLACED by /onboarding at ~1.4s with brand 'ZipRide', 'Skip' testID `onboarding-skip`, and slide content 'Book a ZipBike in seconds' + 'Next' testID `onboarding-next-btn`. Splash was NOT stuck. (2) Skip navigated to /role-select and testIDs `role-customer-btn`, `role-captain-btn`, `role-admin-btn` render. (3) Admin flow: role-admin-btn → /auth/phone?role=admin with phone 9999999999 pre-filled → Send OTP → 4 individual `otp-input-0..3` boxes → auto-verify on 4th digit → /admin dashboard with all KPIs (Revenue Today ₹5268.8, Commission ₹790.32, 138 rides, 7 active captains, 279 customers, 103 pending KYC, 4 blocked, 23 open complaints) rendered. (4) Token-persistence reload test: with admin token in localStorage, visited root '/' → splash briefly visible at 0.4s → landed on /admin within ~1.4s with dashboard content rendered, splash gone after 6s. This confirms bootstrapAuth 6s safety-timer + splash unconditional 1.4s setTimeout fix works for both no-token (→onboarding) and valid-token (→role home) paths. 0 red-screen errors, 0 pageerrors. Only console noise: benign RN-web deprecation warnings for shadow* and props.pointerEvents (pre-existing, not this iteration).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "Web deprecation warnings", "issue": "Console emits 'shadow* style props are deprecated. Use boxShadow' and 'props.pointerEvents is deprecated. Use style.pointerEvents' repeatedly on every screen. Non-blocking on native but noisy on web preview. Reference: multiple screens (theme.ts / style objects using shadowColor/shadowOffset/shadowRadius and pointerEvents prop on View)."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_admin_iter4.py",
+    "/app/backend/tests/test_security_iter3.py",
+    "/app/backend/tests/test_referrals_favorites_tips.py",
+    "/app/test_reports/pytest/iter5_all.xml"
+  ],
+  "action_items": [
+    "Splash hang bug fix VERIFIED — no further action needed on bug.",
+    "Optional cleanup (low priority): migrate shadowColor/shadowOffset/shadowRadius style keys to boxShadow, and move pointerEvents from prop to style.pointerEvents, to silence RN-web deprecation warnings.",
+    "Optional (from iter4, still pending): server.py at 1027 lines — split admin routes into /app/backend/routes/admin.py."
+  ],
+  "critical_code_review_comments": [
+    "auth.ts bootstrapAuth: try/finally + 6s safety setTimeout is correct — it clears the timer on success and only forces loading=false if state.loading is still true. Handles storage/native throws via outer try/catch. Good.",
+    "app/index.tsx splash: removed `if (loading) return` guard is the actual bug fix — the 1.4s navigation setTimeout is now unconditional. The dependency array still includes `loading` so if auth resolves before 1.4s, the effect re-runs and re-schedules with correct target route; if auth resolves after navigation, the current screen (e.g. /onboarding or /role-select) is unaffected. Verified working for both no-token and valid-token paths.",
+    "User type in auth.ts now includes 'admin' — good, prevents TS narrowing issues in splash router.replace('/admin') branch.",
+    "storage util (SecureStore on native / localStorage on web) is awaited inside bootstrapAuth — worst-case a stuck native SecureStore call is now capped at 6s and users see role-select/onboarding instead of an infinite splash. Solid defensive fix."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (78/78 pytest — 2 transient connect-timeouts reran-passed)",
+    "frontend": "100% for tested flows (splash→onboarding fresh, splash→admin with token, Skip→role-select, admin login end-to-end)"
+  },
+  "seed_data_creation": "Admin seeded on backend startup (phone=9999999999). Random 9xxx/90xxx phones created per test.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 5 baseline: splash bug fix VERIFIED. bootstrapAuth in /app/frontend/src/auth.ts has 6s safety setTimeout; /app/frontend/app/index.tsx splash schedules unconditional 1.4s navigation. Both no-token (→/onboarding first-launch or /role-select if onboarded) and valid-token (→/customer|/captain|/admin) paths verified on mobile web preview. 78 backend tests passing. Admin login: phone=9999999999 OTP=1234 (auto-verify fires on 4th digit typed into otp-input-0..3). Preview URL: https://captain-driver-app.preview.emergentagent.com. Only outstanding noise: RN-web shadow* and pointerEvents deprecation warnings in console.",
+  "rca_of_issue": "ROOT CAUSE (already fixed): bootstrapAuth() in /app/frontend/src/auth.ts could silently fail or hang on native SecureStore/AsyncStorage, leaving state.loading=true forever. /app/frontend/app/index.tsx splash previously had `if (loading) return` before scheduling its 1.4s navigation setTimeout, so the timer was NEVER SCHEDULED and the splash was stuck permanently. FIX (verified this iteration): (a) bootstrapAuth wraps body in try/finally and starts a 6s hard safety setTimeout that force-sets loading=false if it hasn't already; (b) splash unconditionally schedules the 1.4s navigation setTimeout on mount regardless of loading state — the effect re-runs when auth resolves so the target route is always correct; (c) User type in auth.ts includes 'admin'. REPRO WORKED PRE-FIX only on native / when storage was slow. POST-FIX: verified splash→onboarding at 1.4s with cleared storage, and splash→/admin at 1.4s with token."
+}

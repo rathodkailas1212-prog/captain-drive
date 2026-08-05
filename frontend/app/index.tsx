@@ -24,7 +24,8 @@ export default function Splash() {
   }, [scale, opacity]);
 
   useEffect(() => {
-    if (loading) return;
+    // Do not gate on `loading`. Navigate to a sensible screen after ~1.4s
+    // and re-navigate later if auth resolves in the background.
     const t = setTimeout(() => {
       if (user) {
         if (user.role === "admin") router.replace("/admin");
