@@ -1,0 +1,185 @@
+{
+  "app_name": "ZipRide",
+  "personality": "1 iOS-Native Clean",
+  "personality_one_liner": "A high-utility, lightning-fast mobility interface combining map-first architecture with premium iOS-native spacing and stark contrast.",
+  "color": {
+    "surface": "#FFFFFF",
+    "onSurface": "#111111",
+    "surfaceSecondary": "#F5F5F5",
+    "onSurfaceSecondary": "#555555",
+    "surfaceTertiary": "#EAEAEA",
+    "onSurfaceTertiary": "#777777",
+    "surfaceInverse": "#111111",
+    "onSurfaceInverse": "#FFFFFF",
+    "brand": "#111111",
+    "brandPrimary": "#111111",
+    "onBrandPrimary": "#FFFFFF",
+    "brandSecondary": "#333333",
+    "onBrandSecondary": "#FFFFFF",
+    "brandTertiary": "#F0F0F0",
+    "onBrandTertiary": "#111111",
+    "success": "#0A8545",
+    "onSuccess": "#FFFFFF",
+    "warning": "#D97706",
+    "onWarning": "#FFFFFF",
+    "error": "#D93025",
+    "onError": "#FFFFFF",
+    "info": "#111111",
+    "onInfo": "#FFFFFF",
+    "border": "#E5E5E5",
+    "borderStrong": "#CCCCCC",
+    "divider": "#E5E5E5"
+  },
+  "typography": {
+    "displayFontFamily": "Plus Jakarta Sans",
+    "textFontFamily": "Plus Jakarta Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Use iOS-native rhythmic spacing. Maintain a minimum of 'md' margin between cards and safe screen edges. Floating map actions should have 'lg' inset from the screen edges to allow map context to bleed through.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "stack_only",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": true,
+    "do's": [
+      "Floating Action Buttons (FABs) over the map.",
+      "Top sticky header (if any) to let the map bleed underneath.",
+      "Bottom sheet drag handles and background layer if it acts as a floating map overlay."
+    ],
+    "dont's": [
+      "Form inputs, standard list rows, or primary bottom CTA (keep CTA solid)."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler",
+    "maps": "react-native-maps"
+  },
+  "screens": [
+    {
+      "name": "Customer - Auth",
+      "purpose": "Mobile number entry and OTP verification for quick customer onboarding.",
+      "states": {
+        "loading": "Centered spinner during OTP validation.",
+        "empty": "N/A",
+        "error": "Inline text below OTP input with shake animation."
+      },
+      "layout": "Minimalist top-aligned typography. Single column input. 'Send OTP' button fixed to bottom using KeyboardAvoidingView with safe-area padding."
+    },
+    {
+      "name": "Customer - Home & Ride Booking",
+      "purpose": "Full-bleed map showing current location and a bottom sheet to enter destinations and select service type.",
+      "states": {
+        "loading": "Skeleton loader for the vehicle selector cards.",
+        "empty": "N/A",
+        "error": "Toast overlay if location services are disabled."
+      },
+      "layout": "Map in the background (flex: 1). Floating drawer/menu button top left (glassmorphism). Bottom Sheet containing 'Where to?' input. Once expanded, shows 2-col vehicle grid (ZipBike, ZipDelivery) and fare estimates. Sticky solid 'Confirm Ride' CTA at the bottom of the sheet."
+    },
+    {
+      "name": "Customer - Searching & Tracking",
+      "purpose": "Shows the radar matching state and then transitions to live driver tracking.",
+      "states": {
+        "loading": "Pulsing radar animation (Reanimated) emitting from user's map marker.",
+        "empty": "N/A",
+        "error": "BottomSheet changes to 'No captains found' with a Retry button."
+      },
+      "layout": "Map with route polyline. Bottom Sheet locked to 30% height displaying Captain profile (image, name, rating, vehicle number), ride OTP, and a horizontal action row for Call/Chat/SOS."
+    },
+    {
+      "name": "Captain - Dashboard",
+      "purpose": "Map overview with online toggle and earnings summary.",
+      "states": {
+        "loading": "Map loading.",
+        "empty": "Map shows offline state (greyed out or overlay).",
+        "error": "Network error overlay."
+      },
+      "layout": "Map background. Top-center floating pill toggle for Online/Offline. Floating card at the bottom displaying today's earnings, total rides, and 'Cash in Hand'."
+    },
+    {
+      "name": "Captain - Incoming Request",
+      "purpose": "High-priority overlay when a new ride is matched.",
+      "states": {
+        "loading": "Circular countdown timer ticking down.",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Modal or 80% BottomSheet. Large typographic focus on Fare, Pickup distance, and Drop-off location. Two large action buttons at the bottom: 'Decline' (surfaceTertiary) and 'Accept' (brandPrimary)."
+    },
+    {
+      "name": "Captain - Active Ride",
+      "purpose": "Turn-by-turn navigation overlay and ride status management.",
+      "states": {
+        "loading": "Fetching route...",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Map with polyline. Top glass banner showing next turn instructions. Bottom sheet containing Customer info and a slider or large pill button to update status ('Reached', 'Start Ride', 'Complete')."
+    }
+  ],
+  "images": {
+    "captain_avatar": {
+      "url": "https://images.unsplash.com/photo-1759851683916-b1aee28f28a2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwxfHxzbWlsaW5nJTIwaW5kaWFuJTIwZHJpdmVyJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzg1OTA4NTEyfDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Smiling driver"
+    },
+    "vehicle_scooter": {
+      "url": "https://images.unsplash.com/photo-1721734494588-28969927186e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHx5ZWxsb3clMjBzY29vdGVyJTIwdXJiYW4lMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc4NTkwODUxMnww&ixlib=rb-4.1.0&q=85",
+      "alt": "Yellow scooter"
+    },
+    "delivery_parcel": {
+      "url": "https://images.unsplash.com/photo-1585221330389-24fb30535ec7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxwYXJjZWwlMjBib3glMjBkZWxpdmVyeSUyMG1vY2t1cHxlbnwwfHx8fDE3ODU5MDg1MTJ8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Delivery box mockup"
+    },
+    "map_placeholder": {
+      "url": "https://images.unsplash.com/photo-1670106234136-953c9bf9677e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwxfHxnb29nbGUlMjBtYXBzJTIwYWVyaWFsJTIwdmlldyUyMHN0cmVldHxlbnwwfHx8fDE3ODU5MDg1MTJ8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Aerial street view for offline map fallback"
+    }
+  },
+  "haptics": {
+    "toggle_online": "impactMedium",
+    "ride_request_received": "notificationWarning",
+    "accept_ride": "notificationSuccess",
+    "decline_ride": "impactLight",
+    "update_ride_status": "impactHeavy",
+    "otp_entered": "impactLight",
+    "confirm_booking": "impactMedium"
+  },
+  "instructions_to_main_agent": [
+    "Ensure map components (react-native-maps) span full-screen where applicable, utilizing StyleSheet.absoluteFillObject so they sit completely behind overlays.",
+    "Implement bottom sheets using @gorhom/bottom-sheet. For customer ride flow, the sheet dynamically changes snap points based on state (Location Search -> Vehicle Selection -> Matching -> Active Ride).",
+    "Use Phosphor icons consistently across all UI buttons and indicators.",
+    "Strictly follow the color palette. Pure near-black (#111111) is used as the primary action color. Do not use generic blues or purples anywhere in the system.",
+    "For the 'Searching & Matching' animation, use react-native-reanimated to create a pulsing/scaling circular overlay on the map marker.",
+    "In the Captain Incoming Request view, ensure a countdown visual (circular progress or prominent text timer) is central to the hierarchy, driving urgency.",
+    "Apply iOS-native glassmorphism to floating map actions (e.g., hamburger menu, recenter button) so they overlay beautifully against the map."
+  ]
+}
