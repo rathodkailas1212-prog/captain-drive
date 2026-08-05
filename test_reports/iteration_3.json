@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 3 security-audit remediation testing complete. Added 27 NEW pytest tests in test_security_iter3.py covering SEC-002/003/004/005 fixes + hardening (logout, captain guards, SOS rate limit) + full-flow regression. RESULT: 27/27 new tests PASS; combined suite 62/62 PASS (0 regressions). SEC-002: server-side fare recomputation verified — POST /api/rides with distance_km=5.0 ZipBike + client fare=9999 returns server fare=65.0. distance_km=500 and -1 both return 400 'Invalid distance (must be 0-200 km)'. Double PATCH .../status=completed by captain credits total_earnings/cash_in_hand/total_rides only ONCE (verified via /api/captain/earnings + /api/auth/me). Customer role cannot POST /api/rides/{id}/accept -> 403 (require_captain). Second captain accepting an already-accepted ride -> 409 'Ride already accepted by another captain'. SEC-003: GET /api/rides/{id} — owner customer 200, assigned captain 200, unrelated user 403. PATCH .../status by non-participant captain -> 403. SEC-004: POST .../rate by captain -> 403; by unrelated customer -> 403; double-rate by same customer -> 409 'Ride already rated'; tip=-10 -> 400; tip=501 -> 400; rating=6 -> 400. SEC-005: New signup returns wallet_balance=0.0 (verified via /auth/me too). Referral apply still credits both parties +50 (each ends with wallet_balance=50.0; referrer.referrals_count=1). Hardening — POST /api/auth/logout returns 200 and clears server token; subsequent /api/auth/me with same token returns 401. Customer forbidden (403) on /captain/duty, /captain/earnings, /captain/incoming (all use require_captain). SOS: non-participant customer -> 403; 3 SOS from ride participant succeed within 5-min window, 4th returns 429 'Too many SOS requests' (SOS_MAX=3, SOS_WINDOW=300s — note: task said 4th of 4 but code allows only 3 max, so 4th returns 429 which matches spec). Regression flows: full customer flow (signup wallet=0 -> create ride -> captain accept -> reached_pickup/started/completed -> rate rating=5 tip=10 cash) all 200; ride visible in /rides/history/list. Full captain flow (signup captain -> duty online -> incoming demo -> accept real ride -> complete -> earnings dashboard shows total_earnings>=65 and today_rides>=1). Favorites CRUD works end-to-end. No _id leaks (recursive no_id_leak() assertion on every ride/earnings/history/favorites response). Also updated 2 STALE assertions in existing test_referrals_favorites_tips.py that were based on pre-fix behavior: (a) wallet after referral apply now 50 not >=300 (SEC-005 removed 250 signup wallet), (b) UPI-flow cash_in_hand decrement now -57 (server-computed 25+8*4) not the client-supplied -60 (SEC-002).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_security_iter3.py",
+    "/app/backend/tests/test_referrals_favorites_tips.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iter3_results.xml",
+    "/app/test_reports/pytest/iter3_all_results.xml"
+  ],
+  "action_items": [
+    "None — all SEC-002/003/004/005 fixes and hardening (logout, captain role guards, SOS rate limit) verified working. Main agent can proceed."
+  ],
+  "critical_code_review_comments": [
+    "server.py now 752 lines — crossed 700-line threshold, should be split into modules (auth.py, rides.py, referrals.py, favorites.py, deps.py) at next iteration for maintainability.",
+    "ensure_ride_participant() and require_captain/require_customer helpers are clean and consistently applied on all sensitive endpoints. Good.",
+    "SEC-002 server-side fare compute + distance range validation (0 < d <= 200) correctly ignores client-supplied fare. Client 'fare' field on RideCreate is now vestigial — consider removing it from the pydantic model to prevent future confusion.",
+    "SEC-002 idempotency: 'already_completed' captured BEFORE the update, then credit block gates on 'not already_completed'. Correct.",
+    "SEC-004 rating idempotency uses ride.rating is not None. Correct.",
+    "SOS rate limiter is IN-MEMORY (_SOS_HITS dict) — will not survive worker restarts and not shared across replicas. Acceptable for MVP; use Redis for production multi-worker deployments.",
+    "Logout invalidates by setting token='' — a token '' still matches an empty Authorization Bearer header via find_one({token: ''}); however get_current_user rejects missing/empty Bearer at parse time (401 'Missing token'), so the /me path is safe. Consider using an explicit tokens_blacklist or per-request JWT for stronger guarantees.",
+    "OTP=1234 is INTENTIONAL MOCK per user design (documented). Not a bug.",
+    "No _id leaks in any endpoint verified via recursive assertion across rides/earnings/favorites/history/referrals responses."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_security_iter3.py (new — 27 tests)",
+    "/app/backend/tests/test_referrals_favorites_tips.py (updated 2 stale assertions to match SEC-002/SEC-005 corrected behavior)"
+  ],
+  "success_rate": {
+    "backend": "100% (62/62 pytest — 23 original + 12 referrals/favorites/tips + 27 new security tests)",
+    "frontend": "skipped per request (backend only)"
+  },
+  "seed_data_creation": "Ephemeral users per test using random 9xxxxxxxxx phones. Rides prefixed TEST_. Favorites labeled TEST_*. No manual seed required.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 3 baseline: 62 backend pytests passing (backend_test.py=23, test_referrals_favorites_tips.py=12, test_security_iter3.py=27). OTP=1234 is INTENTIONAL MOCK. SEC-002/003/004/005 all remediated: server computes fare (client fare ignored), distance must be 0<d<=200, ride participation enforced on read/status/rate/sos, rating tip in [0,500] and rating in [1,5], signup wallet=0 (referral still adds +50 to both). New endpoint POST /api/auth/logout invalidates bearer token. require_captain guards /captain/duty|earnings|incoming and /rides/{id}/accept. require_customer guards POST /rides. SOS: 3 per 5-min window per user; participation required. server.py is 752 lines — advise main agent to split into modules before next feature push. Client 'fare' field in RideCreate pydantic model is now vestigial and can be removed. run: EXPO_PUBLIC_BACKEND_URL=<url> pytest /app/backend/tests/ -v --junitxml=/app/test_reports/pytest/results.xml",
+  "rca_of_issue": "N/A — all security fixes verified. Two stale-test updates were required (not bugs): wallet expectation post-referral changed from >=300 to ==50 (SEC-005 removed 250 signup wallet), and UPI cash-decrement expectation changed from -60 to -57 (SEC-002 server now computes fare = 25+8*4 rather than accepting client-supplied 60). These changes CONFIRM the fixes are working correctly."
+}

@@ -120,10 +120,38 @@ async def get_current_user(authorization: Optional[str] = Header(None)) -> dict:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing token")
     token = authorization.replace("Bearer ", "").strip()
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing token")
     user = await db.users.find_one({"token": token}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
     return user
+
+
+async def require_captain(user: dict = Depends(get_current_user)) -> dict:
+    if user.get("role") != "captain":
+        raise HTTPException(status_code=403, detail="Captain role required")
+    return user
+
+
+async def require_customer(user: dict = Depends(get_current_user)) -> dict:
+    if user.get("role") != "customer":
+        raise HTTPException(status_code=403, detail="Customer role required")
+    return user
+
+
+def ensure_ride_participant(ride: dict, user: dict) -> None:
+    """Raise 403 unless the user is the ride's customer or its assigned captain."""
+    customer_id = ride.get("customer_id")
+    captain_id = ride.get("captain_id") or (ride.get("captain") or {}).get("id")
+    if user["id"] != customer_id and user["id"] != captain_id:
+        raise HTTPException(status_code=403, detail="Not authorized for this ride")
+
+
+# Simple in-memory SOS rate limiter: user_id -> list[epoch_seconds]
+_SOS_HITS: dict = {}
+SOS_MAX = 3
+SOS_WINDOW = 300  # seconds
 
 
 # ============================================================================
@@ -208,7 +236,7 @@ async def verify_otp(payload: OTPVerify):
             "last_login": now_iso(),
             "rating": 4.8,
             "total_rides": 0,
-            "wallet_balance": 250.0,
+            "wallet_balance": 0.0,
             # captain specific
             "vehicle_number": "",
             "vehicle_type": "ZipBike",
@@ -235,6 +263,13 @@ async def verify_otp(payload: OTPVerify):
 @api.get("/auth/me")
 async def me(user: dict = Depends(get_current_user)):
     return {"user": user}
+
+
+@api.post("/auth/logout")
+async def logout(user: dict = Depends(get_current_user)):
+    # Invalidate the current bearer token server-side
+    await db.users.update_one({"id": user["id"]}, {"$set": {"token": ""}})
+    return {"success": True}
 
 
 @api.put("/users/profile")
@@ -300,7 +335,14 @@ async def captains_nearby(lat: float = 12.9716, lng: float = 77.5946):
 
 # ---------- RIDES ----------
 @api.post("/rides")
-async def create_ride(payload: RideCreate, user: dict = Depends(get_current_user)):
+async def create_ride(payload: RideCreate, user: dict = Depends(require_customer)):
+    # Validate distance range (SEC-002: prevent fare abuse via extreme values)
+    if payload.distance_km <= 0 or payload.distance_km > 200:
+        raise HTTPException(status_code=400, detail="Invalid distance (must be 0-200 km)")
+
+    # Server-side fare computation (SEC-002: ignore client-supplied fare)
+    server_fare = compute_fare(payload.distance_km, payload.service_type)
+
     ride_id = str(uuid.uuid4())
     otp = str(random.randint(1000, 9999))
     captain_pool = [
@@ -337,7 +379,7 @@ async def create_ride(payload: RideCreate, user: dict = Depends(get_current_user
         "drop_lng": payload.drop_lng,
         "service_type": payload.service_type,
         "distance_km": payload.distance_km,
-        "fare": payload.fare,
+        "fare": server_fare,
         "otp": otp,
         "status": "searching",
         "created_at": now_iso(),
@@ -355,6 +397,8 @@ async def get_ride(ride_id: str, user: dict = Depends(get_current_user)):
     ride = await db.rides.find_one({"id": ride_id}, {"_id": 0})
     if not ride:
         raise HTTPException(status_code=404, detail="Ride not found")
+    # SEC-003: only ride participants can read (customer or assigned captain)
+    ensure_ride_participant(ride, user)
     return {"ride": ride}
 
 
@@ -368,11 +412,21 @@ async def update_ride_status(
     if not ride:
         raise HTTPException(status_code=404, detail="Ride not found")
 
+    # SEC-002: only ride participants may change status
+    ensure_ride_participant(ride, user)
+
+    # SEC-002: idempotent completion — do not credit twice
+    already_completed = ride.get("status") == "completed"
+
     updates = {"status": payload.status, "updated_at": now_iso()}
     await db.rides.update_one({"id": ride_id}, {"$set": updates})
 
-    # If completed and captain -> add to earnings, cash_in_hand
-    if payload.status == "completed" and user.get("role") == "captain":
+    # Credit captain earnings only on first transition into 'completed'
+    if (
+        payload.status == "completed"
+        and not already_completed
+        and user.get("role") == "captain"
+    ):
         fare = ride["fare"]
         await db.users.update_one(
             {"id": user["id"]},
@@ -390,10 +444,16 @@ async def update_ride_status(
 
 
 @api.post("/rides/{ride_id}/accept")
-async def accept_ride(ride_id: str, user: dict = Depends(get_current_user)):
+async def accept_ride(ride_id: str, user: dict = Depends(require_captain)):
     ride = await db.rides.find_one({"id": ride_id}, {"_id": 0})
     if not ride:
         raise HTTPException(status_code=404, detail="Ride not found")
+
+    # SEC-002: cannot re-accept an already-accepted ride
+    if ride.get("captain_id") and ride["captain_id"] != user["id"]:
+        raise HTTPException(status_code=409, detail="Ride already accepted by another captain")
+    if ride.get("status") not in ("searching", "accepted"):
+        raise HTTPException(status_code=409, detail=f"Ride cannot be accepted (status={ride.get('status')})")
 
     updates = {
         "status": "accepted",
@@ -421,7 +481,21 @@ async def rate_ride(
     if not ride:
         raise HTTPException(status_code=404, detail="Ride not found")
 
+    # SEC-004: only the ride's customer may rate
+    if ride.get("customer_id") != user["id"]:
+        raise HTTPException(status_code=403, detail="Only the ride's customer can rate")
+
+    # SEC-004: idempotent — rate only once
+    if ride.get("rating") is not None:
+        raise HTTPException(status_code=409, detail="Ride already rated")
+
+    # SEC-004: validate rating and tip bounds
+    if payload.rating < 1 or payload.rating > 5:
+        raise HTTPException(status_code=400, detail="Rating must be 1-5")
     tip = float(payload.tip or 0)
+    if tip < 0 or tip > 500:
+        raise HTTPException(status_code=400, detail="Tip must be 0-500")
+
     updates = {
         "rating": payload.rating,
         "rating_comment": payload.comment,
@@ -459,6 +533,21 @@ async def rate_ride(
 async def sos_alert(
     ride_id: str, payload: SOSAlert, user: dict = Depends(get_current_user)
 ):
+    ride = await db.rides.find_one({"id": ride_id}, {"_id": 0})
+    if not ride:
+        raise HTTPException(status_code=404, detail="Ride not found")
+    # SEC-hardening: only ride participants may trigger SOS
+    ensure_ride_participant(ride, user)
+
+    # SEC-hardening: rate limit — max SOS_MAX alerts per SOS_WINDOW seconds per user
+    import time as _time
+    now = _time.time()
+    hits = [t for t in _SOS_HITS.get(user["id"], []) if now - t < SOS_WINDOW]
+    if len(hits) >= SOS_MAX:
+        raise HTTPException(status_code=429, detail="Too many SOS requests, please wait")
+    hits.append(now)
+    _SOS_HITS[user["id"]] = hits
+
     entry = {
         "id": str(uuid.uuid4()),
         "ride_id": ride_id,
@@ -487,14 +576,14 @@ async def rides_history(user: dict = Depends(get_current_user)):
 
 # ---------- CAPTAIN ----------
 @api.post("/captain/duty")
-async def captain_duty(payload: DutyToggle, user: dict = Depends(get_current_user)):
+async def captain_duty(payload: DutyToggle, user: dict = Depends(require_captain)):
     await db.users.update_one({"id": user["id"]}, {"$set": {"is_online": payload.online}})
     updated = await db.users.find_one({"id": user["id"]}, {"_id": 0})
     return {"user": updated}
 
 
 @api.get("/captain/earnings")
-async def captain_earnings(user: dict = Depends(get_current_user)):
+async def captain_earnings(user: dict = Depends(require_captain)):
     # Aggregate from rides
     today_start = datetime.now(timezone.utc).replace(
         hour=0, minute=0, second=0, microsecond=0
@@ -530,7 +619,7 @@ async def captain_earnings(user: dict = Depends(get_current_user)):
 
 # ---------- CAPTAIN INCOMING REQUESTS ----------
 @api.get("/captain/incoming")
-async def captain_incoming(user: dict = Depends(get_current_user)):
+async def captain_incoming(user: dict = Depends(require_captain)):
     """Simulate an incoming ride for an online captain."""
     if not user.get("is_online"):
         return {"request": None}

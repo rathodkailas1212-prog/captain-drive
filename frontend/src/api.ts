@@ -51,6 +51,7 @@ export const api = {
   verifyOtp: (phone: string, otp: string, role: "customer" | "captain") =>
     request<{ user: any; token: string }>("/auth/verify-otp", "POST", { phone, otp, role }),
   me: () => request<{ user: any }>("/auth/me"),
+  logout: () => request("/auth/logout", "POST"),
   updateProfile: (data: any) => request<{ user: any }>("/users/profile", "PUT", data),
 
   // fare

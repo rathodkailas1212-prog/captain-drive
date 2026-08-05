@@ -50,6 +50,11 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(async () => {
+    try {
+      await api.logout();
+    } catch {
+      // ignore — proceed with local logout regardless
+    }
     await clearToken();
     setState({ user: null });
   }, []);

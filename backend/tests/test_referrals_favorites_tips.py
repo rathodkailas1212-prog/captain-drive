@@ -89,8 +89,8 @@ class TestReferralApply:
         assert body["success"] is True
         assert body["bonus"] == 50.0
         assert body["user"]["referred_by"] == user_a["user"]["id"]
-        # wallet & credits for B should have grown by 50 (starting 250)
-        assert body["user"]["wallet_balance"] >= 300.0
+        # SEC-005: signup wallet is 0; after referral apply wallet = 50
+        assert body["user"]["wallet_balance"] == 50.0
         assert body["user"]["credits_earned"] == 50.0
 
         # Verify A got credited too
@@ -317,8 +317,8 @@ class TestTipOnRating:
         cash_after = _get_cash(s, cap)
         earn_after = _get_earnings(s, cap)["total_earnings"]
         # UPI: no cash change from tip; but base rating deducts fare from cash_in_hand
-        # (cash_in_hand -= ride.fare on upi/wallet) -- so cash decreases by fare
-        assert cash_after - cash_before == pytest.approx(-60.0, abs=0.01)
+        # SEC-002: server recomputes fare from distance_km=4.0 ZipBike => 25+8*4 = 57
+        assert cash_after - cash_before == pytest.approx(-57.0, abs=0.01)
         assert earn_after - earn_before == pytest.approx(10.0, abs=0.01)
 
     def test_rate_without_tip_returns_tip_zero(self, s):
