@@ -12,28 +12,12 @@ import { useFonts } from "expo-font";
 const ICON_VECTOR_VERSION = "15.1.1";
 
 // short internal fontName (what the library queries) -> CDN .ttf file name
+// Trimmed to only the icon families actually used in this app so useFonts
+// doesn't waste time (and risk a 6000ms timeout on slow Expo Go networks)
+// fetching families we never render.
 const ICON_FAMILIES: Record<string, string> = {
-  anticon: "AntDesign",
-  entypo: "Entypo",
-  evilicons: "EvilIcons",
-  feather: "Feather",
-  FontAwesome: "FontAwesome",
-  Fontisto: "Fontisto",
-  foundation: "Foundation",
   ionicons: "Ionicons",
   "material-community": "MaterialCommunityIcons",
-  material: "MaterialIcons",
-  octicons: "Octicons",
-  "simple-line-icons": "SimpleLineIcons",
-  zocial: "Zocial",
-  // FontAwesome5 style variants (key = `FontAwesome5Free-<style>`)
-  "FontAwesome5Free-Regular": "FontAwesome5_Regular",
-  "FontAwesome5Free-Solid": "FontAwesome5_Solid",
-  "FontAwesome5Free-Brand": "FontAwesome5_Brands",
-  // FontAwesome6 style variants (key = `FontAwesome6Free-<style>`)
-  "FontAwesome6Free-Regular": "FontAwesome6_Regular",
-  "FontAwesome6Free-Solid": "FontAwesome6_Solid",
-  "FontAwesome6Free-Brand": "FontAwesome6_Brands",
 };
 
 const cdnUrl = (file: string): string =>

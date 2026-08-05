@@ -8,7 +8,7 @@ import { theme } from "@/src/theme";
 export default function RoleSelect() {
   const router = useRouter();
 
-  const pick = (role: "customer" | "captain") => {
+  const pick = (role: "customer" | "captain" | "admin") => {
     router.push({ pathname: "/auth/phone", params: { role } });
   };
 
@@ -52,6 +52,22 @@ export default function RoleSelect() {
           </View>
           <Ionicons name="chevron-forward" size={22} color="#111" />
         </TouchableOpacity>
+
+        <TouchableOpacity
+          testID="role-admin-btn"
+          style={[styles.card, styles.adminCard]}
+          activeOpacity={0.85}
+          onPress={() => pick("admin")}
+        >
+          <View style={[styles.iconBox, { backgroundColor: theme.colors.accent }]}>
+            <Ionicons name="shield-checkmark" size={36} color="#111" />
+          </View>
+          <View style={{ flex: 1, marginLeft: 16 }}>
+            <Text style={[styles.cardTitle, { color: "#fff" }]}>Admin Dashboard</Text>
+            <Text style={[styles.cardSub, { color: "#BBB" }]}>Fleet, users, KYC, fares. Best on a desktop browser.</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={22} color="#fff" />
+        </TouchableOpacity>
       </View>
 
       <Text style={styles.foot}>Powered by ZipRide · v1.0</Text>
@@ -90,6 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardTitle: { fontSize: 18, fontWeight: "700", color: "#111" },
+  adminCard: { backgroundColor: "#111" },
   cardSub: {
     fontSize: 13,
     color: theme.colors.onSurfaceSecondary,

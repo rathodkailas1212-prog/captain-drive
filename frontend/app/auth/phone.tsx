@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,12 +18,18 @@ import { api } from "@/src/api";
 
 export default function PhoneAuth() {
   const router = useRouter();
-  const { role } = useLocalSearchParams<{ role: "customer" | "captain" }>();
+  const { role } = useLocalSearchParams<{ role: "customer" | "captain" | "admin" }>();
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
   const validPhone = phone.replace(/\D/g, "").length === 10;
+  const isCaptain = role === "captain";
+  const isAdmin = role === "admin";
+
+  useEffect(() => {
+    if (isAdmin && !phone) setPhone("9999999999");
+  }, [isAdmin, phone]);
 
   const sendOtp = async () => {
     if (!validPhone) return;
@@ -38,8 +44,6 @@ export default function PhoneAuth() {
       setLoading(false);
     }
   };
-
-  const isCaptain = role === "captain";
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
@@ -58,14 +62,16 @@ export default function PhoneAuth() {
           </View>
 
           <View style={styles.body}>
-            <View style={[styles.badge, isCaptain && { backgroundColor: "#111" }]}>
-              {isCaptain ? (
+            <View style={[styles.badge, (isCaptain || isAdmin) && { backgroundColor: "#111" }]}>
+              {isAdmin ? (
+                <Ionicons name="shield-checkmark" size={18} color="#F5C518" />
+              ) : isCaptain ? (
                 <MaterialCommunityIcons name="motorbike" size={18} color="#F5C518" />
               ) : (
                 <Ionicons name="person" size={18} color="#111" />
               )}
-              <Text style={[styles.badgeText, isCaptain && { color: "#fff" }]}>
-                {isCaptain ? "Captain login" : "Customer login"}
+              <Text style={[styles.badgeText, (isCaptain || isAdmin) && { color: "#fff" }]}>
+                {isAdmin ? "Admin login" : isCaptain ? "Captain login" : "Customer login"}
               </Text>
             </View>
 

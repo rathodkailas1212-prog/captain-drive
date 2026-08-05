@@ -24,11 +24,25 @@ async function request<T = any>(
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}/api${path}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  // 15s network timeout so a stalled request can never hang the UI
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}/api${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+  } catch (e: any) {
+    clearTimeout(timer);
+    if (e?.name === "AbortError") {
+      throw new Error("Network timeout — please check your connection");
+    }
+    throw new Error(e?.message || "Network error");
+  }
+  clearTimeout(timer);
 
   const text = await res.text();
   let data: any = null;
@@ -101,6 +115,34 @@ export const api = {
   addFavorite: (data: { label: string; address: string; lat: number; lng: number; icon?: string }) =>
     request<{ favorite: any }>("/favorites", "POST", data),
   removeFavorite: (id: string) => request(`/favorites/${id}`, "DELETE"),
+
+  // admin
+  adminDashboard: () => request<any>("/admin/dashboard"),
+  adminFleet: () => request<{ captains: any[] }>("/admin/fleet"),
+  adminUsers: (params: { role?: string; filter?: string; q?: string } = {}) => {
+    const p = new URLSearchParams();
+    if (params.role) p.set("role", params.role);
+    if (params.filter) p.set("filter", params.filter);
+    if (params.q) p.set("q", params.q);
+    const qs = p.toString();
+    return request<{ users: any[] }>(`/admin/users${qs ? `?${qs}` : ""}`);
+  },
+  adminBlockUser: (id: string, blocked: boolean, reason?: string) =>
+    request<{ user: any }>(`/admin/users/${id}/block`, "POST", { blocked, reason }),
+  adminKYC: (id: string, approved: boolean, reason?: string) =>
+    request<{ user: any }>(`/admin/users/${id}/kyc`, "POST", { approved, reason }),
+  adminGetFareConfig: () => request<{ fare_config: any }>("/admin/fare-config"),
+  adminUpdateFareConfig: (data: {
+    service_type: "ZipBike" | "ZipDelivery";
+    base: number;
+    per_km: number;
+    min: number;
+    commission_pct?: number;
+  }) => request<{ fare_config: any }>("/admin/fare-config", "PUT", data),
+  adminComplaints: () => request<{ complaints: any[] }>("/admin/complaints"),
+  adminResolveComplaint: (id: string, resolution: string) =>
+    request(`/admin/complaints/${id}/resolve`, "POST", { resolution }),
+  adminRides: () => request<{ rides: any[] }>("/admin/rides"),
 };
 
 export { getToken };

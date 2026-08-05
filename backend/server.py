@@ -25,6 +25,9 @@ db = client[os.environ["DB_NAME"]]
 app = FastAPI(title="ZipRide API")
 api = APIRouter(prefix="/api")
 
+# Fixed admin phone (mocked login). Pre-seeded on startup.
+ADMIN_PHONE = "9999999999"
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("zipride")
 
@@ -38,13 +41,13 @@ def now_iso() -> str:
 
 class OTPRequest(BaseModel):
     phone: str
-    role: Literal["customer", "captain"]
+    role: Literal["customer", "captain", "admin"]
 
 
 class OTPVerify(BaseModel):
     phone: str
     otp: str
-    role: Literal["customer", "captain"]
+    role: Literal["customer", "captain", "admin"]
 
 
 class ProfileUpdate(BaseModel):
@@ -102,6 +105,28 @@ class FavoriteCreate(BaseModel):
     icon: Optional[str] = "location"
 
 
+class UserBlockPayload(BaseModel):
+    blocked: bool
+    reason: Optional[str] = None
+
+
+class KYCDecisionPayload(BaseModel):
+    approved: bool
+    reason: Optional[str] = None
+
+
+class FareConfigUpdate(BaseModel):
+    service_type: Literal["ZipBike", "ZipDelivery"]
+    base: float
+    per_km: float
+    min: float
+    commission_pct: Optional[float] = None
+
+
+class ComplaintResolvePayload(BaseModel):
+    resolution: str
+
+
 class SOSAlert(BaseModel):
     lat: float
     lng: float
@@ -125,6 +150,8 @@ async def get_current_user(authorization: Optional[str] = Header(None)) -> dict:
     user = await db.users.find_one({"token": token}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
+    if user.get("blocked"):
+        raise HTTPException(status_code=403, detail="Account blocked. Contact support.")
     return user
 
 
@@ -137,6 +164,12 @@ async def require_captain(user: dict = Depends(get_current_user)) -> dict:
 async def require_customer(user: dict = Depends(get_current_user)) -> dict:
     if user.get("role") != "customer":
         raise HTTPException(status_code=403, detail="Customer role required")
+    return user
+
+
+async def require_admin(user: dict = Depends(get_current_user)) -> dict:
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin role required")
     return user
 
 
@@ -158,8 +191,8 @@ SOS_WINDOW = 300  # seconds
 # FARE / DISTANCE LOGIC
 # ============================================================================
 FARE_CONFIG = {
-    "ZipBike": {"base": 25, "per_km": 8, "min": 30},
-    "ZipDelivery": {"base": 40, "per_km": 12, "min": 50},
+    "ZipBike": {"base": 25, "per_km": 8, "min": 30, "commission_pct": 15},
+    "ZipDelivery": {"base": 40, "per_km": 12, "min": 50, "commission_pct": 18},
 }
 
 
@@ -202,6 +235,10 @@ async def send_otp(payload: OTPRequest):
 async def verify_otp(payload: OTPVerify):
     if payload.otp != "1234":
         raise HTTPException(status_code=400, detail="Invalid OTP. Use 1234 for demo.")
+
+    # Admin can only log in with the pre-seeded admin phone; no auto-create
+    if payload.role == "admin" and payload.phone != ADMIN_PHONE:
+        raise HTTPException(status_code=403, detail="This phone number is not an admin.")
 
     existing = await db.users.find_one(
         {"phone": payload.phone, "role": payload.role}, {"_id": 0}
@@ -730,6 +767,244 @@ async def delete_favorite(fav_id: str, user: dict = Depends(get_current_user)):
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Favorite not found")
     return {"success": True}
+
+
+# ============================================================================
+# ADMIN
+# ============================================================================
+async def seed_admin() -> None:
+    """Seed the admin user if not already present."""
+    existing = await db.users.find_one({"phone": ADMIN_PHONE, "role": "admin"})
+    if existing:
+        return
+    admin = {
+        "id": str(uuid.uuid4()),
+        "phone": ADMIN_PHONE,
+        "role": "admin",
+        "name": "ZipRide Admin",
+        "photo": "",
+        "token": "",
+        "created_at": now_iso(),
+        "last_login": None,
+        "wallet_balance": 0.0,
+        "referral_code": "ZIPADMIN",
+        "credits_earned": 0.0,
+        "referrals_count": 0,
+    }
+    await db.users.insert_one(dict(admin))
+
+
+@app.on_event("startup")
+async def on_startup():
+    await seed_admin()
+    # Load persisted fare config overrides if any
+    override = await db.settings.find_one({"key": "fare_config"}, {"_id": 0})
+    if override and isinstance(override.get("value"), dict):
+        for svc, cfg in override["value"].items():
+            if svc in FARE_CONFIG:
+                FARE_CONFIG[svc].update(cfg)
+
+
+def _clean_user(u: dict) -> dict:
+    """Strip fields we don't want to send from admin listings."""
+    u.pop("_id", None)
+    u.pop("token", None)
+    return u
+
+
+@api.get("/admin/dashboard")
+async def admin_dashboard(user: dict = Depends(require_admin)):
+    today_start = datetime.now(timezone.utc).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ).isoformat()
+    week_start = (
+        datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        - timedelta(days=6)
+    ).isoformat()
+
+    total_customers = await db.users.count_documents({"role": "customer"})
+    total_captains = await db.users.count_documents({"role": "captain"})
+    active_captains = await db.users.count_documents({"role": "captain", "is_online": True})
+    pending_kyc = await db.users.count_documents({"role": "captain", "kyc_verified": {"$ne": True}})
+    blocked = await db.users.count_documents({"blocked": True})
+
+    rides_today = await db.rides.find(
+        {"created_at": {"$gte": today_start}}, {"_id": 0}
+    ).to_list(2000)
+    rides_completed_today = [r for r in rides_today if r.get("status") == "completed"]
+    revenue_today = round(sum(r.get("fare", 0) for r in rides_completed_today), 2)
+
+    # Commission earned today (approx via service commission_pct)
+    commission_today = 0.0
+    for r in rides_completed_today:
+        cfg = FARE_CONFIG.get(r.get("service_type") or "ZipBike", {})
+        commission_today += r.get("fare", 0) * (cfg.get("commission_pct", 0) / 100)
+    commission_today = round(commission_today, 2)
+
+    # Weekly ride volume (last 7 days)
+    week_rides = await db.rides.find(
+        {"created_at": {"$gte": week_start}, "status": "completed"}, {"_id": 0}
+    ).to_list(5000)
+    daily = {}
+    for r in week_rides:
+        day = r["created_at"][:10]
+        daily[day] = daily.get(day, 0) + r.get("fare", 0)
+    weekly = [{"date": k, "revenue": round(v, 2)} for k, v in sorted(daily.items())]
+
+    open_complaints = await db.sos_alerts.count_documents({"resolved": {"$ne": True}})
+
+    return {
+        "total_customers": total_customers,
+        "total_captains": total_captains,
+        "active_captains": active_captains,
+        "pending_kyc": pending_kyc,
+        "blocked_users": blocked,
+        "rides_today": len(rides_today),
+        "rides_completed_today": len(rides_completed_today),
+        "revenue_today": revenue_today,
+        "commission_today": commission_today,
+        "open_complaints": open_complaints,
+        "weekly": weekly,
+    }
+
+
+@api.get("/admin/fleet")
+async def admin_fleet(user: dict = Depends(require_admin)):
+    captains = await db.users.find(
+        {"role": "captain"}, {"_id": 0, "token": 0}
+    ).to_list(1000)
+
+    # Attach synthetic positions for display (or use last-known if stored)
+    for i, c in enumerate(captains):
+        base_lat = 12.9716
+        base_lng = 77.5946
+        c["lat"] = base_lat + ((hash(c["id"]) % 200) - 100) / 1000
+        c["lng"] = base_lng + ((hash(c["id"]) % 300) - 150) / 1000
+
+    return {"captains": captains}
+
+
+@api.get("/admin/users")
+async def admin_users(
+    role: Optional[Literal["customer", "captain"]] = None,
+    filter: Optional[Literal["blocked", "pending_kyc"]] = None,
+    q: Optional[str] = None,
+    user: dict = Depends(require_admin),
+):
+    query: dict = {}
+    if role:
+        query["role"] = role
+    else:
+        query["role"] = {"$in": ["customer", "captain"]}
+    if filter == "blocked":
+        query["blocked"] = True
+    elif filter == "pending_kyc":
+        query["role"] = "captain"
+        query["kyc_verified"] = {"$ne": True}
+    if q:
+        query["$or"] = [
+            {"phone": {"$regex": q, "$options": "i"}},
+            {"name": {"$regex": q, "$options": "i"}},
+            {"vehicle_number": {"$regex": q, "$options": "i"}},
+        ]
+    users = await db.users.find(query, {"_id": 0, "token": 0}).sort("created_at", -1).to_list(200)
+    return {"users": users}
+
+
+@api.post("/admin/users/{uid}/block")
+async def admin_block_user(uid: str, payload: UserBlockPayload, user: dict = Depends(require_admin)):
+    target = await db.users.find_one({"id": uid}, {"_id": 0})
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.get("role") == "admin":
+        raise HTTPException(status_code=403, detail="Cannot block admin")
+    updates = {
+        "blocked": payload.blocked,
+        "blocked_reason": payload.reason,
+        "blocked_at": now_iso() if payload.blocked else None,
+    }
+    # Force logout when blocking
+    if payload.blocked:
+        updates["token"] = ""
+        updates["is_online"] = False
+    await db.users.update_one({"id": uid}, {"$set": updates})
+    updated = await db.users.find_one({"id": uid}, {"_id": 0, "token": 0})
+    return {"user": updated}
+
+
+@api.post("/admin/users/{uid}/kyc")
+async def admin_kyc_decision(uid: str, payload: KYCDecisionPayload, user: dict = Depends(require_admin)):
+    target = await db.users.find_one({"id": uid}, {"_id": 0})
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.get("role") != "captain":
+        raise HTTPException(status_code=400, detail="KYC applies to captains only")
+    updates = {
+        "kyc_verified": bool(payload.approved),
+        "kyc_reviewed_at": now_iso(),
+        "kyc_reason": payload.reason,
+    }
+    if not payload.approved:
+        # Reset docs on rejection so captain can re-upload
+        updates.update({"aadhaar": "", "driving_license": "", "vehicle_rc": ""})
+    await db.users.update_one({"id": uid}, {"$set": updates})
+    updated = await db.users.find_one({"id": uid}, {"_id": 0, "token": 0})
+    return {"user": updated}
+
+
+@api.get("/admin/fare-config")
+async def admin_get_fare_config(user: dict = Depends(require_admin)):
+    return {"fare_config": FARE_CONFIG}
+
+
+@api.put("/admin/fare-config")
+async def admin_update_fare_config(payload: FareConfigUpdate, user: dict = Depends(require_admin)):
+    if payload.base < 0 or payload.per_km < 0 or payload.min < 0:
+        raise HTTPException(status_code=400, detail="Values must be non-negative")
+    cfg = FARE_CONFIG[payload.service_type]
+    cfg["base"] = payload.base
+    cfg["per_km"] = payload.per_km
+    cfg["min"] = payload.min
+    if payload.commission_pct is not None:
+        if payload.commission_pct < 0 or payload.commission_pct > 60:
+            raise HTTPException(status_code=400, detail="Commission must be 0-60%")
+        cfg["commission_pct"] = payload.commission_pct
+    # Persist for restarts
+    await db.settings.update_one(
+        {"key": "fare_config"},
+        {"$set": {"key": "fare_config", "value": FARE_CONFIG, "updated_at": now_iso()}},
+        upsert=True,
+    )
+    return {"fare_config": FARE_CONFIG}
+
+
+@api.get("/admin/complaints")
+async def admin_complaints(user: dict = Depends(require_admin)):
+    alerts = await db.sos_alerts.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    # Enrich with user + ride info
+    for a in alerts:
+        u = await db.users.find_one({"id": a.get("user_id")}, {"_id": 0, "token": 0})
+        a["user"] = {"name": (u or {}).get("name"), "phone": (u or {}).get("phone"), "role": (u or {}).get("role")}
+        r = await db.rides.find_one({"id": a.get("ride_id")}, {"_id": 0})
+        a["ride"] = {"pickup_address": (r or {}).get("pickup_address"), "drop_address": (r or {}).get("drop_address"), "fare": (r or {}).get("fare")}
+    return {"complaints": alerts}
+
+
+@api.post("/admin/complaints/{cid}/resolve")
+async def admin_resolve_complaint(cid: str, payload: ComplaintResolvePayload, user: dict = Depends(require_admin)):
+    res = await db.sos_alerts.update_one(
+        {"id": cid},
+        {"$set": {"resolved": True, "resolution": payload.resolution, "resolved_at": now_iso(), "resolved_by": user["id"]}},
+    )
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Complaint not found")
+    return {"success": True}
+
+
+@api.get("/admin/rides")
+async def admin_rides(user: dict = Depends(require_admin)):
+    rides = await db.rides.find({}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    return {"rides": rides}
 
 
 # ============================================================================

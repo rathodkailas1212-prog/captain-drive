@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useMemo, useRef } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Vibration, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -10,24 +10,96 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { createAudioPlayer, setAudioModeAsync, AudioPlayer } from "expo-audio";
 import { theme } from "@/src/theme";
 import { api } from "@/src/api";
+
+const BELL = require("../../assets/bell.mp3");
+// Vibration pattern (Android): [wait, vibrate, wait, vibrate, …]
+const VIBRATE_PATTERN = [0, 500, 250, 500, 250, 500];
 
 export default function CaptainIncoming() {
   const router = useRouter();
   const [request, setRequest] = useState<any>(null);
   const [remaining, setRemaining] = useState(20);
+  const [muted, setMuted] = useState(false);
   const progress = useSharedValue(1);
+  const playerRef = useRef<AudioPlayer | null>(null);
+  const mounted = useRef(true);
+
+  const stopAlert = () => {
+    try {
+      Vibration.cancel();
+    } catch {}
+    const p = playerRef.current;
+    if (p) {
+      try {
+        p.pause();
+      } catch {}
+      try {
+        p.remove();
+      } catch {}
+      playerRef.current = null;
+    }
+  };
 
   useEffect(() => {
+    mounted.current = true;
     (async () => {
       try {
         const res = await api.incoming();
-        setRequest(res.request);
+        if (mounted.current) setRequest(res.request);
       } catch {}
     })();
     progress.value = withTiming(0, { duration: 20000, easing: Easing.linear });
-  }, [progress]);
+
+    // Start alarm: loud bell chime + strong vibration until captain acts / mutes / times out
+    (async () => {
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: false,
+        });
+        const player = createAudioPlayer(BELL);
+        player.loop = true;
+        player.volume = 1.0;
+        player.play();
+        if (mounted.current) {
+          playerRef.current = player;
+        } else {
+          player.pause();
+          player.remove();
+        }
+      } catch (e) {
+        // Audio unavailable (e.g. web without user gesture) — fall back to vibration only
+      }
+      try {
+        // Repeating vibration on Android; single strong buzz on iOS
+        if (Platform.OS === "android") {
+          Vibration.vibrate(VIBRATE_PATTERN, true);
+        } else if (Platform.OS === "ios") {
+          Vibration.vibrate();
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+        }
+      } catch {}
+    })();
+
+    return () => {
+      mounted.current = false;
+      stopAlert();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const toggleMute = () => {
+    setMuted((m) => {
+      const next = !m;
+      if (next) {
+        stopAlert();
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -45,6 +117,7 @@ export default function CaptainIncoming() {
   }, []);
 
   const accept = async () => {
+    stopAlert();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     if (request && !request.demo) {
       try {
@@ -55,6 +128,7 @@ export default function CaptainIncoming() {
   };
 
   const reject = () => {
+    stopAlert();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     router.replace("/captain");
   };
@@ -73,6 +147,10 @@ export default function CaptainIncoming() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <TouchableOpacity style={styles.muteBtn} onPress={toggleMute} testID="mute-btn">
+        <Ionicons name={muted ? "volume-mute" : "volume-high"} size={18} color="#111" />
+        <Text style={styles.muteText}>{muted ? "Muted" : "Alerting"}</Text>
+      </TouchableOpacity>
       <View style={styles.timerCol}>
         <View style={styles.timerCircle}>
           <Text style={styles.timerNum}>{remaining}</Text>
@@ -147,6 +225,18 @@ export default function CaptainIncoming() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.brandPrimary, paddingHorizontal: theme.spacing.lg },
+  muteBtn: {
+    alignSelf: "flex-end",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: theme.colors.accent,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    marginTop: 6,
+  },
+  muteText: { fontSize: 12, fontWeight: "800", color: "#111" },
   timerCol: { alignItems: "center", marginTop: 20 },
   timerCircle: {
     width: 100,

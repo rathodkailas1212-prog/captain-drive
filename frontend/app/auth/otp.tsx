@@ -27,7 +27,7 @@ const LEN = 4;
 
 export default function OtpScreen() {
   const router = useRouter();
-  const { phone, role } = useLocalSearchParams<{ phone: string; role: "customer" | "captain" }>();
+  const { phone, role } = useLocalSearchParams<{ phone: string; role: "customer" | "captain" | "admin" }>();
   const { login } = useAuth();
 
   const [otp, setOtp] = useState<string[]>(Array(LEN).fill(""));
@@ -73,7 +73,8 @@ export default function OtpScreen() {
       const res = await api.verifyOtp(phone || "", code, role || "customer");
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       await login(res.user, res.token);
-      if (res.user.role === "captain") router.replace("/captain");
+      if (res.user.role === "admin") router.replace("/admin");
+      else if (res.user.role === "captain") router.replace("/captain");
       else router.replace("/customer");
     } catch (e: any) {
       setErr(e.message || "Invalid OTP");

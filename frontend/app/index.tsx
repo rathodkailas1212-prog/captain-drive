@@ -27,7 +27,8 @@ export default function Splash() {
     if (loading) return;
     const t = setTimeout(() => {
       if (user) {
-        if (user.role === "captain") router.replace("/captain");
+        if (user.role === "admin") router.replace("/admin");
+        else if (user.role === "captain") router.replace("/captain");
         else router.replace("/customer");
       } else if (!hasSeenOnboarding) {
         router.replace("/onboarding");
