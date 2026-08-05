@@ -87,6 +87,19 @@ class RideRating(BaseModel):
     rating: int
     comment: Optional[str] = None
     payment_method: Optional[Literal["upi", "cash", "wallet"]] = None
+    tip: Optional[float] = 0
+
+
+class ReferralApply(BaseModel):
+    code: str
+
+
+class FavoriteCreate(BaseModel):
+    label: str
+    address: str
+    lat: float
+    lng: float
+    icon: Optional[str] = "location"
 
 
 class SOSAlert(BaseModel):
@@ -168,9 +181,17 @@ async def verify_otp(payload: OTPVerify):
     token = str(uuid.uuid4())
 
     if existing:
+        set_fields = {"token": token, "last_login": now_iso()}
+        # Backfill referral fields for pre-existing users
+        if not existing.get("referral_code"):
+            set_fields["referral_code"] = f"ZIP{payload.phone[-4:]}{random.randint(10, 99)}"
+        if existing.get("referrals_count") is None:
+            set_fields["referrals_count"] = 0
+        if existing.get("credits_earned") is None:
+            set_fields["credits_earned"] = 0.0
         await db.users.update_one(
             {"phone": payload.phone, "role": payload.role},
-            {"$set": {"token": token, "last_login": now_iso()}},
+            {"$set": set_fields},
         )
         user = await db.users.find_one(
             {"phone": payload.phone, "role": payload.role}, {"_id": 0}
@@ -198,6 +219,11 @@ async def verify_otp(payload: OTPVerify):
             "cash_in_hand": 0.0,
             "total_earnings": 0.0,
             "kyc_verified": False,
+            # referral
+            "referral_code": f"ZIP{payload.phone[-4:]}{random.randint(10, 99)}",
+            "referred_by": None,
+            "referrals_count": 0,
+            "credits_earned": 0.0,
         }
         await db.users.insert_one(dict(user))
         # Remove any Mongo-added _id from returned object
@@ -395,23 +421,38 @@ async def rate_ride(
     if not ride:
         raise HTTPException(status_code=404, detail="Ride not found")
 
+    tip = float(payload.tip or 0)
     updates = {
         "rating": payload.rating,
         "rating_comment": payload.comment,
         "payment_method": payload.payment_method,
+        "tip": tip,
         "updated_at": now_iso(),
     }
     await db.rides.update_one({"id": ride_id}, {"$set": updates})
 
-    # Reduce cash-in-hand if wallet/upi payment used (captain doesn't keep cash)
-    if payload.payment_method in ("upi", "wallet"):
-        captain_id = ride.get("captain_id") or (ride.get("captain") or {}).get("id")
-        if captain_id:
-            await db.users.update_one(
-                {"id": captain_id}, {"$inc": {"cash_in_hand": -ride["fare"]}}
-            )
+    captain_id = ride.get("captain_id") or (ride.get("captain") or {}).get("id")
 
-    return {"success": True}
+    # Reduce cash-in-hand if wallet/upi payment used (captain doesn't keep cash)
+    if payload.payment_method in ("upi", "wallet") and captain_id:
+        await db.users.update_one(
+            {"id": captain_id}, {"$inc": {"cash_in_hand": -ride["fare"]}}
+        )
+
+    # Add tip to captain's earnings (regardless of payment method it goes to captain)
+    if tip > 0 and captain_id:
+        await db.users.update_one(
+            {"id": captain_id},
+            {"$inc": {"total_earnings": tip, "cash_in_hand": tip if payload.payment_method == "cash" else 0}},
+        )
+
+    # Deduct tip from customer's wallet if wallet payment
+    if tip > 0 and payload.payment_method == "wallet":
+        await db.users.update_one(
+            {"id": user["id"]}, {"$inc": {"wallet_balance": -tip}}
+        )
+
+    return {"success": True, "tip": tip}
 
 
 @api.post("/rides/{ride_id}/sos")
@@ -518,6 +559,88 @@ async def captain_incoming(user: dict = Depends(get_current_user)):
         "customer_rating": 4.7,
     }
     return {"request": demo}
+
+
+# ---------- REFERRALS ----------
+REFERRAL_BONUS = 50.0
+
+
+@api.post("/referrals/apply")
+async def apply_referral(payload: ReferralApply, user: dict = Depends(get_current_user)):
+    code = (payload.code or "").strip().upper()
+    if not code:
+        raise HTTPException(status_code=400, detail="Referral code required")
+
+    if user.get("referred_by"):
+        raise HTTPException(status_code=400, detail="Referral code already applied")
+
+    referrer = await db.users.find_one({"referral_code": code}, {"_id": 0})
+    if not referrer:
+        raise HTTPException(status_code=404, detail="Invalid referral code")
+
+    if referrer["id"] == user["id"]:
+        raise HTTPException(status_code=400, detail="Cannot use your own code")
+
+    # Credit both users
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {"referred_by": referrer["id"]},
+            "$inc": {"wallet_balance": REFERRAL_BONUS, "credits_earned": REFERRAL_BONUS},
+        },
+    )
+    await db.users.update_one(
+        {"id": referrer["id"]},
+        {"$inc": {"wallet_balance": REFERRAL_BONUS, "credits_earned": REFERRAL_BONUS, "referrals_count": 1}},
+    )
+    updated = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    return {"success": True, "bonus": REFERRAL_BONUS, "user": updated}
+
+
+@api.get("/referrals/summary")
+async def referral_summary(user: dict = Depends(get_current_user)):
+    referrals = await db.users.find(
+        {"referred_by": user["id"]}, {"_id": 0, "name": 1, "phone": 1, "created_at": 1}
+    ).to_list(100)
+    return {
+        "referral_code": user.get("referral_code", ""),
+        "referrals_count": user.get("referrals_count", 0),
+        "credits_earned": user.get("credits_earned", 0.0),
+        "bonus_per_referral": REFERRAL_BONUS,
+        "referrals": referrals,
+    }
+
+
+# ---------- FAVORITES ----------
+@api.get("/favorites")
+async def list_favorites(user: dict = Depends(get_current_user)):
+    favs = await db.favorites.find({"user_id": user["id"]}, {"_id": 0}).sort("created_at", 1).to_list(50)
+    return {"favorites": favs}
+
+
+@api.post("/favorites")
+async def create_favorite(payload: FavoriteCreate, user: dict = Depends(get_current_user)):
+    fav = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "label": payload.label,
+        "address": payload.address,
+        "lat": payload.lat,
+        "lng": payload.lng,
+        "icon": payload.icon or "location",
+        "created_at": now_iso(),
+    }
+    await db.favorites.insert_one(dict(fav))
+    fav.pop("_id", None)
+    return {"favorite": fav}
+
+
+@api.delete("/favorites/{fav_id}")
+async def delete_favorite(fav_id: str, user: dict = Depends(get_current_user)):
+    res = await db.favorites.delete_one({"id": fav_id, "user_id": user["id"]})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Favorite not found")
+    return {"success": True}
 
 
 # ============================================================================

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Modal,
   Image,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -48,6 +48,23 @@ export default function CustomerHome() {
   const [fareBike, setFareBike] = useState<{ fare: number; eta_min: number } | null>(null);
   const [fareDel, setFareDel] = useState<{ fare: number; eta_min: number } | null>(null);
   const [creating, setCreating] = useState(false);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [showAddFav, setShowAddFav] = useState(false);
+  const [favLabel, setFavLabel] = useState("");
+  const [savingFav, setSavingFav] = useState(false);
+
+  const loadFavorites = useCallback(async () => {
+    try {
+      const res = await api.listFavorites();
+      setFavorites(res.favorites || []);
+    } catch {}
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadFavorites();
+    }, [loadFavorites]),
+  );
 
   useEffect(() => {
     (async () => {
@@ -173,6 +190,63 @@ export default function CustomerHome() {
               <Text style={styles.searchPh}>Search destination…</Text>
             </TouchableOpacity>
 
+            {/* Favorites - one-tap booking */}
+            <View style={styles.sectionRow}>
+              <Text style={styles.section}>Favorites</Text>
+              {favorites.length > 0 && (
+                <TouchableOpacity onPress={() => setShowAddFav(true)} testID="add-fav-inline">
+                  <Text style={styles.sectionAction}>+ Add</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 10, paddingRight: 20 }}
+            >
+              {favorites.length === 0 ? (
+                <TouchableOpacity
+                  style={styles.favEmpty}
+                  onPress={() => setShowAddFav(true)}
+                  testID="add-favorite-btn"
+                >
+                  <View style={styles.favEmptyIcon}>
+                    <Ionicons name="add" size={22} color="#111" />
+                  </View>
+                  <Text style={styles.favEmptyText}>Add favorite</Text>
+                </TouchableOpacity>
+              ) : (
+                <>
+                  {favorites.map((f) => (
+                    <TouchableOpacity
+                      key={f.id}
+                      style={styles.favCard}
+                      onPress={() => setDrop({ name: f.label, address: f.address, lat: f.lat, lng: f.lng, distance: 5.0 })}
+                      testID={`fav-${f.id}`}
+                    >
+                      <View style={styles.favIcon}>
+                        <Ionicons
+                          name={
+                            f.label.toLowerCase() === "home"
+                              ? "home"
+                              : f.label.toLowerCase() === "work"
+                              ? "briefcase"
+                              : "star"
+                          }
+                          size={16}
+                          color="#111"
+                        />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.favLabel} numberOfLines={1}>{f.label}</Text>
+                        <Text style={styles.favAddr} numberOfLines={1}>{f.address}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </>
+              )}
+            </ScrollView>
+
             <Text style={styles.section}>Quick shortcuts</Text>
             <ScrollView
               horizontal
@@ -213,6 +287,21 @@ export default function CustomerHome() {
                 </TouchableOpacity>
               </View>
             </View>
+
+            {/* Save as favorite (only if not already saved) */}
+            {!favorites.some((f) => f.address === drop.address) && (
+              <TouchableOpacity
+                style={styles.saveFavRow}
+                onPress={() => {
+                  setFavLabel("");
+                  setShowAddFav(true);
+                }}
+                testID="save-as-fav-btn"
+              >
+                <Ionicons name="star-outline" size={16} color="#111" />
+                <Text style={styles.saveFavText}>Save this destination as favorite</Text>
+              </TouchableOpacity>
+            )}
 
             <Text style={styles.section}>Choose your ride</Text>
 
@@ -322,6 +411,15 @@ export default function CustomerHome() {
               testID="menu-history"
             />
             <MenuItem
+              icon={<MaterialCommunityIcons name="gift" size={20} color="#111" />}
+              label="Refer & Earn"
+              onPress={() => {
+                setShowMenu(false);
+                router.push("/customer/refer");
+              }}
+              testID="menu-refer"
+            />
+            <MenuItem
               icon={<Ionicons name="log-out" size={20} color="#111" />}
               label="Log out"
               onPress={async () => {
@@ -333,6 +431,75 @@ export default function CustomerHome() {
             />
           </SafeAreaView>
         </TouchableOpacity>
+      </Modal>
+
+      {/* Add Favorite Modal */}
+      <Modal visible={showAddFav} transparent animationType="fade" onRequestClose={() => setShowAddFav(false)}>
+        <View style={styles.favModalBackdrop}>
+          <View style={styles.favModalCard}>
+            <View style={styles.favModalIcon}>
+              <Ionicons name="star" size={22} color="#111" />
+            </View>
+            <Text style={styles.favModalTitle}>Save as favorite</Text>
+            <Text style={styles.favModalSub}>
+              {drop ? drop.address : "Choose a destination first"}
+            </Text>
+            <TextInput
+              value={favLabel}
+              onChangeText={setFavLabel}
+              placeholder="Label (Home, Work, Gym…)"
+              placeholderTextColor="#999"
+              style={styles.favInput}
+              autoFocus
+              testID="fav-label-input"
+            />
+            <View style={styles.presetRow}>
+              {["Home", "Work", "Gym", "College"].map((p) => (
+                <TouchableOpacity
+                  key={p}
+                  style={styles.presetChip}
+                  onPress={() => setFavLabel(p)}
+                  testID={`fav-preset-${p}`}
+                >
+                  <Text style={styles.presetChipText}>{p}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={styles.favModalActions}>
+              <TouchableOpacity
+                style={styles.favCancelBtn}
+                onPress={() => setShowAddFav(false)}
+                testID="fav-cancel"
+              >
+                <Text style={styles.favCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <Button
+                label={savingFav ? "Saving…" : "Save"}
+                onPress={async () => {
+                  if (!favLabel.trim() || !drop) return;
+                  setSavingFav(true);
+                  try {
+                    await api.addFavorite({
+                      label: favLabel.trim(),
+                      address: drop.address,
+                      lat: drop.lat,
+                      lng: drop.lng,
+                    });
+                    await loadFavorites();
+                    setShowAddFav(false);
+                    setFavLabel("");
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+                  } catch {}
+                  setSavingFav(false);
+                }}
+                loading={savingFav}
+                disabled={!favLabel.trim() || !drop}
+                style={{ flex: 1, height: 48 }}
+                testID="fav-save"
+              />
+            </View>
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -452,6 +619,111 @@ const styles = StyleSheet.create({
   },
   searchPh: { fontSize: 15, color: theme.colors.onSurfaceSecondary, fontWeight: "500" },
   section: { fontSize: 12, fontWeight: "700", color: "#777", marginTop: 20, marginBottom: 10, letterSpacing: 0.5, textTransform: "uppercase" },
+  sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20, marginBottom: 10 },
+  sectionAction: { fontSize: 12, fontWeight: "700", color: theme.colors.brandPrimary },
+  favEmpty: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderWidth: 1.5,
+    borderColor: theme.colors.border,
+    borderStyle: "dashed",
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  favEmptyIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.colors.surfaceSecondary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  favEmptyText: { fontSize: 13, fontWeight: "700", color: "#111" },
+  favCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: theme.colors.brandTertiary,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    minWidth: 180,
+    maxWidth: 240,
+  },
+  favIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  favLabel: { fontSize: 13, fontWeight: "800", color: "#111" },
+  favAddr: { fontSize: 11, color: theme.colors.onSurfaceSecondary, marginTop: 2 },
+  saveFavRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 8,
+    paddingVertical: 6,
+  },
+  saveFavText: { fontSize: 12, fontWeight: "700", color: "#111" },
+  // Add favorite modal
+  favModalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    padding: 20,
+  },
+  favModalCard: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+  },
+  favModalIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: theme.colors.accent,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  favModalTitle: { fontSize: 20, fontWeight: "800", color: "#111" },
+  favModalSub: { fontSize: 13, color: theme.colors.onSurfaceSecondary, textAlign: "center", marginTop: 6 },
+  favInput: {
+    alignSelf: "stretch",
+    marginTop: 16,
+    borderWidth: 1.5,
+    borderColor: theme.colors.border,
+    borderRadius: 12,
+    height: 52,
+    paddingHorizontal: 14,
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#111",
+  },
+  presetRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 12, alignSelf: "stretch" },
+  presetChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: theme.colors.surfaceSecondary,
+  },
+  presetChipText: { fontSize: 12, fontWeight: "700", color: "#111" },
+  favModalActions: { flexDirection: "row", gap: 10, marginTop: 20, alignSelf: "stretch" },
+  favCancelBtn: {
+    flex: 1,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: theme.colors.surfaceSecondary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  favCancelText: { fontSize: 15, fontWeight: "700", color: "#111" },
   chip: {
     flexDirection: "row",
     alignItems: "center",

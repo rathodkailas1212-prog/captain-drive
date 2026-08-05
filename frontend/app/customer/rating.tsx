@@ -16,6 +16,8 @@ export default function Rating() {
   const [rating, setRating] = useState(5);
   const [tags, setTags] = useState<string[]>([]);
   const [comment, setComment] = useState("");
+  const [tip, setTip] = useState(0);
+  const [customTip, setCustomTip] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -29,8 +31,15 @@ export default function Rating() {
 
   const submit = async () => {
     setSubmitting(true);
+    const finalTip = customTip ? parseFloat(customTip) || 0 : tip;
     try {
-      await api.rateRide(rideId!, rating, [...tags, comment].filter(Boolean).join(" · "), method || "cash");
+      await api.rateRide(
+        rideId!,
+        rating,
+        [...tags, comment].filter(Boolean).join(" · "),
+        method || "cash",
+        finalTip,
+      );
     } catch {}
     router.replace("/customer");
   };
@@ -86,6 +95,45 @@ export default function Rating() {
           ))}
         </View>
 
+        {rating >= 4 && (
+          <>
+            <Text style={styles.section}>Add a tip for {ride.captain.name.split(" ")[0]}?</Text>
+            <Text style={styles.tipSub}>100% of your tip goes to the captain.</Text>
+            <View style={styles.tipRow}>
+              {[0, 10, 20, 50].map((amt) => (
+                <TouchableOpacity
+                  key={amt}
+                  style={[
+                    styles.tipChip,
+                    tip === amt && !customTip && styles.tipChipOn,
+                  ]}
+                  onPress={() => {
+                    setTip(amt);
+                    setCustomTip("");
+                  }}
+                  testID={`tip-${amt}`}
+                >
+                  <Text style={[styles.tipChipText, tip === amt && !customTip && { color: "#fff" }]}>
+                    {amt === 0 ? "No tip" : `₹${amt}`}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TextInput
+              placeholder="Custom amount (₹)"
+              placeholderTextColor="#999"
+              keyboardType="number-pad"
+              value={customTip}
+              onChangeText={(t) => {
+                setCustomTip(t.replace(/\D/g, "").slice(0, 4));
+                setTip(0);
+              }}
+              style={styles.customTipInput}
+              testID="custom-tip-input"
+            />
+          </>
+        )}
+
         <Text style={styles.section}>Leave a note (optional)</Text>
         <TextInput
           value={comment}
@@ -98,7 +146,18 @@ export default function Rating() {
         />
       </ScrollView>
 
-      <Button label="Submit Rating" onPress={submit} loading={submitting} testID="submit-rating-btn" />
+      <Button
+        label={
+          customTip && parseFloat(customTip) > 0
+            ? `Submit + Tip ₹${parseFloat(customTip)}`
+            : tip > 0
+            ? `Submit + Tip ₹${tip}`
+            : "Submit Rating"
+        }
+        onPress={submit}
+        loading={submitting}
+        testID="submit-rating-btn"
+      />
       <TouchableOpacity onPress={() => router.replace("/customer")} style={{ marginTop: 12, alignSelf: "center" }}>
         <Text style={{ color: theme.colors.onSurfaceSecondary, fontSize: 13, fontWeight: "600" }}>Skip for now</Text>
       </TouchableOpacity>
@@ -142,6 +201,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     height: 90,
     textAlignVertical: "top",
+    color: "#111",
+  },
+  tipSub: {
+    fontSize: 12,
+    color: theme.colors.onSurfaceSecondary,
+    marginTop: -6,
+    marginBottom: 10,
+  },
+  tipRow: { flexDirection: "row", gap: 8, flexWrap: "wrap" },
+  tipChip: {
+    flex: 1,
+    minWidth: 70,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: theme.colors.border,
+    backgroundColor: "#fff",
+    alignItems: "center",
+  },
+  tipChipOn: { backgroundColor: theme.colors.brandPrimary, borderColor: theme.colors.brandPrimary },
+  tipChipText: { fontSize: 14, fontWeight: "800", color: "#111" },
+  customTipInput: {
+    marginTop: 10,
+    borderWidth: 1.5,
+    borderColor: theme.colors.border,
+    borderRadius: 12,
+    height: 48,
+    paddingHorizontal: 14,
+    fontSize: 14,
+    fontWeight: "700",
     color: "#111",
   },
 });

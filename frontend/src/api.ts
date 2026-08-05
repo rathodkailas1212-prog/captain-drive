@@ -71,8 +71,8 @@ export const api = {
   updateRideStatus: (id: string, status: string) =>
     request<{ ride: any }>(`/rides/${id}/status`, "PATCH", { status }),
   acceptRide: (id: string) => request<{ ride: any }>(`/rides/${id}/accept`, "POST"),
-  rateRide: (id: string, rating: number, comment: string, payment_method: string) =>
-    request(`/rides/${id}/rate`, "POST", { rating, comment, payment_method }),
+  rateRide: (id: string, rating: number, comment: string, payment_method: string, tip: number = 0) =>
+    request(`/rides/${id}/rate`, "POST", { rating, comment, payment_method, tip }),
   sos: (id: string, lat: number, lng: number, message?: string) =>
     request(`/rides/${id}/sos`, "POST", { lat, lng, message }),
   history: () => request<{ rides: any[] }>("/rides/history/list"),
@@ -82,6 +82,24 @@ export const api = {
     request<{ user: any }>("/captain/duty", "POST", { online }),
   earnings: () => request<any>("/captain/earnings"),
   incoming: () => request<{ request: any }>("/captain/incoming"),
+
+  // referrals
+  applyReferral: (code: string) =>
+    request<{ success: boolean; bonus: number; user: any }>("/referrals/apply", "POST", { code }),
+  referralSummary: () =>
+    request<{
+      referral_code: string;
+      referrals_count: number;
+      credits_earned: number;
+      bonus_per_referral: number;
+      referrals: any[];
+    }>("/referrals/summary"),
+
+  // favorites
+  listFavorites: () => request<{ favorites: any[] }>("/favorites"),
+  addFavorite: (data: { label: string; address: string; lat: number; lng: number; icon?: string }) =>
+    request<{ favorite: any }>("/favorites", "POST", data),
+  removeFavorite: (id: string) => request(`/favorites/${id}`, "DELETE"),
 };
 
 export { getToken };

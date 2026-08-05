@@ -1,0 +1,48 @@
+{
+  "summary": "Iteration 2 testing: Referrals, Favorites, Tip-on-rating for ZipRide. Backend: 12 NEW pytest tests all PASS; combined suite 35/35 pass (23 previous + 12 new). Covered: verify-otp returns referral_code (format ZIP{last4}{2digit}), referrals_count=0, credits_earned=0 for new users; POST /api/referrals/apply happy-path credits both users ₹50 wallet + credits_earned, sets referred_by, increments referrers referrals_count; duplicate application -> 400 'already applied'; own-code -> 400 'cannot use your own code'; unknown code -> 404; GET /api/referrals/summary returns referral_code / referrals_count / credits_earned / bonus_per_referral=50 / referrals list with name+phone+created_at. Favorites: empty list for new user; POST creates fav with id/label/address/lat/lng/icon/created_at (no _id leak); GET returns owner-only favorites (isolation across two users verified); DELETE removes fav and second delete returns 404. Tip on /api/rides/{id}/rate: cash tip -> captain cash_in_hand + total_earnings each += tip; wallet tip -> customer wallet_balance -= tip and captain total_earnings += tip (no cash change); upi tip -> captain total_earnings += tip (no cash change from tip); response {success:true, tip:<amount>} correct. No ObjectId (_id) leaked in any new endpoint (recursive assertion). Frontend Playwright (mobile 390x844): fresh customer login (phone 97xxxxxxx / OTP 1234) -> home renders Favorites section with 'Add favorite' empty state (testID add-favorite-btn) -> menu opens with 'Refer & Earn' item (menu-refer) -> tap navigates to /customer/refer -> screen shows real referral code (e.g. ZIP293068), Copy/Share buttons, stats (Friends invited 0 / Credits earned ₹0), 'How it works' 3-step block, 'Have a code?' input+Apply -> applying invalid code shows 'Invalid referral code' error (apply-error). Destination pick -> 'Save this destination as favorite' link appears (save-as-fav-btn) -> modal opens with fav-label-input + preset chips Home/Work/Gym/College (fav-preset-*) + Save button (fav-save). Rating screen source verified: tip block only when rating >= 4 with chips No tip / ₹10 / ₹20 / ₹50 (testID tip-0/tip-10/tip-20/tip-50) + custom-tip-input; Submit button label dynamically reflects tip amount ('Submit + Tip ₹10' etc.). No red screens; only prior deprecation warnings observed. Deprecated packages detected: none new. React Native issues: shadow* and pointerEvents deprecation warnings persist (already flagged in iteration 1).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "shadow styles", "issue": "Console warning: '\"shadow*\" style props are deprecated. Use \"boxShadow\".' Still present from iteration 1 - migrate StyleSheet shadowColor/shadowOpacity/shadowRadius/shadowOffset to cross-platform boxShadow (or Platform.select). Reference: pervasive across screens (splash, cards, refer)."},
+      {"component": "pointerEvents prop", "issue": "Console warning: 'props.pointerEvents is deprecated. Use style.pointerEvents' - move pointerEvents into style object. Reference: multiple View/Animated.View usages."}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_referrals_favorites_tips.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iter2_results.xml"
+  ],
+  "action_items": [
+    "(Carry-over) Migrate deprecated shadow* StyleSheet props to boxShadow / platform-guarded fallback.",
+    "(Carry-over) Move pointerEvents from prop to style across affected View/Animated.View usages.",
+    "Optional UX: add small toast/animation on successful favorite save; currently modal closes but user must scroll home to see new chip.",
+    "Optional: on refer screen after a successful apply, auto-refresh stats (Friends invited / Credits earned) without requiring pull-to-refresh."
+  ],
+  "critical_code_review_comments": [
+    "server.py grew from 540 -> 662 lines. Still under 700 threshold but should be split into modules (auth/rides/referrals/favorites) before next feature iteration.",
+    "All new endpoints correctly project out MongoDB _id via {'_id': 0}; verified via recursive assertion on responses.",
+    "Referral apply is one-shot per user (referred_by set once); no way to change/reset. Good for anti-abuse but no admin override - acceptable for MVP.",
+    "verify-otp backfill for pre-existing users covers referral_code / referrals_count / credits_earned - correct.",
+    "Tip logic in /rides/{id}/rate correctly separates: cash (+tip to cash_in_hand+earnings), wallet (deducts from customer wallet, +tip to earnings), upi (+tip to earnings only). Fare-cash reconciliation via `cash_in_hand -= fare` on upi/wallet payment_method retained.",
+    "Favorites list is capped at 50 (to_list(50)) - reasonable.",
+    "No pagination on /referrals/summary referrals list (capped 100). Fine for MVP scale."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_referrals_favorites_tips.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (35/35 pytest, includes 12 new)",
+    "frontend": "~100% (all requested flows verified: menu->refer, referral code render, invalid code error, favorites empty state, save-as-fav modal with preset chips; rating tip UI verified in source)"
+  },
+  "seed_data_creation": "Ephemeral users per test using random 97xxxxxxxx phones; no manual seeding. Favorites/rides prefixed TEST_.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend base URL: EXPO_PUBLIC_BACKEND_URL=https://captain-driver-app.preview.emergentagent.com. OTP always 1234. Referral is one-shot per user (referred_by field is set only once). Referral code format regex: ^ZIP\\d{4}\\d{2}$ (last-4 phone digits + 2 random). New testIDs added this iteration: menu-refer, refer-back, referral-code-value, copy-code-btn, share-code-btn, apply-code-input, apply-code-btn, apply-error, apply-success, add-favorite-btn, add-fav-inline, save-as-fav-btn, fav-<id>, fav-label-input, fav-preset-Home/Work/Gym/College, fav-cancel, fav-save, tip-0, tip-10, tip-20, tip-50, custom-tip-input. When testing tip earnings math, note ride.fare is added to captain.total_earnings + cash_in_hand at status=completed transition; rate endpoint only ADDS tip (+ conditionally deducts fare from cash_in_hand for upi/wallet).",
+  "rca_of_issue": "N/A - no failing tests."
+}
