@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import re
+import asyncio
 import logging
 import random
 import math
@@ -12,6 +14,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
 import uuid
 from datetime import datetime, timezone, timedelta
+import httpx
 
 
 ROOT_DIR = Path(__file__).parent
@@ -224,24 +227,142 @@ async def root():
     return {"message": "ZipRide API is running", "time": now_iso()}
 
 
+# ============================================================================
+# MSG91 SMS OTP (real SMS in production; `1234` bypass in dev/preview)
+# ============================================================================
+ZIPRIDE_ENV = os.environ.get("ZIPRIDE_ENV", "development").lower()
+MSG91_AUTH_KEY = os.environ.get("MSG91_AUTH_KEY", "").strip()
+MSG91_OTP_TEMPLATE_ID = os.environ.get("MSG91_OTP_TEMPLATE_ID", "").strip()
+IS_PROD = ZIPRIDE_ENV == "production"
+
+
+def normalize_indian_phone(value: str) -> str:
+    """Return `91XXXXXXXXXX` (MSG91 format). Accept +91XXXXXXXXXX, 91XXXXXXXXXX,
+    or bare 10-digit. Raise HTTPException 400 on invalid."""
+    digits = re.sub(r"\D", "", value or "")
+    if digits.startswith("91") and len(digits) == 12:
+        local = digits[2:]
+    elif len(digits) == 10:
+        local = digits
+    else:
+        raise HTTPException(status_code=400, detail="Invalid Indian mobile number")
+    if not re.fullmatch(r"[6-9]\d{9}", local):
+        raise HTTPException(status_code=400, detail="Invalid Indian mobile number")
+    return "91" + local
+
+
+async def _msg91_request(method: str, url: str, *, params: dict, headers: dict) -> dict:
+    """Retry transport + 429/5xx up to 3 times with exp backoff. Never leaks keys."""
+    timeout = httpx.Timeout(connect=5.0, read=10.0, write=5.0, pool=5.0)
+    last_err: Exception | None = None
+    for attempt in range(3):
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                res = await client.request(method, url, params=params, headers=headers)
+            if res.status_code not in {429, 500, 502, 503, 504}:
+                try:
+                    body = res.json()
+                except Exception:
+                    body = {"message": res.text[:300]}
+                if res.status_code >= 400:
+                    logger.warning("MSG91 returned %s: %s", res.status_code, body)
+                    raise HTTPException(status_code=502, detail="OTP provider rejected the request")
+                return body if isinstance(body, dict) else {"data": body}
+            last_err = RuntimeError(f"MSG91 HTTP {res.status_code}")
+        except (httpx.TimeoutException, httpx.NetworkError) as e:
+            last_err = e
+        if attempt < 2:
+            await asyncio.sleep(0.5 * (2 ** attempt))
+    logger.error("MSG91 unavailable after retries: %r", last_err)
+    raise HTTPException(status_code=503, detail="OTP service temporarily unavailable")
+
+
+async def msg91_send_otp(phone_e164: str) -> dict:
+    if not MSG91_AUTH_KEY or not MSG91_OTP_TEMPLATE_ID:
+        raise HTTPException(
+            status_code=500,
+            detail="MSG91 not configured (set MSG91_AUTH_KEY and MSG91_OTP_TEMPLATE_ID)",
+        )
+    return await _msg91_request(
+        "POST",
+        "https://control.msg91.com/api/v5/otp",
+        params={
+            "template_id": MSG91_OTP_TEMPLATE_ID,
+            "mobile": phone_e164,
+            "authkey": MSG91_AUTH_KEY,
+            "otp_length": "4",
+            "otp_expiry": "10",
+        },
+        headers={"accept": "application/json"},
+    )
+
+
+async def msg91_verify_otp(phone_e164: str, otp: str) -> dict:
+    if not MSG91_AUTH_KEY:
+        raise HTTPException(status_code=500, detail="MSG91 not configured")
+    return await _msg91_request(
+        "GET",
+        "https://control.msg91.com/api/v5/otp/verify",
+        params={"mobile": phone_e164, "otp": otp},
+        headers={"accept": "application/json", "authkey": MSG91_AUTH_KEY},
+    )
+
+
+def msg91_ok(payload: dict, verify: bool = False) -> bool:
+    msg = str(payload.get("message", "")).lower()
+    kind = str(payload.get("type", "")).lower()
+    if kind == "success":
+        return True
+    if verify and "verified" in msg and "success" in msg:
+        return True
+    if not verify and "sent" in msg:
+        return True
+    return False
+
+
 # ---------- AUTH ----------
 @api.post("/auth/send-otp")
 async def send_otp(payload: OTPRequest):
-    # MOCK: pretend to send an OTP. Real code is always 1234.
-    return {"success": True, "message": "OTP sent (use 1234 for demo)", "phone": payload.phone}
+    # Admin login: no SMS ever — admin phone is fixed and known.
+    if payload.role == "admin":
+        return {"success": True, "message": "Enter OTP 1234 (admin bypass).", "phone": payload.phone}
+
+    phone_e164 = normalize_indian_phone(payload.phone)
+
+    if IS_PROD:
+        result = await msg91_send_otp(phone_e164)
+        if not msg91_ok(result):
+            logger.warning("MSG91 send rejected: %s", result.get("message"))
+            raise HTTPException(status_code=502, detail="Unable to send OTP")
+        return {"success": True, "message": "OTP sent to your phone.", "phone": payload.phone}
+
+    # Non-production bypass — no real SMS, `1234` will work in verify.
+    return {"success": True, "message": "OTP sent (dev bypass — use 1234).", "phone": payload.phone}
 
 
 @api.post("/auth/verify-otp")
 async def verify_otp(payload: OTPVerify):
-    if payload.otp != "1234":
-        raise HTTPException(status_code=400, detail="Invalid OTP. Use 1234 for demo.")
-
-    # Admin can only log in with the pre-seeded admin phone; no auto-create
-    if payload.role == "admin" and payload.phone != ADMIN_PHONE:
-        raise HTTPException(status_code=403, detail="This phone number is not an admin.")
+    # Canonical phone key for DB lookup + storage. Admin uses its fixed value.
+    if payload.role == "admin":
+        if payload.phone != ADMIN_PHONE:
+            raise HTTPException(status_code=403, detail="This phone number is not an admin.")
+        if payload.otp != "1234":
+            raise HTTPException(status_code=400, detail="Invalid admin OTP.")
+        canonical_phone = ADMIN_PHONE
+    else:
+        # Always normalize so `+91xxx`, `91xxx`, `xxx` all resolve to the SAME user.
+        canonical_phone = normalize_indian_phone(payload.phone)
+        # Real MSG91 verification in production, bypass elsewhere
+        if IS_PROD:
+            result = await msg91_verify_otp(canonical_phone, payload.otp)
+            if not msg91_ok(result, verify=True):
+                raise HTTPException(status_code=400, detail="Invalid or expired OTP.")
+        else:
+            if payload.otp != "1234":
+                raise HTTPException(status_code=400, detail="Invalid OTP. Use 1234 for demo.")
 
     existing = await db.users.find_one(
-        {"phone": payload.phone, "role": payload.role}, {"_id": 0}
+        {"phone": canonical_phone, "role": payload.role}, {"_id": 0}
     )
     token = str(uuid.uuid4())
 
@@ -249,22 +370,22 @@ async def verify_otp(payload: OTPVerify):
         set_fields = {"token": token, "last_login": now_iso()}
         # Backfill referral fields for pre-existing users
         if not existing.get("referral_code"):
-            set_fields["referral_code"] = f"ZIP{payload.phone[-4:]}{random.randint(10, 99)}"
+            set_fields["referral_code"] = f"ZIP{canonical_phone[-4:]}{random.randint(10, 99)}"
         if existing.get("referrals_count") is None:
             set_fields["referrals_count"] = 0
         if existing.get("credits_earned") is None:
             set_fields["credits_earned"] = 0.0
         await db.users.update_one(
-            {"phone": payload.phone, "role": payload.role},
+            {"phone": canonical_phone, "role": payload.role},
             {"$set": set_fields},
         )
         user = await db.users.find_one(
-            {"phone": payload.phone, "role": payload.role}, {"_id": 0}
+            {"phone": canonical_phone, "role": payload.role}, {"_id": 0}
         )
     else:
         user = {
             "id": str(uuid.uuid4()),
-            "phone": payload.phone,
+            "phone": canonical_phone,
             "role": payload.role,
             "name": "",
             "photo": "",
@@ -285,7 +406,7 @@ async def verify_otp(payload: OTPVerify):
             "total_earnings": 0.0,
             "kyc_verified": False,
             # referral
-            "referral_code": f"ZIP{payload.phone[-4:]}{random.randint(10, 99)}",
+            "referral_code": f"ZIP{canonical_phone[-4:]}{random.randint(10, 99)}",
             "referred_by": None,
             "referrals_count": 0,
             "credits_earned": 0.0,

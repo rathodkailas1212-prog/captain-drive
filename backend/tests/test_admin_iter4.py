@@ -217,7 +217,8 @@ def test_admin_complaints_list_and_resolve(s, admin):
     target = next((c for c in comps if c.get("message") == "TEST_help_iter4"), None)
     assert target is not None, "SOS not found in complaints"
     assert "user" in target and "ride" in target
-    assert target["user"]["phone"] == phone
+    # After phone-normalization fix, stored phone is canonical `91XXXXXXXXXX`.
+    assert target["user"]["phone"] == f"91{phone}"
     # resolve
     rr2 = s.post(f"{API}/admin/complaints/{target['id']}/resolve",
                  json={"resolution": "TEST_handled"}, headers=admin["h"])

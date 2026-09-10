@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 7 — Retest of MSG91 OTP phone-normalization bug fix (spec #5). RESULT: FIX VERIFIED, FULL REGRESSION GREEN. Ran /app/backend/tests/test_msg91_otp_iter6.py → 21/21 pass (previously 20/21 — the sole failing test `TestDevPhoneNormalization::test_all_three_formats_resolve_to_same_user` now PASSES). Full suite (backend_test + test_referrals_favorites_tips + test_security_iter3 + test_admin_iter4 + test_msg91_otp_iter6) → 99/99 pass in 110s after a 1-line test assertion update in test_admin_iter4.py::test_admin_complaints_list_and_resolve (the test asserted raw 10-digit phone equality; now correctly asserts canonical `91XXXXXXXXXX` shape — the assertion needed to catch up with the intentional storage-format change). All 4 spec requirements manually verified via live preview URL: (1) `+919825083028`, `9825083028`, `91-9825-083-028` all resolve to SAME user id (verified by 3 separate verify-otp calls returning identical `user.id`); (2) stored user.phone is `919825083028` — confirmed via `GET /api/auth/me`; (3) referral_code = `ZIP3028XX` uses canonical last-4 digits (matches DB `phone[-4:]`, not raw input's last-4 which would collide across formats); (4) admin path (phone=9999999999, role=admin) still logs in with OTP 1234 and stores phone as raw `9999999999` (NOT `919999999999`) — admin bypass preserved. Code review of the fix at /app/backend/server.py L344-418 is clean: (a) admin branch unchanged, canonical_phone = ADMIN_PHONE (raw); (b) non-admin branch always calls normalize_indian_phone(payload.phone) BEFORE the MSG91/DB path, so invalid phones now 400 in BOTH dev AND prod (bonus fix for previous iter6 minor issue #4 — dev-mode verify-otp now validates phone shape); (c) canonical_phone is the single source of truth for find_one query filter, update_one filter, insert doc `phone` field, and referral_code `phone[-4:]` — no drift. Note per request: pre-fix users with raw-phone rows are unreachable via canonical lookup and will create new rows on next login — this is expected/acceptable dev behaviour and not tested against. No frontend testing performed (backend-only per request).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "N/A (test hygiene)",
+        "issue": "test_admin_iter4.py::test_admin_complaints_list_and_resolve had a hardcoded assertion `target['user']['phone'] == phone` (raw 10-digit) that broke after the canonical-storage fix. Updated to `== f'91{phone}'`. Other tests in test_admin_iter4 already used `customer['user']['phone']` (looked up from server response) so they were unaffected."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_msg91_otp_iter6.py",
+    "/app/backend/tests/test_admin_iter4.py",
+    "/app/test_reports/pytest/iter7_msg91.xml",
+    "/app/test_reports/pytest/iter7_all.xml"
+  ],
+  "action_items": [
+    "None blocking. Optional carry-over from iter6: refactor /app/backend/server.py (1148 lines) — split MSG91 helpers into /app/backend/msg91.py and admin routes into /app/backend/routes/admin.py.",
+    "Optional: add a one-shot backfill migration mapping legacy raw-phone user rows (e.g. `phone: {$regex: '^[6-9][0-9]{9}$'}` for non-admin) to canonical `91XXXXXXXXXX`, merging duplicates by earliest created_at and summing wallet_balance/credits_earned/referrals_count. Not required for green tests; only matters if there is real pre-existing production data."
+  ],
+  "critical_code_review_comments": [
+    "Fix at server.py L344-418 correctly channels ALL non-admin phone usage through canonical_phone = normalize_indian_phone(payload.phone). Single source of truth: find_one filter (L365), update_one filter (L379), post-update read filter (L383), insert doc `phone` field (L388), and referral_code slicing at L373 & L409 all use canonical_phone. No drift between DB key and stored key.",
+    "Admin branch (L346-351) correctly short-circuits BEFORE normalize_indian_phone — canonical_phone = ADMIN_PHONE (raw 9999999999), preserving the pre-existing admin row and its /api/auth/me contract.",
+    "Bonus improvement: invalid phones like `12345`, `abcde`, `5xxxxxxxxx` now 400 in DEV verify-otp too (previously they only 400'd in prod via the MSG91 branch). Covers iter6 minor issue #4.",
+    "MSG91 helpers, IS_PROD gating, admin bypass, retry/backoff, and response contract {success,user,token} are unchanged from iter6 — no regression risk to the mocked prod-path tests (all 8 respx-based prod tests still green)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_iter4.py (1-line assertion update on L220 to expect canonical `91{phone}` shape)"
+  ],
+  "success_rate": {
+    "backend": "100% (99/99 across backend_test, test_referrals_favorites_tips, test_security_iter3, test_admin_iter4, test_msg91_otp_iter6)",
+    "frontend": "not tested (backend-only per request)"
+  },
+  "seed_data_creation": "None new. Reuses live-preview backend + shared Mongo (test_database). Random 98-prefixed 10-digit phones created per-test as before. Admin (9999999999) auto-seeded on startup.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 7 baseline: MSG91 OTP integration + phone-normalization fix fully verified. Preview URL: https://captain-driver-app.preview.emergentagent.com, ZIPRIDE_ENV=development. Full regression: `cd /app/backend && EXPO_PUBLIC_BACKEND_URL=<url> EXPO_BACKEND_URL=<url> python -m pytest tests/ --tb=line -q` → expects 99 passing. Prod-mode tests still use monkeypatch on server.IS_PROD/MSG91_AUTH_KEY/MSG91_OTP_TEMPLATE_ID + respx — do NOT set ZIPRIDE_ENV=production in the shared .env. Canonical phone contract for non-admin users is now `91XXXXXXXXXX` in DB and in `/api/auth/me` — any new test that logs in a customer/captain and compares user.phone must expect `91` prefix (admin stays raw `9999999999`).",
+  "rca_of_issue": "N/A — bug is fixed. Historical RCA (iter6): verify_otp used raw payload.phone for DB find_one/insert while normalize_indian_phone() output was only used for the MSG91 HTTP call. FIX (iter7): compute `canonical_phone = normalize_indian_phone(payload.phone)` once for non-admin roles (admin stays raw ADMIN_PHONE) and use it uniformly for all Mongo reads, writes, and referral_code generation. Verified via 3-format equality test + /auth/me + referral_code slicing check."
+}

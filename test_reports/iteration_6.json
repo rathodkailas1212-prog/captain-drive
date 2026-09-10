@@ -1,0 +1,57 @@
+{
+  "summary": "Iteration 6 — MSG91 OTP integration tested. Wrote /app/backend/tests/test_msg91_otp_iter6.py with 21 targeted tests (dev-mode over live HTTP + prod-mode in-process with respx-mocked MSG91). Result: 20/21 iter6 tests pass; 1 real bug found → Spec #5 phone normalization is NOT applied to the DB lookup — `9876500002`, `+919876500002`, `91-9876-500-002` produce THREE different user rows (raw payload.phone is used for find_one). Full regression: 98/99 passing across all suites (backend_test, test_admin_iter4, test_security_iter3, test_referrals_favorites_tips, test_msg91_otp_iter6). Note: on first regression run 4 tests failed because a previous iteration persisted ZipBike.per_km=1.0 into db.settings.fare_config; I restored default (25/8/30/15) via /api/admin/fare-config PUT and reran clean. Verified all iter6 specs: (2) OTP=1234 in dev → 200+token; (3) wrong OTP → 400; (4) invalid Indian phones (too short / non-digit / starts with 5) → 400; (6) admin phone 9999999999 → success, other phones role=admin → 403; (7) admin skips MSG91 entirely even in prod (asserted call_count==0 on both endpoints); (8) prod without keys → 500 'MSG91 not configured'; (9) 1234 REJECTED in prod for customer/captain (verified MSG91 /verify called with authkey in HEADER, mobile=91XXXXXXXXXX, otp=1234); (10) MSG91 type=error payload → 400 'Invalid or expired OTP'; (11) MSG91 5xx AND ReadTimeout → 503 after exactly 3 retries; (12) MSG91 4xx → 502 'OTP provider rejected the request' with call_count==1 (no retry); (13) contract stable {success,user,token}; (14) no regressions. Also verified send-otp params (template_id, mobile=91XXXXXXXXXX, authkey in QUERY, otp_length=4, otp_expiry=10). No frontend testing performed — per request 'backend only'.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/auth/verify-otp",
+        "issue": "Spec #5 REGRESSION: three accepted phone formats (`9876543210`, `+919876543210`, `91-9876-543-210`) create three distinct user records. The MSG91 helper normalizes to `91XXXXXXXXXX` for the SMS call, but the DB lookup (`db.users.find_one({phone: payload.phone, role: ...})`) uses the raw payload string. Same real human logging in with different keypad formatting = new account each time (fresh wallet, referral code, history).",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "POST /api/auth/verify-otp (prod path)",
+        "issue": "In production the invalid-phone error path in verify-otp is NOT covered — normalize_indian_phone() runs only inside the `if IS_PROD` branch, so a garbage phone in dev never reaches the validator on verify. Spec #4 says validation should ideally happen on verify-otp too."
+      },
+      {
+        "endpoint": "N/A (persisted state)",
+        "issue": "db.settings.fare_config held polluted values (ZipBike.per_km=1.0) from a prior iteration, causing 4 regression tests to fail on first run. Consider a test-time reset endpoint or seed guard in on_startup that only writes if the persisted config passes a sanity range."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_msg91_otp_iter6.py",
+    "/app/test_reports/pytest/iter6_msg91.xml",
+    "/app/test_reports/pytest/iter6_all.xml"
+  ],
+  "action_items": [
+    "FIX Spec #5 phone normalization: extract a `_normalize_phone_key(raw) -> '91XXXXXXXXXX'` helper and use it as the canonical stored/lookup value for role in {customer,captain}. Suggested change in verify_otp: `key = _normalize_phone_key(payload.phone) if payload.role != 'admin' else payload.phone` then `db.users.find_one({phone: key, role: payload.role})` and store `key` on insert. Then the existing test `test_all_three_formats_resolve_to_same_user` will pass.",
+    "OPTIONAL Spec #4: also run normalize_indian_phone() at the top of verify_otp for non-admin roles so dev-mode returns 400 on obviously-invalid phones consistently with send-otp.",
+    "OPTIONAL: refactor /app/backend/server.py (1146 lines) — split MSG91 helpers into /app/backend/msg91.py and admin routes into /app/backend/routes/admin.py."
+  ],
+  "critical_code_review_comments": [
+    "MSG91 integration in server.py L232-320 is clean: authkey correctly placed in QUERY for send (/api/v5/otp POST) and in HEADER for verify (/api/v5/otp/verify GET), matches MSG91 v5 docs; retry loop is bounded to 3 with exp backoff (0s/0.5s/1s) and distinguishes transport/429/5xx (retry, → 503) from 4xx (no retry, → 502).",
+    "msg91_ok() success detection accepts both {type:'success'} and message containing 'sent'/'verified' — matches playbook.",
+    "IS_PROD flag is evaluated at module load from ZIPRIDE_ENV; tests correctly monkey-patch server.IS_PROD/MSG91_AUTH_KEY/MSG91_OTP_TEMPLATE_ID because the route handlers reference the module-level names.",
+    "Admin bypass logic at L327 (send-otp) and L346 (verify-otp) is short-circuited BEFORE any normalize_indian_phone or MSG91 call — verified by prod-mode tests asserting respx call_count==0.",
+    "Contract shape {success, user, token} on success path is unchanged from iter5 — no frontend changes required."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_msg91_otp_iter6.py (new — 21 tests)"
+  ],
+  "success_rate": {
+    "backend": "99% (98/99 across all suites; 20/21 iter6-specific — sole failure is real spec-#5 bug)",
+    "frontend": "not tested (backend-only per request)"
+  },
+  "seed_data_creation": "Admin (9999999999) auto-seeded by backend on_startup. Dev-mode tests create random 98/90-prefixed 10-digit users on the live preview backend. Prod-mode tests use FastAPI TestClient in-process — they DO touch the same shared Mongo (test_database) for the admin lookup path, but never create phone-based users because MSG91 mocks intercept before /verify-otp DB writes on non-success paths.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 6 baseline: MSG91 OTP integration verified. Preview URL: https://captain-driver-app.preview.emergentagent.com, ZIPRIDE_ENV=development (default). Full test path: `cd /app/backend && EXPO_PUBLIC_BACKEND_URL=<url> python -m pytest tests/ --tb=line -q` — expects 98 passing + 1 known failure (spec-#5 normalization). Requires `pip install respx pytest-asyncio` (already installed). Prod-mode tests use monkeypatch on server.IS_PROD/MSG91_AUTH_KEY/MSG91_OTP_TEMPLATE_ID + respx.mock — do NOT set ZIPRIDE_ENV=production in the shared .env or you break dev-mode login for the whole preview. If admin-related fare tests fail, check db.settings.fare_config — reset to ZipBike{base:25,per_km:8,min:30,commission_pct:15}, ZipDelivery{40,12,50,18} via PUT /api/admin/fare-config with the admin bearer token.",
+  "rca_of_issue": "SPEC #5 BUG — RCA: /app/backend/server.py verify_otp() at L362 does `db.users.find_one({phone: payload.phone, role: payload.role})` using the raw input string. normalize_indian_phone() is called only inside the MSG91 code path (L354 in prod branch and L330 in send-otp) purely to build the 91XXXXXXXXXX MSG91 argument — its return value is discarded, never used for storage. REPRO: `POST /api/auth/verify-otp {phone:'9876500002',otp:'1234',role:'customer'}` → user id A. `POST /api/auth/verify-otp {phone:'+919876500002',otp:'1234',role:'customer'}` → user id B ≠ A. `POST ... {phone:'91-9876-500-002',...}` → user id C ≠ A ≠ B. MITIGATION: introduce `def canonical_phone(raw, role): return raw if role=='admin' else normalize_indian_phone(raw)[2:]` (or keep the '91' prefix consistently) and use its output for BOTH the find_one query and the stored `phone` field in the user document. Backfill: one-time migration script mapping all existing user.phone → canonical form, merging duplicates by picking the record with the earliest created_at and summing wallet_balance/credits_earned/referrals_count into it before deleting the others."
+}
