@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "ZipRides",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.emergent.captaindriverapp.zp71ad"
+      "bundleIdentifier": "com.emergent.captaindriverapp.zp71ad",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Set your pickup and share live ride location"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +21,11 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.emergent.captaindriverapp.zp71ad"
+      "package": "com.emergent.captaindriverapp.zp71ad",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -36,7 +43,13 @@
           "backgroundColor": "#000000"
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Set your pickup and share live ride location"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

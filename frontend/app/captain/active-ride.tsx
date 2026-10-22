@@ -4,8 +4,11 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as Location from "expo-location";
 import { theme } from "@/src/theme";
-import { MockMap, MapMarker } from "@/src/components/MockMap";
+import { MapMarker } from "@/src/components/MockMap";
+import { RideMap } from "@/src/components/RideMap";
+import { ensureLocationPermission, openNavigation, LatLng } from "@/src/maps";
 import { api } from "@/src/api";
 
 type Stage = "to_pickup" | "at_pickup" | "in_ride" | "completed";
@@ -22,10 +25,14 @@ export default function ActiveRide() {
       if (!rideId || rideId.startsWith("demo")) {
         setRide({
           id: rideId,
-          pickup_address: "MG Road Metro Station",
-          drop_address: "Indiranagar 100ft Road",
-          distance_km: 4.2,
-          fare: 60,
+          pickup_address: "Ambajogai Bus Stand, Ambajogai",
+          pickup_lat: 18.73312,
+          pickup_lng: 76.38616,
+          drop_address: "Morewadi, Ambajogai",
+          drop_lat: 18.72174,
+          drop_lng: 76.37025,
+          distance_km: 2.5,
+          fare: 45,
           customer_name: "Priya S.",
           customer_phone: "+919812345678",
           otp: "4271",
@@ -38,6 +45,36 @@ export default function ActiveRide() {
         setRide(res.ride);
       } catch {}
     })();
+  }, [rideId]);
+
+  // Share captain's live location with the customer while this screen is open (foreground only)
+  const [myLoc, setMyLoc] = useState<LatLng | null>(null);
+  useEffect(() => {
+    if (!rideId || rideId.startsWith("demo")) return;
+    let sub: Location.LocationSubscription | undefined;
+    let cancelled = false;
+    (async () => {
+      const ok = await ensureLocationPermission(
+        "Share your live location so the customer can see you arriving.",
+        "The ride continues without live location. You can enable it anytime in Settings.",
+      );
+      if (!ok || cancelled) return;
+      try {
+        sub = await Location.watchPositionAsync(
+          { accuracy: Location.Accuracy.High, timeInterval: 5000, distanceInterval: 15 },
+          (pos) => {
+            const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            setMyLoc(p);
+            api.captainLocation(p.lat, p.lng, rideId).catch(() => {});
+          },
+        );
+        if (cancelled) sub.remove();
+      } catch {}
+    })();
+    return () => {
+      cancelled = true;
+      sub?.remove();
+    };
   }, [rideId]);
 
   // slow progress simulation
@@ -99,14 +136,25 @@ export default function ActiveRide() {
 
   if (!ride) return null;
 
+  const navTarget =
+    stage === "to_pickup" || stage === "at_pickup"
+      ? { lat: ride.pickup_lat, lng: ride.pickup_lng }
+      : { lat: ride.drop_lat, lng: ride.drop_lng };
+
   return (
     <View style={styles.container}>
-      <MockMap
+      <RideMap
         style={StyleSheet.absoluteFillObject}
-        markers={[captainPos, targetMarker]}
-        showRoute
-        routeFrom={{ x: captainPos.x, y: captainPos.y }}
-        routeTo={{ x: targetMarker.x, y: targetMarker.y }}
+        pickup={stage === "to_pickup" || stage === "at_pickup" ? { lat: ride.pickup_lat, lng: ride.pickup_lng } : null}
+        drop={stage === "in_ride" || stage === "completed" ? { lat: ride.drop_lat, lng: ride.drop_lng } : null}
+        captain={myLoc}
+        polyline={stage === "in_ride" ? ride.route_polyline : null}
+        mock={{
+          markers: [captainPos, targetMarker],
+          showRoute: true,
+          routeFrom: { x: captainPos.x, y: captainPos.y },
+          routeTo: { x: targetMarker.x, y: targetMarker.y },
+        }}
       />
 
       <SafeAreaView edges={["top"]} style={{ position: "absolute", top: 0, left: 0, right: 0 }} pointerEvents="box-none">
@@ -158,6 +206,19 @@ export default function ActiveRide() {
             <Text style={styles.metaVal}>₹{ride.fare}</Text>
           </View>
         </View>
+
+        {stage !== "completed" && navTarget.lat != null && (
+          <TouchableOpacity
+            style={styles.navBtn}
+            onPress={() => openNavigation(navTarget)}
+            testID="navigate-btn"
+          >
+            <Ionicons name="navigate" size={18} color={theme.colors.onSurface} />
+            <Text style={styles.navText}>
+              Navigate to {stage === "in_ride" ? "drop" : "pickup"} in Google Maps
+            </Text>
+          </TouchableOpacity>
+        )}
 
         {stage !== "completed" ? (
           <TouchableOpacity style={styles.ctaBtn} onPress={nextStage} testID="next-stage-btn">
@@ -247,6 +308,17 @@ const styles = StyleSheet.create({
   tripMeta: { flexDirection: "row", marginTop: 16, paddingTop: 14, borderTopWidth: 1, borderTopColor: theme.colors.border, gap: 20 },
   metaLbl: { fontSize: 10, fontWeight: "700", color: theme.colors.onSurfaceSecondary, letterSpacing: 0.5 },
   metaVal: { fontSize: 14, fontWeight: "800", color: "#111", marginTop: 2, maxWidth: 220 },
+  navBtn: {
+    marginTop: 14,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: theme.colors.accent,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  navText: { fontSize: 14, fontWeight: "800", color: theme.colors.onSurface },
   ctaBtn: {
     marginTop: 20,
     height: 60,

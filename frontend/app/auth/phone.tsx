@@ -120,7 +120,7 @@ export default function PhoneAuth() {
               loading={loading}
             />
             <Text style={styles.terms}>
-              By continuing, you agree to ZipRide&apos;s Terms &amp; Privacy Policy.
+              By continuing, you agree to ZipRides&apos;s Terms &amp; Privacy Policy.
             </Text>
           </View>
         </ScrollView>

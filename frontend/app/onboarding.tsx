@@ -66,7 +66,7 @@ export default function Onboarding() {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.topBar}>
-        <Text style={styles.logo}>ZipRide</Text>
+        <Text style={styles.logo}>ZipRides</Text>
         <TouchableOpacity onPress={skip} testID="onboarding-skip">
           <Text style={styles.skip}>Skip</Text>
         </TouchableOpacity>

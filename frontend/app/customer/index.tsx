@@ -14,35 +14,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { theme } from "@/src/theme";
-import { MockMap, MapMarker } from "@/src/components/MockMap";
+import { MapMarker } from "@/src/components/MockMap";
+import { RideMap } from "@/src/components/RideMap";
+import { PlaceSearchModal, Place } from "@/src/components/PlaceSearchModal";
+import { SERVICE_CENTER } from "@/src/maps";
 import { Button } from "@/src/components/Button";
 import { api } from "@/src/api";
 import { useAuth } from "@/src/auth";
-
-// Preset destinations for demo
-const PRESET_DESTINATIONS = [
-  { name: "MG Road Metro", address: "MG Road Metro Station, Bengaluru", lat: 12.9758, lng: 77.6068, distance: 3.2 },
-  { name: "Indiranagar", address: "Indiranagar 100ft Road", lat: 12.9784, lng: 77.6408, distance: 5.4 },
-  { name: "Koramangala 5th Block", address: "Koramangala 5th Block", lat: 12.9352, lng: 77.6245, distance: 4.6 },
-  { name: "HSR Layout Sector 2", address: "HSR Layout Sector 2", lat: 12.9121, lng: 77.6446, distance: 7.1 },
-  { name: "Whitefield ITPL", address: "ITPL Main Road, Whitefield", lat: 12.9853, lng: 77.7368, distance: 14.2 },
-  { name: "Kempegowda Airport", address: "Kempegowda International Airport", lat: 13.1989, lng: 77.7068, distance: 35.5 },
-];
-
-const CURRENT_LOC = {
-  name: "Home",
-  address: "Brigade Road, Central Bengaluru",
-  lat: 12.9716,
-  lng: 77.5946,
-};
 
 export default function CustomerHome() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const [captains, setCaptains] = useState<any[]>([]);
-  const [pickup] = useState(CURRENT_LOC);
-  const [drop, setDrop] = useState<any | null>(null);
-  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [pickup, setPickup] = useState<Place>(SERVICE_CENTER);
+  const [drop, setDrop] = useState<Place | null>(null);
+  const [searchTarget, setSearchTarget] = useState<"pickup" | "drop" | null>(null);
+  const [shortcuts, setShortcuts] = useState<Place[]>([]);
+  const [route, setRoute] = useState<{ distance_km: number; duration_min: number; polyline: string | null; source: string } | null>(null);
+  const [routeError, setRouteError] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [service, setService] = useState<"ZipBike" | "ZipDelivery">("ZipBike");
   const [fareBike, setFareBike] = useState<{ fare: number; eta_min: number } | null>(null);
@@ -76,22 +65,40 @@ export default function CustomerHome() {
   }, [pickup]);
 
   useEffect(() => {
-    if (!drop) {
-      setFareBike(null);
-      setFareDel(null);
-      return;
-    }
     (async () => {
       try {
-        const [b, d] = await Promise.all([
-          api.fareEstimate(drop.distance, "ZipBike"),
-          api.fareEstimate(drop.distance, "ZipDelivery"),
-        ]);
-        setFareBike(b);
-        setFareDel(d);
+        const res = await api.searchPlaces("");
+        setShortcuts(
+          (res.local || [])
+            .filter((p: any) => p.type !== "town")
+            .slice(0, 4)
+            .map((p: any) => ({ name: p.name, address: `${p.name}, ${p.district}`, lat: p.lat, lng: p.lng })),
+        );
       } catch {}
     })();
-  }, [drop]);
+  }, []);
+
+  useEffect(() => {
+    setRoute(null);
+    setRouteError(false);
+    setFareBike(null);
+    setFareDel(null);
+    if (!drop) return;
+    (async () => {
+      try {
+        const r = await api.computeRoute(pickup, drop);
+        setRoute(r);
+        const [b, d] = await Promise.all([
+          api.fareEstimate(r.distance_km, "ZipBike"),
+          api.fareEstimate(r.distance_km, "ZipDelivery"),
+        ]);
+        setFareBike({ ...b, eta_min: r.duration_min });
+        setFareDel({ ...d, eta_min: r.duration_min });
+      } catch {
+        setRouteError(true);
+      }
+    })();
+  }, [drop, pickup]);
 
   const markers: MapMarker[] = useMemo(() => {
     const arr: MapMarker[] = [
@@ -131,7 +138,7 @@ export default function CustomerHome() {
         drop_lat: drop.lat,
         drop_lng: drop.lng,
         service_type: service,
-        distance_km: drop.distance,
+        distance_km: route?.distance_km || 1,
         fare,
       });
       router.push({ pathname: "/customer/searching", params: { rideId: res.ride.id } });
@@ -145,7 +152,13 @@ export default function CustomerHome() {
   return (
     <View style={styles.container}>
       {/* Full-bleed Map */}
-      <MockMap markers={markers} style={StyleSheet.absoluteFillObject} />
+      <RideMap
+        pickup={pickup}
+        drop={drop}
+        polyline={route?.polyline}
+        style={StyleSheet.absoluteFillObject}
+        mock={{ markers }}
+      />
 
       {/* Top glass header */}
       <SafeAreaView edges={["top"]} style={styles.topSafe} pointerEvents="box-none">
@@ -157,12 +170,13 @@ export default function CustomerHome() {
           >
             <Ionicons name="menu" size={22} color="#111" />
           </TouchableOpacity>
-          <View style={styles.locChip}>
+          <TouchableOpacity style={styles.locChip} onPress={() => setSearchTarget("pickup")} testID="pickup-chip">
             <View style={styles.dotGreen} />
             <Text style={styles.locChipText} numberOfLines={1}>
               {pickup.name}
             </Text>
-          </View>
+            <Ionicons name="chevron-down" size={16} color="#111" />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.iconBtn}
             testID="history-btn"
@@ -183,7 +197,7 @@ export default function CustomerHome() {
             <TouchableOpacity
               testID="destination-search-btn"
               style={styles.searchBox}
-              onPress={() => setShowSearchModal(true)}
+              onPress={() => setSearchTarget("drop")}
               activeOpacity={0.9}
             >
               <Ionicons name="search" size={20} color="#111" />
@@ -221,7 +235,7 @@ export default function CustomerHome() {
                     <TouchableOpacity
                       key={f.id}
                       style={styles.favCard}
-                      onPress={() => setDrop({ name: f.label, address: f.address, lat: f.lat, lng: f.lng, distance: 5.0 })}
+                      onPress={() => setDrop({ name: f.label, address: f.address, lat: f.lat, lng: f.lng })}
                       testID={`fav-${f.id}`}
                     >
                       <View style={styles.favIcon}>
@@ -253,7 +267,7 @@ export default function CustomerHome() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: 10, paddingRight: 20 }}
             >
-              {PRESET_DESTINATIONS.slice(0, 4).map((p) => (
+              {shortcuts.map((p) => (
                 <TouchableOpacity
                   key={p.name}
                   style={styles.chip}
@@ -270,12 +284,13 @@ export default function CustomerHome() {
           <>
             {/* Route summary */}
             <View style={styles.routeCard}>
-              <View style={styles.routeRow}>
+              <TouchableOpacity style={styles.routeRow} onPress={() => setSearchTarget("pickup")} testID="change-pickup">
                 <View style={styles.dotGreen} />
                 <Text style={styles.routeText} numberOfLines={1}>
                   {pickup.address}
                 </Text>
-              </View>
+                <Ionicons name="pencil" size={14} color="#777" />
+              </TouchableOpacity>
               <View style={styles.routeDivider} />
               <View style={styles.routeRow}>
                 <View style={styles.dotRed} />
@@ -287,6 +302,13 @@ export default function CustomerHome() {
                 </TouchableOpacity>
               </View>
             </View>
+            <Text style={styles.routeMeta} testID="route-meta">
+              {routeError
+                ? "Couldn't calculate route. Check connection and try again."
+                : route
+                ? `${route.distance_km} km · ~${route.duration_min} min${route.source === "estimate" ? " (approx.)" : " by road"}`
+                : "Calculating distance…"}
+            </Text>
 
             {/* Save as favorite (only if not already saved) */}
             {!favorites.some((f) => f.address === drop.address) && (
@@ -340,49 +362,17 @@ export default function CustomerHome() {
         )}
       </View>
 
-      {/* Search Modal */}
-      <Modal visible={showSearchModal} animationType="slide" onRequestClose={() => setShowSearchModal(false)}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }} edges={["top", "bottom"]}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={() => setShowSearchModal(false)} testID="close-search">
-              <Ionicons name="chevron-back" size={26} color="#111" />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Set destination</Text>
-            <View style={{ width: 26 }} />
-          </View>
-          <View style={styles.searchBoxModal}>
-            <Ionicons name="search" size={20} color="#111" />
-            <TextInput
-              placeholder="Search for area, landmark…"
-              style={styles.modalInput}
-              placeholderTextColor="#888"
-              autoFocus
-            />
-          </View>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
-            {PRESET_DESTINATIONS.map((d) => (
-              <TouchableOpacity
-                key={d.name}
-                style={styles.destRow}
-                testID={`dest-${d.name}`}
-                onPress={() => {
-                  setDrop(d);
-                  setShowSearchModal(false);
-                }}
-              >
-                <View style={styles.destIcon}>
-                  <Ionicons name="location" size={18} color="#111" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.destTitle}>{d.name}</Text>
-                  <Text style={styles.destSub}>{d.address}</Text>
-                </View>
-                <Text style={styles.destDist}>{d.distance} km</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </SafeAreaView>
-      </Modal>
+      {/* Search Modal (pickup or destination) */}
+      <PlaceSearchModal
+        visible={searchTarget !== null}
+        target={searchTarget || "drop"}
+        onClose={() => setSearchTarget(null)}
+        onSelect={(p) => {
+          if (searchTarget === "pickup") setPickup(p);
+          else setDrop(p);
+          setSearchTarget(null);
+        }}
+      />
 
       {/* Menu Modal */}
       <Modal visible={showMenu} transparent animationType="fade" onRequestClose={() => setShowMenu(false)}>
@@ -393,12 +383,12 @@ export default function CustomerHome() {
                 <Ionicons name="person" size={26} color="#fff" />
               </View>
               <View style={{ marginLeft: 12, flex: 1 }}>
-                <Text style={styles.userName}>{user?.name || "ZipRider"}</Text>
+                <Text style={styles.userName}>{user?.name || "Rider"}</Text>
                 <Text style={styles.userPhone}>+91 {user?.phone}</Text>
               </View>
             </View>
             <View style={styles.walletCard}>
-              <Text style={styles.walletLabel}>ZipRide Wallet</Text>
+              <Text style={styles.walletLabel}>ZipRides Wallet</Text>
               <Text style={styles.walletAmt}>₹{user?.wallet_balance?.toFixed(0) || "0"}</Text>
             </View>
             <MenuItem
@@ -744,6 +734,7 @@ const styles = StyleSheet.create({
   },
   routeRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   routeText: { flex: 1, fontSize: 14, fontWeight: "600", color: "#111" },
+  routeMeta: { fontSize: 12, fontWeight: "700", color: theme.colors.onSurfaceSecondary, marginTop: 8 },
   routeDivider: { height: 1, backgroundColor: theme.colors.border, marginVertical: 8, marginLeft: 20 },
   serviceRow: { flexDirection: "row", gap: 10, marginBottom: 14 },
   svcCard: {

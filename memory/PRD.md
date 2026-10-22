@@ -1,4 +1,4 @@
-# ZipRide - Product Requirements Document
+# ZipRides - Product Requirements Document
 
 ## Overview
 ZipRide is a two-sided mobility marketplace built as a unified Expo mobile app. It contains both the Customer app (book rides / send packages) and the Captain app (drive & earn) under one binary, selectable by role at login.
@@ -69,3 +69,10 @@ ZipRide is a two-sided mobility marketplace built as a unified Expo mobile app. 
 - Real Razorpay/Stripe payments
 - Real-time WebSocket chat
 - KYC document actual upload / verification workflow
+
+## v1.2 — Google Maps + Ambajogai service area (Jun 2026)
+- Backend: `GET /api/maps/config`, `GET /api/places/search?q=` (local Ambajogai directory + Google Places Autocomplete), `GET /api/places/details/{id}`, `GET /api/places/geocode?q=`, `POST /api/routes/compute` (Google Routes API TWO_WHEELER; fallback straight-line x1.3 @25km/h), `POST /api/captain/location`.
+- `POST /api/rides` now computes distance server-side (route) and stores `duration_min`, `route_polyline`.
+- Village directory: `/app/backend/data/ambajogai_places.json` — 292 places (285 villages, 1 town, 6 landmarks) within 30 km of Ambajogai (18.73312, 76.38616), source GeoNames (CC-BY), haversine-filtered. Beed 232, Latur 44, Dharashiv 8, Parbhani 8. 5 GeoNames "abandoned" (PPLQ) entries excluded.
+- Frontend: `RideMap` (native Google map when `EXPO_PUBLIC_GOOGLE_MAPS_ENABLED=true`, else MockMap; web always MockMap), `PlaceSearchModal` (pickup+drop search, Use my location w/ permission flow, manual address -> geocode or nearest village), captain live location (foreground) + "Navigate in Google Maps".
+- Keys needed to enable: backend `GOOGLE_MAPS_SERVER_KEY`; app.json `android.config.googleMaps.apiKey`, `ios.config.googleMapsApiKey`; then `EXPO_PUBLIC_GOOGLE_MAPS_ENABLED=true` and rebuild.

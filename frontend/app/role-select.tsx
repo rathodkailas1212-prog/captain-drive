@@ -15,8 +15,8 @@ export default function RoleSelect() {
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       <View style={styles.header}>
-        <Text style={styles.brand}>ZipRide</Text>
-        <Text style={styles.title}>How will you use ZipRide?</Text>
+        <Text style={styles.brand}>ZipRides</Text>
+        <Text style={styles.title}>How will you use ZipRides?</Text>
         <Text style={styles.sub}>You can switch roles later by logging out.</Text>
       </View>
 
@@ -70,7 +70,7 @@ export default function RoleSelect() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.foot}>Powered by ZipRide · v1.0</Text>
+      <Text style={styles.foot}>Powered by ZipRides · v1.0</Text>
     </SafeAreaView>
   );
 }

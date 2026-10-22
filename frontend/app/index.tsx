@@ -53,7 +53,7 @@ export default function Splash() {
         </View>
       </Animated.View>
       <Animated.View style={textStyle}>
-        <Text style={styles.brand}>ZipRide</Text>
+        <Text style={styles.brand}>ZipRides</Text>
         <Text style={styles.tag}>Fast. Reliable. Right at your fingertips.</Text>
       </Animated.View>
     </View>

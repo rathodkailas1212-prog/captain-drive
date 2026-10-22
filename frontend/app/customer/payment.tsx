@@ -10,7 +10,7 @@ import { api } from "@/src/api";
 const METHODS = [
   { id: "upi", label: "UPI", sub: "Pay via GPay / PhonePe", icon: "phone-portrait" },
   { id: "cash", label: "Cash", sub: "Pay directly to captain", icon: "cash-outline" },
-  { id: "wallet", label: "ZipRide Wallet", sub: "Use wallet balance", icon: "wallet" },
+  { id: "wallet", label: "ZipRides Wallet", sub: "Use wallet balance", icon: "wallet" },
 ];
 
 export default function Payment() {
@@ -65,7 +65,7 @@ export default function Payment() {
         <View style={styles.check}>
           <Ionicons name="checkmark" size={40} color="#fff" />
         </View>
-        <Text style={styles.heroTitle}>Thanks for riding{"\n"}with ZipRide!</Text>
+        <Text style={styles.heroTitle}>Thanks for riding{"\n"}with ZipRides!</Text>
         <Text style={styles.heroSub}>
           Trip completed · {ride.distance_km} km · {ride.service_type}
         </Text>

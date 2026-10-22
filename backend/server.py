@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
+import json
 import asyncio
 import logging
 import random
@@ -25,7 +26,7 @@ mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ["DB_NAME"]]
 
-app = FastAPI(title="ZipRide API")
+app = FastAPI(title="ZipRides API")
 api = APIRouter(prefix="/api")
 
 # Fixed admin phone (mocked login). Pre-seeded on startup.
@@ -224,7 +225,7 @@ def haversine(lat1, lng1, lat2, lng2):
 # ============================================================================
 @api.get("/")
 async def root():
-    return {"message": "ZipRide API is running", "time": now_iso()}
+    return {"message": "ZipRides API is running", "time": now_iso()}
 
 
 # ============================================================================
@@ -466,9 +467,200 @@ async def fare_config():
     return FARE_CONFIG
 
 
+# ============================================================================
+# MAPS: local village directory + Google Places/Routes (server-side key only)
+# ============================================================================
+GOOGLE_MAPS_SERVER_KEY = os.environ.get("GOOGLE_MAPS_SERVER_KEY", "").strip()
+_PLACES_FILE = ROOT_DIR / "data" / "ambajogai_places.json"
+with open(_PLACES_FILE, encoding="utf-8") as _f:
+    PLACES_DATA = json.load(_f)
+LOCAL_PLACES = PLACES_DATA["places"]
+SERVICE_CENTER = PLACES_DATA["center"]
+_ROUTE_CACHE: dict = {}
+
+
+class LatLngIn(BaseModel):
+    lat: float = Field(ge=-90, le=90)
+    lng: float = Field(ge=-180, le=180)
+
+
+class RouteReq(BaseModel):
+    origin: LatLngIn
+    destination: LatLngIn
+
+
+class CaptainLocation(BaseModel):
+    lat: float = Field(ge=-90, le=90)
+    lng: float = Field(ge=-180, le=180)
+    ride_id: Optional[str] = None
+
+
+async def _google_post(url: str, body: dict, field_mask: str) -> Optional[dict]:
+    """Call a Google Maps web service. Returns None on any failure (caller falls back)."""
+    if not GOOGLE_MAPS_SERVER_KEY:
+        return None
+    headers = {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GOOGLE_MAPS_SERVER_KEY,
+        "X-Goog-FieldMask": field_mask,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            r = await c.post(url, json=body, headers=headers)
+        if r.status_code >= 400:
+            logger.warning("Google Maps %s -> %s", url.split("/")[-1], r.status_code)
+            return None
+        return r.json()
+    except (httpx.TimeoutException, httpx.NetworkError) as e:
+        logger.warning("Google Maps unreachable: %r", e)
+        return None
+
+
+async def compute_route(o_lat: float, o_lng: float, d_lat: float, d_lng: float) -> dict:
+    """Road distance + ETA. Google Routes API when configured, else straight-line estimate."""
+    key = (round(o_lat, 4), round(o_lng, 4), round(d_lat, 4), round(d_lng, 4))
+    if key in _ROUTE_CACHE:
+        return _ROUTE_CACHE[key]
+    data = await _google_post(
+        "https://routes.googleapis.com/directions/v2:computeRoutes",
+        {
+            "origin": {"location": {"latLng": {"latitude": o_lat, "longitude": o_lng}}},
+            "destination": {"location": {"latLng": {"latitude": d_lat, "longitude": d_lng}}},
+            "travelMode": "TWO_WHEELER",
+            "regionCode": "IN",
+        },
+        "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
+    )
+    route = ((data or {}).get("routes") or [None])[0]
+    if route and route.get("distanceMeters"):
+        result = {
+            "distance_km": round(route["distanceMeters"] / 1000, 2),
+            "duration_min": max(1, round(int(str(route.get("duration", "0s")).rstrip("s") or 0) / 60)),
+            "polyline": (route.get("polyline") or {}).get("encodedPolyline"),
+            "source": "google",
+        }
+    else:
+        # Fallback: straight line x 1.3 road factor, 25 km/h avg rural speed
+        km = round(max(0.5, haversine(o_lat, o_lng, d_lat, d_lng) * 1.3), 2)
+        result = {"distance_km": km, "duration_min": max(3, round(km / 25 * 60)), "polyline": None, "source": "estimate"}
+    _ROUTE_CACHE[key] = result
+    return result
+
+
+@api.get("/maps/config")
+async def maps_config():
+    return {
+        "google_enabled": bool(GOOGLE_MAPS_SERVER_KEY),
+        "center": SERVICE_CENTER,
+        "radius_km": PLACES_DATA["radius_km"],
+        "local_places_count": len(LOCAL_PLACES),
+    }
+
+
+@api.get("/places/search")
+async def places_search(q: str = "", session_token: Optional[str] = None, limit: int = 30):
+    """Local Ambajogai directory first, then Google Places Autocomplete suggestions."""
+    term = q.strip().lower()
+    if term:
+        starts = [p for p in LOCAL_PLACES if p["name"].lower().startswith(term) or p["name_local"].startswith(q.strip())]
+        contains = [p for p in LOCAL_PLACES if p not in starts and term in p["name"].lower()]
+        local = starts + contains
+    else:
+        local = LOCAL_PLACES
+    local = local[: max(1, min(limit, 300))]
+
+    google: list = []
+    if term and len(term) >= 2 and GOOGLE_MAPS_SERVER_KEY:
+        body = {
+            "input": q.strip(),
+            "includedRegionCodes": ["in"],
+            "locationBias": {"circle": {
+                "center": {"latitude": SERVICE_CENTER["lat"], "longitude": SERVICE_CENTER["lng"]},
+                "radius": 30000.0,
+            }},
+        }
+        if session_token:
+            body["sessionToken"] = session_token[:100]
+        data = await _google_post(
+            "https://places.googleapis.com/v1/places:autocomplete",
+            body,
+            "suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat",
+        )
+        for s in (data or {}).get("suggestions", [])[:5]:
+            pp = s.get("placePrediction") or {}
+            sf = pp.get("structuredFormat") or {}
+            google.append({
+                "place_id": pp.get("placeId"),
+                "name": (sf.get("mainText") or {}).get("text", ""),
+                "address": (sf.get("secondaryText") or {}).get("text", ""),
+                "source": "google",
+            })
+    return {"local": local, "google": google}
+
+
+@api.get("/places/details/{place_id}")
+async def place_details(place_id: str, session_token: Optional[str] = None):
+    if not GOOGLE_MAPS_SERVER_KEY:
+        raise HTTPException(status_code=503, detail="Google Places not configured")
+    if not re.fullmatch(r"[A-Za-z0-9_\-]{10,300}", place_id):
+        raise HTTPException(status_code=400, detail="Invalid place id")
+    headers = {"X-Goog-Api-Key": GOOGLE_MAPS_SERVER_KEY, "X-Goog-FieldMask": "location,displayName,formattedAddress"}
+    params = {"sessionToken": session_token[:100]} if session_token else {}
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            r = await c.get(f"https://places.googleapis.com/v1/places/{place_id}", headers=headers, params=params)
+    except (httpx.TimeoutException, httpx.NetworkError):
+        raise HTTPException(status_code=503, detail="Places service unavailable")
+    if r.status_code >= 400:
+        raise HTTPException(status_code=502, detail="Places service error")
+    d = r.json()
+    loc = d.get("location") or {}
+    return {
+        "name": (d.get("displayName") or {}).get("text", ""),
+        "address": d.get("formattedAddress", ""),
+        "lat": loc.get("latitude"),
+        "lng": loc.get("longitude"),
+    }
+
+
+@api.get("/places/geocode")
+async def places_geocode(q: str):
+    """Geocode a manually typed address (Google Geocoding). Returns null result if unavailable."""
+    if not GOOGLE_MAPS_SERVER_KEY or len(q.strip()) < 3:
+        return {"result": None}
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            r = await c.get(
+                "https://maps.googleapis.com/maps/api/geocode/json",
+                params={"address": q.strip()[:200], "region": "in", "key": GOOGLE_MAPS_SERVER_KEY,
+                        "bounds": f"{SERVICE_CENTER['lat']-0.3},{SERVICE_CENTER['lng']-0.3}|{SERVICE_CENTER['lat']+0.3},{SERVICE_CENTER['lng']+0.3}"},
+            )
+        res = (r.json().get("results") or [None])[0]
+    except Exception:
+        return {"result": None}
+    if not res:
+        return {"result": None}
+    loc = res["geometry"]["location"]
+    return {"result": {"address": res.get("formatted_address", q), "lat": loc["lat"], "lng": loc["lng"]}}
+
+
+@api.post("/routes/compute")
+async def routes_compute(payload: RouteReq):
+    return await compute_route(payload.origin.lat, payload.origin.lng, payload.destination.lat, payload.destination.lng)
+
+
+@api.post("/captain/location")
+async def captain_location(payload: CaptainLocation, user: dict = Depends(require_captain)):
+    loc = {"captain_lat": payload.lat, "captain_lng": payload.lng, "captain_loc_at": now_iso()}
+    await db.users.update_one({"id": user["id"]}, {"$set": {"last_lat": payload.lat, "last_lng": payload.lng}})
+    if payload.ride_id:
+        await db.rides.update_one({"id": payload.ride_id, "captain_id": user["id"]}, {"$set": loc})
+    return {"success": True}
+
+
 # ---------- CAPTAINS NEARBY ----------
 @api.get("/captains/nearby")
-async def captains_nearby(lat: float = 12.9716, lng: float = 77.5946):
+async def captains_nearby(lat: float = 18.73312, lng: float = 76.38616):
     # Return 6 pseudo-random nearby captains around the given lat/lng
     random.seed(int(lat * 1000) + int(lng * 1000))
     captains = []
@@ -498,8 +690,12 @@ async def create_ride(payload: RideCreate, user: dict = Depends(require_customer
     if payload.distance_km <= 0 or payload.distance_km > 200:
         raise HTTPException(status_code=400, detail="Invalid distance (must be 0-200 km)")
 
-    # Server-side fare computation (SEC-002: ignore client-supplied fare)
-    server_fare = compute_fare(payload.distance_km, payload.service_type)
+    # Server-side distance + fare (SEC-002: ignore client-supplied fare/distance)
+    route = await compute_route(payload.pickup_lat, payload.pickup_lng, payload.drop_lat, payload.drop_lng)
+    distance_km = route["distance_km"]
+    if distance_km > 200:
+        raise HTTPException(status_code=400, detail="Trip too long (max 200 km)")
+    server_fare = compute_fare(distance_km, payload.service_type)
 
     ride_id = str(uuid.uuid4())
     otp = str(random.randint(1000, 9999))
@@ -536,7 +732,9 @@ async def create_ride(payload: RideCreate, user: dict = Depends(require_customer
         "drop_lat": payload.drop_lat,
         "drop_lng": payload.drop_lng,
         "service_type": payload.service_type,
-        "distance_km": payload.distance_km,
+        "distance_km": distance_km,
+        "duration_min": route["duration_min"],
+        "route_polyline": route["polyline"],
         "fare": server_fare,
         "otp": otp,
         "status": "searching",
@@ -793,14 +991,14 @@ async def captain_incoming(user: dict = Depends(require_captain)):
     demo = {
         "id": f"demo-{int(datetime.now(timezone.utc).timestamp())}",
         "demo": True,
-        "pickup_address": "MG Road Metro Station",
-        "pickup_lat": 12.9758,
-        "pickup_lng": 77.6068,
-        "drop_address": "Indiranagar 100ft Road",
-        "drop_lat": 12.9784,
-        "drop_lng": 77.6408,
-        "distance_km": 4.2,
-        "fare": compute_fare(4.2, "ZipBike"),
+        "pickup_address": "Ambajogai Bus Stand, Ambajogai",
+        "pickup_lat": 18.73312,
+        "pickup_lng": 76.38616,
+        "drop_address": "Morewadi, Ambajogai",
+        "drop_lat": 18.72174,
+        "drop_lng": 76.37025,
+        "distance_km": 2.5,
+        "fare": compute_fare(2.5, "ZipBike"),
         "service_type": "ZipBike",
         "customer_name": "Priya S.",
         "customer_rating": 4.7,
@@ -902,7 +1100,7 @@ async def seed_admin() -> None:
         "id": str(uuid.uuid4()),
         "phone": ADMIN_PHONE,
         "role": "admin",
-        "name": "ZipRide Admin",
+        "name": "ZipRides Admin",
         "photo": "",
         "token": "",
         "created_at": now_iso(),

@@ -1,0 +1,45 @@
+{
+  "summary": "Iteration 9 — Google Maps / Ambajogai village directory feature validation. BACKEND: 13/13 new maps+places+routes+captain-location pytest cases PASS, plus full regression 112/112 PASS. FRONTEND (390x844 web preview): customer home shows pickup chip 'Ambajogai' + 4 village quick-dest shortcuts (Morewadi, Sepwadi, Chanoi, Jogaiwadi); 'Set destination' modal opens; typing 'more' lists Morewadi first; selecting it renders route-meta '2.73 km · ~7 min (approx.)' (estimate source) and ZipBike fare ₹104.6 (= 50 + 20*2.73 per admin-override live fare config); confirm-ride-btn visible. Pickup-chip opens 'Set pickup' modal with 'Use my location' row + manual-address flow: typing 'Near school' shows 'Use “Near school”' row, tapping it reveals manual-banner ('Pick the nearest village for “Near school” so we can calculate distance & fare.'); picking any village updates pickup-chip. Captain navigate-btn verified in code at /app/frontend/app/captain/active-ride.tsx:214 (cannot drive to active-ride state on web without an in-flight ride). PRE-EXISTING TEST STALENESS: 3 regression tests in test_security_iter3.py + test_referrals_favorites_tips.py were asserting fares computed from CLIENT-sent distance_km. New feature correctly overrides client distance with /routes/compute output (estimate 1.3x haversine when no Google key). Updated 2 test files to assert against ride['fare'] (server-authoritative) — this is test-script hygiene, NOT a feature bug. SUCCESS: feature works as specified. MOCKED: Google APIs intentionally disabled (no key) → fallback estimate path exercised; places/details returns 503 and places/geocode returns {result:null} as expected. All critical ride-booking flow preserved.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_maps_iter9.py",
+    "/app/backend/tests/test_security_iter3.py",
+    "/app/backend/tests/test_referrals_favorites_tips.py",
+    "/app/test_reports/pytest/iter9_maps.xml",
+    "/app/test_reports/pytest/iter9_all.xml"
+  ],
+  "action_items": [
+    "No main-agent action required for the maps/places feature — all 13 new test cases pass and all 7 UI flows render correctly. If Google key is later added, retest places/details, places/geocode, and routes/compute (source should flip to 'google')."
+  ],
+  "critical_code_review_comments": [
+    "POST /rides correctly ignores client-supplied distance_km and fare — server recomputes distance via compute_route() and fare via compute_fare(server_distance). This closes the SEC-002 distance-abuse hole further.",
+    "/routes/compute returns source='estimate' with distance = max(0.5, haversine*1.3) km and duration = max(3, km/25*60) min. Cache keyed on 4-decimal lat/lng is fine.",
+    "/places/search sort order (startswith → contains → distance tie-break via source ordering) correctly ranks 'Morewadi' first for query 'more'. Empty query returns the full 292 entries pre-sorted by distance_from_ambajogai_km ascending.",
+    "/captain/location correctly enforces require_captain (customer token → 403) and only updates ride row when the authenticated captain owns that ride (captain_id filter in update_one).",
+    "GOOGLE_MAPS_SERVER_KEY is read ONLY server-side (backend/.env). Frontend has EXPO_PUBLIC_GOOGLE_MAPS_ENABLED=false flag and does not embed the key — correct security posture.",
+    "Pre-existing security/referral tests were brittle because they recomputed expected fare from the client-sent distance_km. Now updated to use ride['fare'] from the create response — more resilient to future route-computation changes."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_maps_iter9.py (NEW — 13 cases: maps/config, places/search, places/details, places/geocode, routes/compute, POST /rides server-distance override, captain/location authz)",
+    "/app/backend/tests/test_security_iter3.py (test_server_fare_recomputed_and_client_fare_ignored + test_double_complete_does_not_double_credit now use ride['fare'] as source of truth instead of recomputing from client distance_km)",
+    "/app/backend/tests/test_referrals_favorites_tips.py (_create_and_complete_ride now returns (ride_id, server_fare) tuple; 4 callers updated; test_tip_upi_flow asserts cash deduction against server_fare)"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 new maps/places tests + 99/99 regression = 112/112 total)",
+    "frontend": "100% of specified flows: customer login → home pickup-chip 'Ambajogai' → 4 village quick shortcuts (Morewadi/Sepwadi/Chanoi/Jogaiwadi) → destination modal → 'more' → dest-Morewadi → route-meta '2.73 km · ~7 min (approx.)' → service-bike ₹104.6 → confirm-ride-btn visible. Pickup modal: 'Use my location' row + manual-address 'Use “Near school”' → manual-banner → picked village → chip updated. Captain navigate-btn confirmed at active-ride.tsx:214 (cannot reach state on web)."
+  },
+  "seed_data_creation": "None. Backend used shared preview Mongo (test_database). All test users auto-created via mocked OTP 1234. New backend test uses class-scoped fixtures with per-class unique phones (e.g. 9876500xxx) to avoid xdist token-rotation races.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Google Maps feature is in FALLBACK mode (no GOOGLE_MAPS_SERVER_KEY in backend/.env). All /places/* and /routes/compute endpoints return source='estimate' or 503/null as appropriate. When the key is added later: (a) /maps/config.google_enabled should flip to true, (b) /places/search should populate `.google` array for 2+ char queries, (c) /places/details/{valid_place_id} should return 200 with lat/lng, (d) /places/geocode?q=... should return a non-null result, (e) /routes/compute source should become 'google' with real polyline. The LOCAL Ambajogai directory (292 entries, sorted by distance) remains the primary source regardless. Fare config in preview DB is admin-overridden (ZipBike base=50 per_km=20 min=40; ZipDelivery base=50 per_km=19 min=50) — ALWAYS fetch /api/fare/config before asserting fare amounts, and prefer ride['fare'] from the server response (POST /rides now computes it from route distance, not from client distance_km). Preview URL: https://captain-driver-app.preview.emergentagent.com. OTP always 1234. For xdist safety: use class-scoped login fixtures with unique phones per class, or `-n 0`. pytest.ini defaults to -n 2 --dist loadscope.",
+  "rca_of_issue": "No new bugs found. The three stale pre-existing tests (test_server_fare_recomputed_and_client_fare_ignored, test_double_complete_does_not_double_credit, test_tip_upi_flow) failed because the new feature intentionally changed POST /rides to use the server-computed route distance instead of the client-sent distance_km. The tests were correct for the old contract (client distance → fare) but wrong for the new contract (route distance → fare). Fix applied: assert against ride['fare'] from the create response, which is the server-authoritative value. This also makes those tests resilient to future admin fare-config overrides and route-engine changes."
+}

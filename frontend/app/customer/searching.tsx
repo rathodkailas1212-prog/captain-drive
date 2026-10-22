@@ -59,7 +59,7 @@ export default function Searching() {
         <View style={styles.grabber} />
         <View style={styles.searchBox}>
           <View style={styles.spinDot} />
-          <Text style={styles.searchTitle}>Finding your ZipRide captain…</Text>
+          <Text style={styles.searchTitle}>Finding your ZipRides captain…</Text>
           <Text style={styles.searchSub}>Hang tight — pinging captains near you {".".repeat((tick % 3) + 1)}</Text>
         </View>
         <View style={styles.metaRow}>

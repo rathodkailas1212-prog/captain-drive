@@ -110,25 +110,30 @@ def test_update_profile_captain_kyc(s, captain):
 
 
 # ---------- fare ----------
+def _expected_fare(cfg_entry, distance_km):
+    return round(max(cfg_entry["base"] + cfg_entry["per_km"] * distance_km, cfg_entry["min"]), 2)
+
+
 def test_fare_estimate_zipbike(s):
+    cfg = s.get(f"{API}/fare/config").json()
     r = s.post(f"{API}/fare/estimate", json={"distance_km": 5.0, "service_type": "ZipBike"})
     assert r.status_code == 200
     d = r.json()
-    # base 25 + 8*5 = 65
-    assert d["fare"] == 65.0
+    assert d["fare"] == _expected_fare(cfg["ZipBike"], 5.0)
     assert d["eta_min"] >= 3
 
 
 def test_fare_estimate_zipdelivery(s):
+    cfg = s.get(f"{API}/fare/config").json()
     r = s.post(f"{API}/fare/estimate", json={"distance_km": 3.0, "service_type": "ZipDelivery"})
     assert r.status_code == 200
-    # base 40 + 12*3 = 76
-    assert r.json()["fare"] == 76.0
+    assert r.json()["fare"] == _expected_fare(cfg["ZipDelivery"], 3.0)
 
 
 def test_fare_estimate_min_applied(s):
+    cfg = s.get(f"{API}/fare/config").json()
     r = s.post(f"{API}/fare/estimate", json={"distance_km": 0.1, "service_type": "ZipBike"})
-    assert r.json()["fare"] == 30.0  # min
+    assert r.json()["fare"] == _expected_fare(cfg["ZipBike"], 0.1)
 
 
 # ---------- captains nearby ----------

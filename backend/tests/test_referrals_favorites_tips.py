@@ -229,7 +229,10 @@ def _create_and_complete_ride(sess, customer, captain, fare=60.0):
             headers=captain["headers"],
         )
         assert r.status_code == 200, f"{st}: {r.text}"
-    return ride["id"]
+    # Return both id and server-authoritative fare (iter9: server now recomputes
+    # distance from pickup/drop lat/lng via /routes/compute, so the client-supplied
+    # distance_km / fare are ignored. Downstream assertions must use ride["fare"].)
+    return ride["id"], ride["fare"]
 
 
 def _get_earnings(sess, captain):
@@ -253,7 +256,7 @@ class TestTipOnRating:
     def test_tip_cash_increments_cash_and_earnings(self, s):
         cust = _new_user(s, "customer")
         cap = _new_user(s, "captain")
-        ride_id = _create_and_complete_ride(s, cust, cap, fare=60.0)
+        ride_id = _create_and_complete_ride(s, cust, cap, fare=60.0)[0]
 
         cash_before = _get_cash(s, cap)
         earn_before = _get_earnings(s, cap)["total_earnings"]
@@ -279,7 +282,7 @@ class TestTipOnRating:
     def test_tip_wallet_flow(self, s):
         cust = _new_user(s, "customer")
         cap = _new_user(s, "captain")
-        ride_id = _create_and_complete_ride(s, cust, cap, fare=60.0)
+        ride_id = _create_and_complete_ride(s, cust, cap, fare=60.0)[0]
 
         wallet_before = _get_wallet(s, cust)
         earn_before = _get_earnings(s, cap)["total_earnings"]
@@ -301,7 +304,7 @@ class TestTipOnRating:
     def test_tip_upi_flow(self, s):
         cust = _new_user(s, "customer")
         cap = _new_user(s, "captain")
-        ride_id = _create_and_complete_ride(s, cust, cap, fare=60.0)
+        ride_id, server_fare = _create_and_complete_ride(s, cust, cap, fare=60.0)
 
         cash_before = _get_cash(s, cap)
         earn_before = _get_earnings(s, cap)["total_earnings"]
@@ -316,15 +319,16 @@ class TestTipOnRating:
 
         cash_after = _get_cash(s, cap)
         earn_after = _get_earnings(s, cap)["total_earnings"]
-        # UPI: no cash change from tip; but base rating deducts fare from cash_in_hand
-        # SEC-002: server recomputes fare from distance_km=4.0 ZipBike => 25+8*4 = 57
-        assert cash_after - cash_before == pytest.approx(-57.0, abs=0.01)
+        # UPI: no cash change from tip; base rating deducts fare from cash_in_hand.
+        # SEC-002 + iter9 maps: server recomputes fare from route distance using live
+        # config — use ride["fare"] as the authoritative value.
+        assert cash_after - cash_before == pytest.approx(-server_fare, abs=0.01)
         assert earn_after - earn_before == pytest.approx(10.0, abs=0.01)
 
     def test_rate_without_tip_returns_tip_zero(self, s):
         cust = _new_user(s, "customer")
         cap = _new_user(s, "captain")
-        ride_id = _create_and_complete_ride(s, cust, cap, fare=50.0)
+        ride_id = _create_and_complete_ride(s, cust, cap, fare=50.0)[0]
         r = s.post(
             f"{API}/rides/{ride_id}/rate",
             json={"rating": 3, "payment_method": "upi"},

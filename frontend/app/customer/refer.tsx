@@ -55,7 +55,7 @@ export default function Refer() {
     if (!summary?.referral_code) return;
     try {
       await Share.share({
-        message: `Hey! Try ZipRide — the fastest way to book bikes & send packages in your city. Use my code ${summary.referral_code} on signup and we both get ₹${summary.bonus_per_referral} in wallet credits. 🛵`,
+        message: `Hey! Try ZipRides — the fastest way to book bikes & send packages in your city. Use my code ${summary.referral_code} on signup and we both get ₹${summary.bonus_per_referral} in wallet credits. 🛵`,
       });
     } catch {}
   };
@@ -99,7 +99,7 @@ export default function Refer() {
           </View>
           <Text style={styles.heroTitle}>Give ₹50, Get ₹50</Text>
           <Text style={styles.heroSub}>
-            Invite friends to ZipRide. When they sign up with your code, you both get ₹50 wallet credit.
+            Invite friends to ZipRides. When they sign up with your code, you both get ₹50 wallet credit.
           </Text>
         </View>
 
@@ -155,7 +155,7 @@ export default function Refer() {
         <View style={styles.howBox}>
           <Text style={styles.howTitle}>How it works</Text>
           <Step n={1} text="Share your code with friends" />
-          <Step n={2} text="They sign up on ZipRide and apply your code" />
+          <Step n={2} text="They sign up on ZipRides and apply your code" />
           <Step n={3} text="You both get ₹50 wallet credit instantly" />
         </View>
 

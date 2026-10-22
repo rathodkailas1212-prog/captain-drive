@@ -76,6 +76,27 @@ export const api = {
       { distance_km, service_type },
     ),
 
+  // maps / places
+  mapsConfig: () => request<{ google_enabled: boolean; local_places_count: number }>("/maps/config"),
+  searchPlaces: (q: string, session_token?: string) =>
+    request<{ local: any[]; google: any[] }>(
+      `/places/search?q=${encodeURIComponent(q)}${session_token ? `&session_token=${session_token}` : ""}`,
+    ),
+  placeDetails: (place_id: string, session_token?: string) =>
+    request<{ name: string; address: string; lat: number; lng: number }>(
+      `/places/details/${encodeURIComponent(place_id)}${session_token ? `?session_token=${session_token}` : ""}`,
+    ),
+  geocode: (q: string) =>
+    request<{ result: { address: string; lat: number; lng: number } | null }>(`/places/geocode?q=${encodeURIComponent(q)}`),
+  computeRoute: (o: { lat: number; lng: number }, d: { lat: number; lng: number }) =>
+    request<{ distance_km: number; duration_min: number; polyline: string | null; source: string }>(
+      "/routes/compute",
+      "POST",
+      { origin: o, destination: d },
+    ),
+  captainLocation: (lat: number, lng: number, ride_id?: string) =>
+    request("/captain/location", "POST", { lat, lng, ride_id }),
+
   // captains
   nearbyCaptains: (lat: number, lng: number) =>
     request<{ captains: any[] }>(`/captains/nearby?lat=${lat}&lng=${lng}`),

@@ -39,7 +39,7 @@ export default function AdminDashboard() {
       <View style={styles.header}>
         <View>
           <Text style={styles.pageTitle}>Dashboard</Text>
-          <Text style={styles.pageSub}>Live pulse of the ZipRide network</Text>
+          <Text style={styles.pageSub}>Live pulse of the ZipRides network</Text>
         </View>
         <TouchableOpacity style={styles.refreshBtn} onPress={load} testID="dashboard-refresh">
           <Ionicons name="refresh" size={16} color="#111" />
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
           accent
           colWidth={cols}
         />
-        <Kpi label="Commission Today" value={`₹${(data?.commission_today || 0).toLocaleString("en-IN")}`} hint="ZipRide platform fee" icon="trending-up" colWidth={cols} />
+        <Kpi label="Commission Today" value={`₹${(data?.commission_today || 0).toLocaleString("en-IN")}`} hint="ZipRides platform fee" icon="trending-up" colWidth={cols} />
         <Kpi label="Total Rides Today" value={`${data?.rides_today || 0}`} hint={`${data?.rides_completed_today || 0} completed`} icon="checkmark-circle" colWidth={cols} />
         <Kpi label="Active Captains" value={`${data?.active_captains || 0}`} hint={`${data?.total_captains || 0} total`} icon="motorbike" mci colWidth={cols} />
         <Kpi label="Total Customers" value={`${data?.total_customers || 0}`} hint="Lifetime signups" icon="people" colWidth={cols} />

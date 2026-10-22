@@ -50,7 +50,7 @@ export default function AdminLayout() {
             </View>
             {isDesktop && (
               <View>
-                <Text style={styles.brandName}>ZipRide</Text>
+                <Text style={styles.brandName}>ZipRides</Text>
                 <Text style={styles.brandRole}>Admin Console</Text>
               </View>
             )}

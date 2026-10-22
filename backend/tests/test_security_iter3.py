@@ -69,9 +69,14 @@ def no_id_leak(obj):
 class TestSEC002ServerFare:
     def test_server_fare_recomputed_and_client_fare_ignored(self):
         cust = signup("customer")
-        # Client sends fare=9999 but server should compute base(25)+per_km(8)*5=65
+        # Client sends fare=9999 but server must recompute. iter9: server also
+        # recomputes distance via /routes/compute from pickup/drop lat/lng, so
+        # we assert against compute_fare(ride.distance_km) using the LIVE config.
         ride = create_searching_ride(cust["token"], distance_km=5.0, fare=9999)
-        assert ride["fare"] == 65.0, f"expected 65.0, got {ride['fare']}"
+        cfg = requests.get(f"{API}/fare/config").json()["ZipBike"]
+        expected = round(max(cfg["base"] + cfg["per_km"] * ride["distance_km"], cfg["min"]), 2)
+        assert ride["fare"] == expected, f"expected {expected} for d={ride['distance_km']}, got {ride['fare']}"
+        assert ride["fare"] != 9999, "server did not override client-sent fare"
         no_id_leak(ride)
 
     def test_invalid_distance_too_large(self):
@@ -119,12 +124,14 @@ class TestSEC002Idempotency:
             headers=auth(cap["token"]),
         )
         assert r.status_code == 200
-        # earnings should reflect ONE completion only
+        # earnings should reflect ONE completion only (use ride.fare as the
+        # server-authoritative value — iter9: distance comes from /routes/compute)
         r = requests.get(f"{API}/captain/earnings", headers=auth(cap["token"]))
         assert r.status_code == 200
         earn = r.json()
-        assert earn["total_earnings"] == 65.0, f"total_earnings expected 65.0, got {earn['total_earnings']}"
-        assert earn["cash_in_hand"] == 65.0, f"cash_in_hand expected 65.0, got {earn['cash_in_hand']}"
+        expected = ride["fare"]
+        assert earn["total_earnings"] == expected, f"total_earnings expected {expected}, got {earn['total_earnings']}"
+        assert earn["cash_in_hand"] == expected, f"cash_in_hand expected {expected}, got {earn['cash_in_hand']}"
         # Captain me total_rides should be 1
         me = requests.get(f"{API}/auth/me", headers=auth(cap["token"])).json()["user"]
         assert me["total_rides"] == 1

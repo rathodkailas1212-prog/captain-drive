@@ -16,7 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { theme } from "@/src/theme";
-import { MockMap, MapMarker } from "@/src/components/MockMap";
+import { MapMarker } from "@/src/components/MockMap";
+import { RideMap } from "@/src/components/RideMap";
 import { api } from "@/src/api";
 
 type RideStage = "arriving" | "at_pickup" | "in_ride" | "completed";
@@ -35,14 +36,18 @@ export default function Tracking() {
   const [chatDraft, setChatDraft] = useState("");
 
   useEffect(() => {
-    (async () => {
+    const load = async () => {
       try {
         const res = await api.getRide(rideId!);
         setRide(res.ride);
       } catch (e) {
         console.log(e);
       }
-    })();
+    };
+    load();
+    // Poll for captain's live location while the screen is open
+    const t = setInterval(load, 5000);
+    return () => clearInterval(t);
   }, [rideId]);
 
   // Simulate captain moving
@@ -122,19 +127,25 @@ export default function Tracking() {
   const triggerSOS = async () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
     try {
-      await api.sos(rideId!, 12.9716, 77.5946, "Customer SOS activated");
+      await api.sos(rideId!, ride?.captain_lat ?? ride?.pickup_lat ?? 18.73312, ride?.captain_lng ?? ride?.pickup_lng ?? 76.38616, "Customer SOS activated");
     } catch {}
     setShowSOS(true);
   };
 
   return (
     <View style={styles.container}>
-      <MockMap
+      <RideMap
         style={StyleSheet.absoluteFillObject}
-        markers={markers}
-        showRoute
-        routeFrom={{ x: captainPos.x, y: captainPos.y }}
-        routeTo={stage === "in_ride" ? { x: 0.82, y: 0.15 } : { x: 0.5, y: 0.5 }}
+        pickup={{ lat: ride.pickup_lat, lng: ride.pickup_lng }}
+        drop={{ lat: ride.drop_lat, lng: ride.drop_lng }}
+        captain={ride.captain_lat != null ? { lat: ride.captain_lat, lng: ride.captain_lng } : null}
+        polyline={ride.route_polyline}
+        mock={{
+          markers,
+          showRoute: true,
+          routeFrom: { x: captainPos.x, y: captainPos.y },
+          routeTo: stage === "in_ride" ? { x: 0.82, y: 0.15 } : { x: 0.5, y: 0.5 },
+        }}
       />
 
       <SafeAreaView edges={["top"]} style={{ position: "absolute", top: 0, left: 0, right: 0 }} pointerEvents="box-none">
@@ -270,7 +281,7 @@ export default function Tracking() {
             </View>
             <Text style={styles.sosTitle}>SOS Alert sent</Text>
             <Text style={styles.sosBody}>
-              Your live location and ride details have been shared with ZipRide Safety. Help is on the way.
+              Your live location and ride details have been shared with ZipRides Safety. Help is on the way.
             </Text>
             <TouchableOpacity style={styles.sosBtn} onPress={() => setShowSOS(false)} testID="sos-dismiss">
               <Text style={styles.sosBtnText}>I&apos;m safe now</Text>
