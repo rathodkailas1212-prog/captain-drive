@@ -76,3 +76,8 @@ ZipRide is a two-sided mobility marketplace built as a unified Expo mobile app. 
 - Village directory: `/app/backend/data/ambajogai_places.json` — 292 places (285 villages, 1 town, 6 landmarks) within 30 km of Ambajogai (18.73312, 76.38616), source GeoNames (CC-BY), haversine-filtered. Beed 232, Latur 44, Dharashiv 8, Parbhani 8. 5 GeoNames "abandoned" (PPLQ) entries excluded.
 - Frontend: `RideMap` (native Google map when `EXPO_PUBLIC_GOOGLE_MAPS_ENABLED=true`, else MockMap; web always MockMap), `PlaceSearchModal` (pickup+drop search, Use my location w/ permission flow, manual address -> geocode or nearest village), captain live location (foreground) + "Navigate in Google Maps".
 - Keys needed to enable: backend `GOOGLE_MAPS_SERVER_KEY`; app.json `android.config.googleMaps.apiKey`, `ios.config.googleMapsApiKey`; then `EXPO_PUBLIC_GOOGLE_MAPS_ENABLED=true` and rebuild.
+
+## v1.3 — Directory expansion + service area (Jun 2026)
+- Directory now 478 entries: 440 settlements (395 villages, 44 hamlets, 1 town) merged from GeoNames + OpenStreetMap (Geofabrik extract) + Wikidata; 192 confirmed by 2+ sources. 38 verified landmarks/pickup points (Ambajogai Bus Station [OSM], Yogeshwari Temple, Kholeshwar, Mukundraj Samadhi, Shivleni caves, SRTR Medical College, Rural Hospital, railway stations, dams…), 29 with Marathi names from Wikidata.
+- Marathi village names: only 3 verifiable (no reliable open source has more). NOT transliterated.
+- Service area: backend rejects ride when pickup/drop > 30 km from Ambajogai (400); customer home shows friendly alert and disables Confirm.

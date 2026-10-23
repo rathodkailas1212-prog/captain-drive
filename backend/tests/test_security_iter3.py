@@ -40,11 +40,11 @@ def auth(token: str) -> dict:
 def create_searching_ride(customer_token: str, distance_km=5.0, fare=9999) -> dict:
     payload = {
         "pickup_address": "TEST_pickup",
-        "pickup_lat": 12.97,
-        "pickup_lng": 77.59,
+        "pickup_lat": 18.73312,
+        "pickup_lng": 76.38616,
         "drop_address": "TEST_drop",
-        "drop_lat": 12.98,
-        "drop_lng": 77.60,
+        "drop_lat": 18.72174,
+        "drop_lng": 76.37025,
         "service_type": "ZipBike",
         "distance_km": distance_km,
         "fare": fare,

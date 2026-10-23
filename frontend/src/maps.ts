@@ -14,6 +14,18 @@ export const SERVICE_CENTER: LatLng & { name: string; address: string } = {
   lng: 76.38616,
 };
 
+export const SERVICE_RADIUS_KM = 30;
+
+export function distanceKm(a: LatLng, b: LatLng): number {
+  const r = (d: number) => (d * Math.PI) / 180;
+  const dLat = r(b.lat - a.lat);
+  const dLng = r(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
+export const isInServiceArea = (p: LatLng) => distanceKm(SERVICE_CENTER, p) <= SERVICE_RADIUS_KM;
+
 // Google encoded polyline -> coordinates
 export function decodePolyline(encoded: string): LatLng[] {
   const pts: LatLng[] = [];

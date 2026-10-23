@@ -80,7 +80,7 @@ class TestMapsConfig:
         assert r.status_code == 200
         d = r.json()
         assert d["google_enabled"] is False
-        assert d["local_places_count"] == 292
+        assert d["local_places_count"] == 478
         assert d["radius_km"] == 30
         assert d["center"]["name"] == "Ambajogai"
         assert abs(d["center"]["lat"] - 18.73312) < 1e-4
@@ -99,17 +99,44 @@ class TestPlacesSearch:
         assert d["local"][0]["name"].lower() == "morewadi", \
             f"Expected Morewadi first, got {d['local'][0]['name']}"
 
-    def test_empty_query_lists_by_distance(self, session):
+    def test_empty_query_lists_landmarks_first(self, session):
         r = session.get(f"{API}/places/search", params={"q": ""})
         assert r.status_code == 200
         d = r.json()
         assert d["google"] == []
         assert len(d["local"]) > 0
-        # First entry should be Ambajogai (distance 0)
-        assert d["local"][0]["name"] == "Ambajogai"
-        # list should be ordered non-decreasing by distance_from_ambajogai_km
-        dists = [p["distance_from_ambajogai_km"] for p in d["local"]]
-        assert dists == sorted(dists), "Local places not sorted by distance ascending"
+        # Landmarks (bus stand, temples, hospitals) must come first
+        first = d["local"][0]
+        assert first["type"] == "landmark", f"Expected landmark first, got {first.get('type')}: {first['name']}"
+        # Required fields on each entry
+        for p in d["local"][:20]:
+            for k in ("name", "name_local", "district", "lat", "lng",
+                      "distance_from_ambajogai_km", "type", "sources"):
+                assert k in p, f"missing field {k} in {p.get('name')}"
+            assert isinstance(p["sources"], list)
+            assert p["distance_from_ambajogai_km"] <= 30.0
+        # Landmarks should appear before villages in the ordering
+        types_seq = [p["type"] for p in d["local"][:60]]
+        last_landmark_idx = max((i for i, t in enumerate(types_seq) if t == "landmark"), default=-1)
+        first_village_idx = next((i for i, t in enumerate(types_seq) if t == "village"), -1)
+        if last_landmark_idx >= 0 and first_village_idx >= 0:
+            assert last_landmark_idx < first_village_idx, "landmarks must precede villages"
+
+    def test_marathi_search_yogeshwari(self, session):
+        """Marathi query 'योग' must return Yogeshwari Temple."""
+        r = session.get(f"{API}/places/search", params={"q": "योग"})
+        assert r.status_code == 200
+        d = r.json()
+        names = [p["name"] for p in d["local"]]
+        assert "Yogeshwari Temple" in names, f"Marathi search did not match. Got: {names[:5]}"
+
+    def test_landmarks_include_bus_station_and_temple(self, session):
+        r = session.get(f"{API}/places/search", params={"q": "", "limit": 500})
+        assert r.status_code == 200
+        d = r.json()
+        landmarks = [p["name"] for p in d["local"] if p["type"] == "landmark"]
+        assert "Ambajogai Bus Station" in landmarks
+        assert "Yogeshwari Temple" in landmarks
 
     def test_limit_capped(self, session):
         r = session.get(f"{API}/places/search", params={"q": "", "limit": 5})
@@ -194,6 +221,43 @@ class TestRideServerDistance:
         for bad in (0, -1, 250):
             r = session.post(f"{API}/rides", json={**base, "distance_km": bad}, headers=headers)
             assert r.status_code == 400, f"Expected 400 for distance_km={bad}, got {r.status_code}"
+
+
+# ---------- 5b. Service-area 30 km enforcement ----------
+# Bengaluru MG Road - ~700 km from Ambajogai, well outside radius
+BENGALURU = (12.9758, 77.6068)
+
+
+class TestServiceArea:
+    def _payload(self, p, d):
+        return {
+            "pickup_address": "P", "pickup_lat": p[0], "pickup_lng": p[1],
+            "drop_address": "D", "drop_lat": d[0], "drop_lng": d[1],
+            "service_type": "ZipBike", "distance_km": 5.0, "fare": 100,
+        }
+
+    def test_reject_pickup_outside_30km(self, session, customer_token):
+        headers = {"Authorization": f"Bearer {customer_token}"}
+        r = session.post(f"{API}/rides", json=self._payload(BENGALURU, MOREWADI), headers=headers)
+        assert r.status_code == 400, r.text
+        detail = r.json().get("detail", "").lower()
+        assert "outside the ziprides service area" in detail, detail
+        assert "pickup" in detail
+
+    def test_reject_drop_outside_30km(self, session, customer_token):
+        headers = {"Authorization": f"Bearer {customer_token}"}
+        r = session.post(f"{API}/rides", json=self._payload(AMBAJOGAI, BENGALURU), headers=headers)
+        assert r.status_code == 400
+        detail = r.json().get("detail", "").lower()
+        assert "outside the ziprides service area" in detail
+        assert "drop" in detail
+
+    def test_accept_inside_30km(self, session, customer_token):
+        headers = {"Authorization": f"Bearer {customer_token}"}
+        r = session.post(f"{API}/rides", json=self._payload(AMBAJOGAI, MOREWADI), headers=headers)
+        assert r.status_code == 200, r.text
+        assert r.json()["ride"]["status"] == "searching"
+
 
 
 # ---------- 6. captain/location authz ----------

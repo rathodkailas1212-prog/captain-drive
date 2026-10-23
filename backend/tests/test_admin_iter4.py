@@ -200,14 +200,14 @@ def test_admin_complaints_list_and_resolve(s, admin):
     phone = f"98{uuid.uuid4().int % 100000000:08d}"
     tok, u = _login(sess, phone, "customer")
     ride_payload = {
-        "pickup_address": "MG Road", "pickup_lat": 12.97, "pickup_lng": 77.6,
-        "drop_address": "Indiranagar", "drop_lat": 12.98, "drop_lng": 77.64,
+        "pickup_address": "MG Road", "pickup_lat": 18.73312, "pickup_lng": 76.38616,
+        "drop_address": "Morewadi", "drop_lat": 18.72174, "drop_lng": 76.37025,
         "service_type": "ZipBike", "distance_km": 4.0, "fare": 57.0,
     }
     rr = sess.post(f"{API}/rides", json=ride_payload, headers=_hdr(tok))
     assert rr.status_code == 200, rr.text
     ride_id = rr.json()["ride"]["id"]
-    so = sess.post(f"{API}/rides/{ride_id}/sos", json={"lat": 12.97, "lng": 77.6, "message": "TEST_help_iter4"}, headers=_hdr(tok))
+    so = sess.post(f"{API}/rides/{ride_id}/sos", json={"lat": 18.73312, "lng": 76.38616, "message": "TEST_help_iter4"}, headers=_hdr(tok))
     assert so.status_code == 200
     # admin lists complaints
     r = s.get(f"{API}/admin/complaints", headers=admin["h"])

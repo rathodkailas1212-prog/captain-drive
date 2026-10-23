@@ -5,18 +5,22 @@
   "lng": 76.38616
  },
  "radius_km": 30,
- "source": "GeoNames (geonames.org, CC-BY 4.0) populated places, filtered by haversine distance",
+ "source": "GeoNames (CC-BY 4.0) + OpenStreetMap (ODbL, Geofabrik extract) + Wikidata (CC0). Only places with source coordinates within 30 km (haversine) of Ambajogai.",
  "places": [
   {
    "id": "gn-1278862",
    "name": "Ambajogai",
-   "name_local": "",
+   "name_local": "अंबेजोगाई",
    "district": "Beed",
    "lat": 18.73312,
    "lng": 76.38616,
    "distance_from_ambajogai_km": 0.0,
    "type": "town",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM",
+    "Wikidata"
+   ]
   },
   {
    "id": "gn-10436298",
@@ -27,7 +31,22 @@
    "lng": 76.37025,
    "distance_from_ambajogai_km": 2.1,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683670",
+   "name": "Dagdu Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.75111,
+   "lng": 76.35832,
+   "distance_from_ambajogai_km": 3.55,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436302",
@@ -38,7 +57,9 @@
    "lng": 76.41971,
    "distance_from_ambajogai_km": 3.6,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436299",
@@ -49,7 +70,9 @@
    "lng": 76.35265,
    "distance_from_ambajogai_km": 3.66,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436309",
@@ -60,7 +83,10 @@
    "lng": 76.37574,
    "distance_from_ambajogai_km": 3.94,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435973",
@@ -71,7 +97,9 @@
    "lng": 76.40589,
    "distance_from_ambajogai_km": 4.73,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436297",
@@ -82,7 +110,10 @@
    "lng": 76.33928,
    "distance_from_ambajogai_km": 4.94,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436301",
@@ -93,7 +124,9 @@
    "lng": 76.36276,
    "distance_from_ambajogai_km": 5.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436306",
@@ -104,7 +137,62 @@
    "lng": 76.43436,
    "distance_from_ambajogai_km": 5.11,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683686",
+   "name": "Kalwati Tanda 2",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.77916,
+   "lng": 76.39706,
+   "distance_from_ambajogai_km": 5.25,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683687",
+   "name": "Harankhuri Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.77056,
+   "lng": 76.41868,
+   "distance_from_ambajogai_km": 5.39,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683685",
+   "name": "Gajananwasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.77083,
+   "lng": 76.35194,
+   "distance_from_ambajogai_km": 5.53,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683690",
+   "name": "Pimpla Dhaiguda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73883,
+   "lng": 76.44124,
+   "distance_from_ambajogai_km": 5.83,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436308",
@@ -115,7 +203,9 @@
    "lng": 76.43651,
    "distance_from_ambajogai_km": 5.96,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436303",
@@ -126,7 +216,9 @@
    "lng": 76.44422,
    "distance_from_ambajogai_km": 6.15,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436331",
@@ -137,7 +229,9 @@
    "lng": 76.37624,
    "distance_from_ambajogai_km": 6.41,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436024",
@@ -148,7 +242,10 @@
    "lng": 76.34227,
    "distance_from_ambajogai_km": 7.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435974",
@@ -159,7 +256,23 @@
    "lng": 76.43053,
    "distance_from_ambajogai_km": 7.24,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683550",
+   "name": "Selu Amba",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.66923,
+   "lng": 76.40048,
+   "distance_from_ambajogai_km": 7.26,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436335",
@@ -170,7 +283,9 @@
    "lng": 76.401,
    "distance_from_ambajogai_km": 7.27,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435981",
@@ -181,7 +296,10 @@
    "lng": 76.36934,
    "distance_from_ambajogai_km": 7.3,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436334",
@@ -192,7 +310,10 @@
    "lng": 76.41716,
    "distance_from_ambajogai_km": 7.31,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436330",
@@ -203,7 +324,23 @@
    "lng": 76.36441,
    "distance_from_ambajogai_km": 7.45,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683697",
+   "name": "Multani Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.78625,
+   "lng": 76.43227,
+   "distance_from_ambajogai_km": 7.65,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436403",
@@ -214,7 +351,10 @@
    "lng": 76.44711,
    "distance_from_ambajogai_km": 7.88,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435970",
@@ -225,7 +365,10 @@
    "lng": 76.31378,
    "distance_from_ambajogai_km": 7.9,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436310",
@@ -236,7 +379,23 @@
    "lng": 76.32881,
    "distance_from_ambajogai_km": 8.09,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683793",
+   "name": "Mandva Pathan",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.80809,
+   "lng": 76.39036,
+   "distance_from_ambajogai_km": 8.35,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436329",
@@ -247,7 +406,10 @@
    "lng": 76.34613,
    "distance_from_ambajogai_km": 8.38,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435978",
@@ -258,7 +420,22 @@
    "lng": 76.39022,
    "distance_from_ambajogai_km": 8.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683782",
+   "name": "Khodwasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.80042,
+   "lng": 76.34819,
+   "distance_from_ambajogai_km": 8.48,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435972",
@@ -269,7 +446,10 @@
    "lng": 76.45619,
    "distance_from_ambajogai_km": 8.5,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436300",
@@ -280,7 +460,10 @@
    "lng": 76.31697,
    "distance_from_ambajogai_km": 8.54,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435964",
@@ -291,7 +474,22 @@
    "lng": 76.32195,
    "distance_from_ambajogai_km": 8.7,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683715",
+   "name": "Barad Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.799,
+   "lng": 76.34163,
+   "distance_from_ambajogai_km": 8.7,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436296",
@@ -302,7 +500,23 @@
    "lng": 76.30856,
    "distance_from_ambajogai_km": 8.72,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683691",
+   "name": "Girwali",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.74663,
+   "lng": 76.46796,
+   "distance_from_ambajogai_km": 8.74,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436304",
@@ -313,7 +527,22 @@
    "lng": 76.46864,
    "distance_from_ambajogai_km": 8.82,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683663",
+   "name": "Warpewasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.72195,
+   "lng": 76.30128,
+   "distance_from_ambajogai_km": 9.02,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436028",
@@ -324,7 +553,10 @@
    "lng": 76.34703,
    "distance_from_ambajogai_km": 9.24,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436336",
@@ -335,7 +567,10 @@
    "lng": 76.42456,
    "distance_from_ambajogai_km": 9.26,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435965",
@@ -346,7 +581,9 @@
    "lng": 76.31112,
    "distance_from_ambajogai_km": 9.4,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436333",
@@ -357,7 +594,10 @@
    "lng": 76.4543,
    "distance_from_ambajogai_km": 9.54,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436294",
@@ -368,7 +608,22 @@
    "lng": 76.29313,
    "distance_from_ambajogai_km": 9.85,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683664",
+   "name": "Umri",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.7238,
+   "lng": 76.29297,
+   "distance_from_ambajogai_km": 9.87,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435963",
@@ -379,7 +634,22 @@
    "lng": 76.32029,
    "distance_from_ambajogai_km": 10.21,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683761",
+   "name": "Mangaiwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.80065,
+   "lng": 76.32028,
+   "distance_from_ambajogai_km": 10.22,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436328",
@@ -390,7 +660,22 @@
    "lng": 76.31325,
    "distance_from_ambajogai_km": 10.32,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683646",
+   "name": "Warapgaon",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.6713,
+   "lng": 76.31311,
+   "distance_from_ambajogai_km": 10.32,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436339",
@@ -401,7 +686,10 @@
    "lng": 76.37754,
    "distance_from_ambajogai_km": 10.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435983",
@@ -412,7 +700,9 @@
    "lng": 76.40217,
    "distance_from_ambajogai_km": 10.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436341",
@@ -423,7 +713,23 @@
    "lng": 76.33703,
    "distance_from_ambajogai_km": 10.65,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683692",
+   "name": "Goltawasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.7648,
+   "lng": 76.48226,
+   "distance_from_ambajogai_km": 10.71,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436332",
@@ -434,7 +740,23 @@
    "lng": 76.47612,
    "distance_from_ambajogai_km": 10.77,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683546",
+   "name": "Poos",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73842,
+   "lng": 76.49426,
+   "distance_from_ambajogai_km": 11.4,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435966",
@@ -445,7 +767,10 @@
    "lng": 76.28105,
    "distance_from_ambajogai_km": 11.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436305",
@@ -456,7 +781,9 @@
    "lng": 76.49451,
    "distance_from_ambajogai_km": 11.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436295",
@@ -467,7 +794,10 @@
    "lng": 76.28047,
    "distance_from_ambajogai_km": 11.57,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435962",
@@ -478,7 +808,23 @@
    "lng": 76.29244,
    "distance_from_ambajogai_km": 11.59,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683644",
+   "name": "Kolkanadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.65285,
+   "lng": 76.31528,
+   "distance_from_ambajogai_km": 11.64,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436342",
@@ -489,7 +835,22 @@
    "lng": 76.31521,
    "distance_from_ambajogai_km": 11.65,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688802",
+   "name": "Aswalamba Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83821,
+   "lng": 76.39263,
+   "distance_from_ambajogai_km": 11.7,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435985",
@@ -500,7 +861,9 @@
    "lng": 76.39278,
    "distance_from_ambajogai_km": 11.73,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436337",
@@ -511,7 +874,9 @@
    "lng": 76.45526,
    "distance_from_ambajogai_km": 11.8,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436340",
@@ -522,7 +887,22 @@
    "lng": 76.39182,
    "distance_from_ambajogai_km": 11.9,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683555",
+   "name": "Daithna Radi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.62625,
+   "lng": 76.39174,
+   "distance_from_ambajogai_km": 11.9,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435951",
@@ -533,7 +913,10 @@
    "lng": 76.36697,
    "distance_from_ambajogai_km": 11.94,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435958",
@@ -544,7 +927,10 @@
    "lng": 76.34952,
    "distance_from_ambajogai_km": 11.98,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436402",
@@ -555,7 +941,10 @@
    "lng": 76.42411,
    "distance_from_ambajogai_km": 11.98,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435957",
@@ -566,7 +955,23 @@
    "lng": 76.31087,
    "distance_from_ambajogai_km": 12.33,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683645",
+   "name": "Digholamba",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.6739,
+   "lng": 76.28456,
+   "distance_from_ambajogai_km": 12.56,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435984",
@@ -577,7 +982,9 @@
    "lng": 76.4147,
    "distance_from_ambajogai_km": 12.62,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-1272616",
@@ -588,7 +995,22 @@
    "lng": 76.2841,
    "distance_from_ambajogai_km": 12.64,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683693",
+   "name": "Vasantnagar",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.78727,
+   "lng": 76.49178,
+   "distance_from_ambajogai_km": 12.65,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435975",
@@ -599,7 +1021,9 @@
    "lng": 76.4923,
    "distance_from_ambajogai_km": 12.69,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435979",
@@ -610,7 +1034,10 @@
    "lng": 76.47323,
    "distance_from_ambajogai_km": 12.7,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436338",
@@ -621,7 +1048,10 @@
    "lng": 76.44825,
    "distance_from_ambajogai_km": 12.78,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436344",
@@ -632,7 +1062,9 @@
    "lng": 76.32921,
    "distance_from_ambajogai_km": 13.07,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436351",
@@ -643,7 +1075,23 @@
    "lng": 76.39435,
    "distance_from_ambajogai_km": 13.19,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683694",
+   "name": "Krushnanagar",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79835,
+   "lng": 76.49081,
+   "distance_from_ambajogai_km": 13.19,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435967",
@@ -654,7 +1102,10 @@
    "lng": 76.26261,
    "distance_from_ambajogai_km": 13.32,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436345",
@@ -665,7 +1116,10 @@
    "lng": 76.33428,
    "distance_from_ambajogai_km": 13.41,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435986",
@@ -676,7 +1130,10 @@
    "lng": 76.43349,
    "distance_from_ambajogai_km": 13.49,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436401",
@@ -687,7 +1144,9 @@
    "lng": 76.36607,
    "distance_from_ambajogai_km": 13.58,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435961",
@@ -698,7 +1157,23 @@
    "lng": 76.27167,
    "distance_from_ambajogai_km": 13.62,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683545",
+   "name": "Talni",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73555,
+   "lng": 76.51581,
+   "distance_from_ambajogai_km": 13.65,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436343",
@@ -709,7 +1184,23 @@
    "lng": 76.306,
    "distance_from_ambajogai_km": 13.95,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683534",
+   "name": "Jaihanumantanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.67772,
+   "lng": 76.50523,
+   "distance_from_ambajogai_km": 13.97,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435949",
@@ -720,7 +1211,10 @@
    "lng": 76.33538,
    "distance_from_ambajogai_km": 14.12,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435956",
@@ -731,18 +1225,10 @@
    "lng": 76.28521,
    "distance_from_ambajogai_km": 14.17,
    "type": "village",
-   "source": "GeoNames"
-  },
-  {
-   "id": "lm-4",
-   "name": "Bodhegaon Dam",
-   "name_local": "",
-   "district": "Beed",
-   "lat": 18.85957,
-   "lng": 76.35941,
-   "distance_from_ambajogai_km": 14.34,
-   "type": "landmark",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434168",
@@ -753,7 +1239,10 @@
    "lng": 76.24921,
    "distance_from_ambajogai_km": 14.42,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436311",
@@ -764,7 +1253,23 @@
    "lng": 76.2598,
    "distance_from_ambajogai_km": 14.44,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683535",
+   "name": "Murambi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.70041,
+   "lng": 76.51898,
+   "distance_from_ambajogai_km": 14.45,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436346",
@@ -775,7 +1280,22 @@
    "lng": 76.29002,
    "distance_from_ambajogai_km": 14.49,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688717",
+   "name": "Jambhuldara Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.8323,
+   "lng": 76.47572,
+   "distance_from_ambajogai_km": 14.51,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521863",
@@ -786,7 +1306,10 @@
    "lng": 76.51776,
    "distance_from_ambajogai_km": 14.54,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436352",
@@ -797,7 +1320,23 @@
    "lng": 76.43138,
    "distance_from_ambajogai_km": 14.83,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683544",
+   "name": "Dattpur",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.7412,
+   "lng": 76.52696,
+   "distance_from_ambajogai_km": 14.85,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435992",
@@ -808,7 +1347,10 @@
    "lng": 76.41011,
    "distance_from_ambajogai_km": 14.94,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435952",
@@ -819,7 +1361,9 @@
    "lng": 76.33918,
    "distance_from_ambajogai_km": 15.02,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436359",
@@ -830,7 +1374,10 @@
    "lng": 76.3324,
    "distance_from_ambajogai_km": 15.09,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436348",
@@ -841,7 +1388,23 @@
    "lng": 76.29384,
    "distance_from_ambajogai_km": 15.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683533",
+   "name": "Limbgaon",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.66368,
+   "lng": 76.51296,
+   "distance_from_ambajogai_km": 15.43,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1275077",
@@ -852,7 +1415,36 @@
    "lng": 76.49403,
    "distance_from_ambajogai_km": 15.44,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683540",
+   "name": "Nawabwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.71181,
+   "lng": 76.53129,
+   "distance_from_ambajogai_km": 15.47,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683541",
+   "name": "Hanumantwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.72862,
+   "lng": 76.53332,
+   "distance_from_ambajogai_km": 15.5,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436350",
@@ -863,7 +1455,9 @@
    "lng": 76.26805,
    "distance_from_ambajogai_km": 15.63,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435993",
@@ -874,7 +1468,49 @@
    "lng": 76.40004,
    "distance_from_ambajogai_km": 15.65,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10082447914",
+   "name": "Kanandi Badan",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.64764,
+   "lng": 76.26812,
+   "distance_from_ambajogai_km": 15.65,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683536",
+   "name": "Chothewadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.6951,
+   "lng": 76.52936,
+   "distance_from_ambajogai_km": 15.66,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683557",
+   "name": "Dhanora",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.59394,
+   "lng": 76.36073,
+   "distance_from_ambajogai_km": 15.71,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436353",
@@ -885,7 +1521,10 @@
    "lng": 76.45927,
    "distance_from_ambajogai_km": 15.74,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1272926",
@@ -896,7 +1535,9 @@
    "lng": 76.36097,
    "distance_from_ambajogai_km": 15.77,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435987",
@@ -907,7 +1548,10 @@
    "lng": 76.4955,
    "distance_from_ambajogai_km": 15.87,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435947",
@@ -918,7 +1562,10 @@
    "lng": 76.30543,
    "distance_from_ambajogai_km": 15.89,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435960",
@@ -929,7 +1576,10 @@
    "lng": 76.25008,
    "distance_from_ambajogai_km": 15.9,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435945",
@@ -940,7 +1590,10 @@
    "lng": 76.35527,
    "distance_from_ambajogai_km": 15.93,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434165",
@@ -951,7 +1604,10 @@
    "lng": 76.23683,
    "distance_from_ambajogai_km": 16.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435994",
@@ -962,7 +1618,10 @@
    "lng": 76.37937,
    "distance_from_ambajogai_km": 16.05,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1260762",
@@ -973,7 +1632,23 @@
    "lng": 76.25102,
    "distance_from_ambajogai_km": 16.06,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688805",
+   "name": "Chopan Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.85451,
+   "lng": 76.30188,
+   "distance_from_ambajogai_km": 16.15,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435946",
@@ -984,7 +1659,9 @@
    "lng": 76.31866,
    "distance_from_ambajogai_km": 16.37,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435989",
@@ -995,7 +1672,22 @@
    "lng": 76.44001,
    "distance_from_ambajogai_km": 16.44,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683539",
+   "name": "Gholapwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.71284,
+   "lng": 76.54175,
+   "distance_from_ambajogai_km": 16.54,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521862",
@@ -1006,7 +1698,10 @@
    "lng": 76.54079,
    "distance_from_ambajogai_km": 16.56,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436026",
@@ -1017,7 +1712,10 @@
    "lng": 76.4658,
    "distance_from_ambajogai_km": 16.64,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436358",
@@ -1028,7 +1726,10 @@
    "lng": 76.41954,
    "distance_from_ambajogai_km": 16.68,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434174",
@@ -1039,7 +1740,9 @@
    "lng": 76.22691,
    "distance_from_ambajogai_km": 16.79,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-1279361",
@@ -1050,7 +1753,10 @@
    "lng": 76.23371,
    "distance_from_ambajogai_km": 16.8,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436354",
@@ -1061,7 +1767,36 @@
    "lng": 76.47054,
    "distance_from_ambajogai_km": 16.8,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683637",
+   "name": "Tongewasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.62355,
+   "lng": 76.27608,
+   "distance_from_ambajogai_km": 16.82,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893266",
+   "name": "Khadi Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.837,
+   "lng": 76.26973,
+   "distance_from_ambajogai_km": 16.84,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435955",
@@ -1072,7 +1807,23 @@
    "lng": 76.25563,
    "distance_from_ambajogai_km": 16.86,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688415",
+   "name": "Hemanaik Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79241,
+   "lng": 76.53411,
+   "distance_from_ambajogai_km": 16.91,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435954",
@@ -1083,7 +1834,35 @@
    "lng": 76.25999,
    "distance_from_ambajogai_km": 17.06,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688819",
+   "name": "Nagapur Parli",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.87833,
+   "lng": 76.44025,
+   "distance_from_ambajogai_km": 17.12,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688803",
+   "name": "Kawlyachiwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.88542,
+   "lng": 76.35691,
+   "distance_from_ambajogai_km": 17.21,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435937",
@@ -1094,7 +1873,9 @@
    "lng": 76.35705,
    "distance_from_ambajogai_km": 17.22,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-8541696",
@@ -1105,7 +1886,10 @@
    "lng": 76.24174,
    "distance_from_ambajogai_km": 17.33,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521837",
@@ -1116,7 +1900,10 @@
    "lng": 76.5335,
    "distance_from_ambajogai_km": 17.37,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1262259",
@@ -1127,7 +1914,9 @@
    "lng": 76.44015,
    "distance_from_ambajogai_km": 17.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434161",
@@ -1138,7 +1927,10 @@
    "lng": 76.23198,
    "distance_from_ambajogai_km": 17.42,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435988",
@@ -1149,7 +1941,9 @@
    "lng": 76.48951,
    "distance_from_ambajogai_km": 17.48,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-1278851",
@@ -1160,7 +1954,10 @@
    "lng": 76.54823,
    "distance_from_ambajogai_km": 17.52,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435995",
@@ -1171,7 +1968,23 @@
    "lng": 76.38992,
    "distance_from_ambajogai_km": 17.56,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688440",
+   "name": "Mohdara Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79899,
+   "lng": 76.53776,
+   "distance_from_ambajogai_km": 17.56,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521812",
@@ -1182,7 +1995,35 @@
    "lng": 76.49929,
    "distance_from_ambajogai_km": 17.59,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-245650706",
+   "name": "Ghat Nandura",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.7336,
+   "lng": 76.55535,
+   "distance_from_ambajogai_km": 17.82,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683537",
+   "name": "Salunkwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.69767,
+   "lng": 76.55137,
+   "distance_from_ambajogai_km": 17.84,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435948",
@@ -1193,7 +2034,22 @@
    "lng": 76.26298,
    "distance_from_ambajogai_km": 17.86,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893267",
+   "name": "Parsoba Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.84356,
+   "lng": 76.26287,
+   "distance_from_ambajogai_km": 17.87,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436349",
@@ -1204,7 +2060,10 @@
    "lng": 76.25362,
    "distance_from_ambajogai_km": 17.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435999",
@@ -1215,7 +2074,10 @@
    "lng": 76.45247,
    "distance_from_ambajogai_km": 18.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435997",
@@ -1226,7 +2088,10 @@
    "lng": 76.40524,
    "distance_from_ambajogai_km": 18.27,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435953",
@@ -1237,7 +2102,10 @@
    "lng": 76.24917,
    "distance_from_ambajogai_km": 18.41,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435939",
@@ -1248,7 +2116,10 @@
    "lng": 76.31418,
    "distance_from_ambajogai_km": 18.47,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521813",
@@ -1259,7 +2130,22 @@
    "lng": 76.51064,
    "distance_from_ambajogai_km": 18.48,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893261",
+   "name": "Munna Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.82018,
+   "lng": 76.23634,
+   "distance_from_ambajogai_km": 18.51,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-8442390",
@@ -1270,7 +2156,10 @@
    "lng": 76.33816,
    "distance_from_ambajogai_km": 18.52,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436357",
@@ -1281,7 +2170,36 @@
    "lng": 76.44404,
    "distance_from_ambajogai_km": 18.6,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893262",
+   "name": "Umryachiwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.82419,
+   "lng": 76.23659,
+   "distance_from_ambajogai_km": 18.72,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688807",
+   "name": "Apta Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.86088,
+   "lng": 76.26901,
+   "distance_from_ambajogai_km": 18.81,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435940",
@@ -1292,7 +2210,23 @@
    "lng": 76.30476,
    "distance_from_ambajogai_km": 18.93,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683532",
+   "name": "Chadanwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.68561,
+   "lng": 76.55898,
+   "distance_from_ambajogai_km": 18.95,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521865",
@@ -1303,7 +2237,10 @@
    "lng": 76.55873,
    "distance_from_ambajogai_km": 18.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1256940",
@@ -1314,18 +2251,22 @@
    "lng": 76.20623,
    "distance_from_ambajogai_km": 19.01,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
-   "id": "lm-3",
-   "name": "Ghat Nandur Railway Station",
+   "id": "osm-10068852976",
+   "name": "Tattapur",
    "name_local": "",
    "district": "Beed",
-   "lat": 18.71667,
-   "lng": 76.56667,
-   "distance_from_ambajogai_km": 19.1,
-   "type": "landmark",
-   "source": "GeoNames"
+   "lat": 18.63528,
+   "lng": 76.53531,
+   "distance_from_ambajogai_km": 19.11,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435936",
@@ -1336,7 +2277,22 @@
    "lng": 76.3719,
    "distance_from_ambajogai_km": 19.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688814",
+   "name": "Waghala Parli",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.90465,
+   "lng": 76.37237,
+   "distance_from_ambajogai_km": 19.13,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436360",
@@ -1347,7 +2303,9 @@
    "lng": 76.32881,
    "distance_from_ambajogai_km": 19.2,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436361",
@@ -1358,7 +2316,10 @@
    "lng": 76.29409,
    "distance_from_ambajogai_km": 19.24,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435938",
@@ -1369,7 +2330,10 @@
    "lng": 76.31463,
    "distance_from_ambajogai_km": 19.3,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521866",
@@ -1380,7 +2344,10 @@
    "lng": 76.56275,
    "distance_from_ambajogai_km": 19.34,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521811",
@@ -1391,7 +2358,22 @@
    "lng": 76.51156,
    "distance_from_ambajogai_km": 19.45,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893263",
+   "name": "Umbrechiwadi Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.8363,
+   "lng": 76.23689,
+   "distance_from_ambajogai_km": 19.46,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436355",
@@ -1402,7 +2384,23 @@
    "lng": 76.49153,
    "distance_from_ambajogai_km": 19.47,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688830",
+   "name": "Tadoli Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.90583,
+   "lng": 76.4172,
+   "distance_from_ambajogai_km": 19.48,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436379",
@@ -1413,7 +2411,10 @@
    "lng": 76.36212,
    "distance_from_ambajogai_km": 19.49,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436362",
@@ -1424,7 +2425,10 @@
    "lng": 76.28485,
    "distance_from_ambajogai_km": 19.64,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436370",
@@ -1435,7 +2439,10 @@
    "lng": 76.4355,
    "distance_from_ambajogai_km": 19.66,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436363",
@@ -1446,7 +2453,9 @@
    "lng": 76.27442,
    "distance_from_ambajogai_km": 19.67,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434169",
@@ -1457,18 +2466,36 @@
    "lng": 76.1991,
    "distance_from_ambajogai_km": 19.7,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
-   "id": "lm-1",
-   "name": "Parli Vaijnath Railway Station",
+   "id": "osm-10068852975",
+   "name": "Garsoli",
    "name_local": "",
    "district": "Beed",
-   "lat": 18.85269,
-   "lng": 76.52473,
-   "distance_from_ambajogai_km": 19.74,
-   "type": "landmark",
-   "source": "GeoNames"
+   "lat": 18.61362,
+   "lng": 76.52429,
+   "distance_from_ambajogai_km": 19.71,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683623",
+   "name": "Dhanora",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.5912,
+   "lng": 76.27393,
+   "distance_from_ambajogai_km": 19.72,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521836",
@@ -1479,7 +2506,10 @@
    "lng": 76.55498,
    "distance_from_ambajogai_km": 19.75,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521798",
@@ -1490,18 +2520,24 @@
    "lng": 76.5028,
    "distance_from_ambajogai_km": 19.83,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
-   "id": "lm-2",
-   "name": "Vaijnath Temple, Parli",
-   "name_local": "",
+   "id": "osm-245652255",
+   "name": "Parli",
+   "name_local": "परळी",
    "district": "Beed",
-   "lat": 18.84226,
-   "lng": 76.53508,
+   "lat": 18.84856,
+   "lng": 76.52971,
    "distance_from_ambajogai_km": 19.83,
-   "type": "landmark",
-   "source": "GeoNames"
+   "type": "village",
+   "sources": [
+    "OSM",
+    "Wikidata"
+   ]
   },
   {
    "id": "gn-10435998",
@@ -1512,7 +2548,36 @@
    "lng": 76.47704,
    "distance_from_ambajogai_km": 19.94,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852965",
+   "name": "Dighol Tanda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.56547,
+   "lng": 76.45452,
+   "distance_from_ambajogai_km": 19.98,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683401",
+   "name": "Hatola",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.65532,
+   "lng": 76.55711,
+   "distance_from_ambajogai_km": 19.98,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436027",
@@ -1523,7 +2588,36 @@
    "lng": 76.41529,
    "distance_from_ambajogai_km": 20.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075687943",
+   "name": "Anandwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73509,
+   "lng": 76.57651,
+   "distance_from_ambajogai_km": 20.05,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10069119410",
+   "name": "Sarsa",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.56126,
+   "lng": 76.32828,
+   "distance_from_ambajogai_km": 20.06,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436380",
@@ -1534,7 +2628,9 @@
    "lng": 76.32896,
    "distance_from_ambajogai_km": 20.08,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436003",
@@ -1545,7 +2641,9 @@
    "lng": 76.39382,
    "distance_from_ambajogai_km": 20.09,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-1260290",
@@ -1556,7 +2654,9 @@
    "lng": 76.53163,
    "distance_from_ambajogai_km": 20.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436404",
@@ -1567,7 +2667,10 @@
    "lng": 76.47956,
    "distance_from_ambajogai_km": 20.16,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436373",
@@ -1578,7 +2681,10 @@
    "lng": 76.40531,
    "distance_from_ambajogai_km": 20.17,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521864",
@@ -1589,7 +2695,23 @@
    "lng": 76.57563,
    "distance_from_ambajogai_km": 20.27,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688318",
+   "name": "Indiranagar",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.78021,
+   "lng": 76.57267,
+   "distance_from_ambajogai_km": 20.32,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435943",
@@ -1600,7 +2722,10 @@
    "lng": 76.26801,
    "distance_from_ambajogai_km": 20.37,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436001",
@@ -1611,7 +2736,35 @@
    "lng": 76.45406,
    "distance_from_ambajogai_km": 20.37,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893268",
+   "name": "Kalf wadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.86016,
+   "lng": 76.24661,
+   "distance_from_ambajogai_km": 20.38,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852968",
+   "name": "Dawangaon",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.59046,
+   "lng": 76.50871,
+   "distance_from_ambajogai_km": 20.45,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436381",
@@ -1622,7 +2775,22 @@
    "lng": 76.31366,
    "distance_from_ambajogai_km": 20.46,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893249",
+   "name": "Wagholi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79266,
+   "lng": 76.20224,
+   "distance_from_ambajogai_km": 20.46,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435935",
@@ -1633,7 +2801,23 @@
    "lng": 76.3398,
    "distance_from_ambajogai_km": 20.5,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852964",
+   "name": "Pohregaon L.Tanda.",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.56251,
+   "lng": 76.46,
+   "distance_from_ambajogai_km": 20.5,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436369",
@@ -1644,7 +2828,9 @@
    "lng": 76.45966,
    "distance_from_ambajogai_km": 20.52,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434157",
@@ -1655,7 +2841,9 @@
    "lng": 76.21599,
    "distance_from_ambajogai_km": 20.54,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436365",
@@ -1666,7 +2854,23 @@
    "lng": 76.28939,
    "distance_from_ambajogai_km": 20.6,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893260",
+   "name": "Rui Dharur",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.82947,
+   "lng": 76.2189,
+   "distance_from_ambajogai_km": 20.61,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436356",
@@ -1677,7 +2881,10 @@
    "lng": 76.49554,
    "distance_from_ambajogai_km": 20.63,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434154",
@@ -1688,7 +2895,10 @@
    "lng": 76.22665,
    "distance_from_ambajogai_km": 20.74,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521861",
@@ -1699,7 +2909,10 @@
    "lng": 76.58147,
    "distance_from_ambajogai_km": 20.74,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436364",
@@ -1710,7 +2923,23 @@
    "lng": 76.26125,
    "distance_from_ambajogai_km": 20.81,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10082468158",
+   "name": "Pawar Wasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.76061,
+   "lng": 76.19065,
+   "distance_from_ambajogai_km": 20.81,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436372",
@@ -1721,7 +2950,10 @@
    "lng": 76.44254,
    "distance_from_ambajogai_km": 20.83,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436376",
@@ -1732,7 +2964,22 @@
    "lng": 76.37787,
    "distance_from_ambajogai_km": 20.84,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852960",
+   "name": "Garsoli Tanda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.60574,
+   "lng": 76.53339,
+   "distance_from_ambajogai_km": 21.0,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436400",
@@ -1743,7 +2990,10 @@
    "lng": 76.36337,
    "distance_from_ambajogai_km": 21.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436374",
@@ -1754,7 +3004,36 @@
    "lng": 76.40982,
    "distance_from_ambajogai_km": 21.06,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683531",
+   "name": "Pimpri",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.69124,
+   "lng": 76.58157,
+   "distance_from_ambajogai_km": 21.1,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852977",
+   "name": "Wala",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.63048,
+   "lng": 76.55475,
+   "distance_from_ambajogai_km": 21.11,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436375",
@@ -1765,7 +3044,9 @@
    "lng": 76.40477,
    "distance_from_ambajogai_km": 21.12,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434171",
@@ -1776,7 +3057,10 @@
    "lng": 76.18429,
    "distance_from_ambajogai_km": 21.27,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436366",
@@ -1787,7 +3071,23 @@
    "lng": 76.48934,
    "distance_from_ambajogai_km": 21.42,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683441",
+   "name": "Talegaonghat",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.64549,
+   "lng": 76.56782,
+   "distance_from_ambajogai_km": 21.47,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436004",
@@ -1798,7 +3098,22 @@
    "lng": 76.40819,
    "distance_from_ambajogai_km": 21.53,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852959",
+   "name": "Faradpur",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.59993,
+   "lng": 76.53499,
+   "distance_from_ambajogai_km": 21.57,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435942",
@@ -1809,7 +3124,23 @@
    "lng": 76.27333,
    "distance_from_ambajogai_km": 21.58,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075687993",
+   "name": "Nagdara",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73812,
+   "lng": 76.59142,
+   "distance_from_ambajogai_km": 21.62,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521816",
@@ -1820,7 +3151,10 @@
    "lng": 76.55817,
    "distance_from_ambajogai_km": 21.63,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435640",
@@ -1831,7 +3165,10 @@
    "lng": 76.32319,
    "distance_from_ambajogai_km": 21.75,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436000",
@@ -1842,7 +3179,48 @@
    "lng": 76.46726,
    "distance_from_ambajogai_km": 21.78,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688274",
+   "name": "Satisavitri Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.78708,
+   "lng": 76.58533,
+   "distance_from_ambajogai_km": 21.81,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893269",
+   "name": "Pachi Pimpal Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.86119,
+   "lng": 76.2281,
+   "distance_from_ambajogai_km": 21.9,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683530",
+   "name": "Wakdi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.70782,
+   "lng": 76.59302,
+   "distance_from_ambajogai_km": 21.97,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521797",
@@ -1853,7 +3231,10 @@
    "lng": 76.52321,
    "distance_from_ambajogai_km": 21.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436005",
@@ -1864,7 +3245,10 @@
    "lng": 76.40574,
    "distance_from_ambajogai_km": 22.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1260493",
@@ -1875,7 +3259,10 @@
    "lng": 76.45784,
    "distance_from_ambajogai_km": 22.08,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436006",
@@ -1886,7 +3273,10 @@
    "lng": 76.4317,
    "distance_from_ambajogai_km": 22.08,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436378",
@@ -1897,7 +3287,9 @@
    "lng": 76.3607,
    "distance_from_ambajogai_km": 22.19,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436382",
@@ -1908,7 +3300,10 @@
    "lng": 76.27013,
    "distance_from_ambajogai_km": 22.19,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434166",
@@ -1919,7 +3314,10 @@
    "lng": 76.17683,
    "distance_from_ambajogai_km": 22.2,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521834",
@@ -1930,7 +3328,10 @@
    "lng": 76.57852,
    "distance_from_ambajogai_km": 22.2,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521795",
@@ -1941,7 +3342,10 @@
    "lng": 76.51818,
    "distance_from_ambajogai_km": 22.27,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436377",
@@ -1952,7 +3356,23 @@
    "lng": 76.38568,
    "distance_from_ambajogai_km": 22.4,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075687917",
+   "name": "Ladzari",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.72635,
+   "lng": 76.59983,
+   "distance_from_ambajogai_km": 22.51,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434162",
@@ -1963,7 +3383,10 @@
    "lng": 76.18321,
    "distance_from_ambajogai_km": 22.52,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436395",
@@ -1974,7 +3397,9 @@
    "lng": 76.42926,
    "distance_from_ambajogai_km": 22.59,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434164",
@@ -1985,7 +3410,10 @@
    "lng": 76.17522,
    "distance_from_ambajogai_km": 22.63,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521794",
@@ -1996,7 +3424,23 @@
    "lng": 76.50827,
    "distance_from_ambajogai_km": 22.77,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893250",
+   "name": "Pangri",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.80033,
+   "lng": 76.18169,
+   "distance_from_ambajogai_km": 22.79,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435639",
@@ -2007,18 +3451,10 @@
    "lng": 76.28948,
    "distance_from_ambajogai_km": 22.82,
    "type": "village",
-   "source": "GeoNames"
-  },
-  {
-   "id": "lm-5",
-   "name": "Murti Railway Station",
-   "name_local": "",
-   "district": "Beed",
-   "lat": 18.7,
-   "lng": 76.6,
-   "distance_from_ambajogai_km": 22.82,
-   "type": "landmark",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436371",
@@ -2029,7 +3465,36 @@
    "lng": 76.45998,
    "distance_from_ambajogai_km": 22.83,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852958",
+   "name": "Sewanagar",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.60005,
+   "lng": 76.55126,
+   "distance_from_ambajogai_km": 22.84,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852961",
+   "name": "Vanjarwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.57773,
+   "lng": 76.5295,
+   "distance_from_ambajogai_km": 22.95,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521840",
@@ -2040,7 +3505,35 @@
    "lng": 76.59334,
    "distance_from_ambajogai_km": 22.97,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893259",
+   "name": "Anjandhav",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83555,
+   "lng": 76.19581,
+   "distance_from_ambajogai_km": 23.05,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893270",
+   "name": "Singanwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.87647,
+   "lng": 76.22718,
+   "distance_from_ambajogai_km": 23.11,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434146",
@@ -2051,7 +3544,23 @@
    "lng": 76.24713,
    "distance_from_ambajogai_km": 23.16,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893284",
+   "name": "Mohkhed",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.89034,
+   "lng": 76.24107,
+   "distance_from_ambajogai_km": 23.21,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435635",
@@ -2062,7 +3571,36 @@
    "lng": 76.36704,
    "distance_from_ambajogai_km": 23.28,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10082468159",
+   "name": "Undri",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.76567,
+   "lng": 76.16745,
+   "distance_from_ambajogai_km": 23.31,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688829",
+   "name": "Belamba Vasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.90731,
+   "lng": 76.51028,
+   "distance_from_ambajogai_km": 23.36,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436385",
@@ -2073,7 +3611,10 @@
    "lng": 76.30242,
    "distance_from_ambajogai_km": 23.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434145",
@@ -2084,7 +3625,23 @@
    "lng": 76.23893,
    "distance_from_ambajogai_km": 23.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893281",
+   "name": "Nimla",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.92445,
+   "lng": 76.29091,
+   "distance_from_ambajogai_km": 23.52,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435638",
@@ -2095,7 +3652,9 @@
    "lng": 76.29077,
    "distance_from_ambajogai_km": 23.53,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436025",
@@ -2106,7 +3665,10 @@
    "lng": 76.49131,
    "distance_from_ambajogai_km": 23.54,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521796",
@@ -2117,7 +3679,9 @@
    "lng": 76.54275,
    "distance_from_ambajogai_km": 23.61,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436007",
@@ -2128,7 +3692,23 @@
    "lng": 76.45475,
    "distance_from_ambajogai_km": 23.78,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075688835",
+   "name": "Takli Deshmukh",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.93493,
+   "lng": 76.46241,
+   "distance_from_ambajogai_km": 23.83,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436014",
@@ -2139,7 +3719,9 @@
    "lng": 76.42585,
    "distance_from_ambajogai_km": 23.84,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436008",
@@ -2150,7 +3732,9 @@
    "lng": 76.46273,
    "distance_from_ambajogai_km": 23.88,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434156",
@@ -2161,7 +3745,10 @@
    "lng": 76.17988,
    "distance_from_ambajogai_km": 23.89,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435633",
@@ -2172,7 +3759,36 @@
    "lng": 76.32645,
    "distance_from_ambajogai_km": 23.89,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852980",
+   "name": "Phawadi Wadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.66295,
+   "lng": 76.60054,
+   "distance_from_ambajogai_km": 23.89,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683529",
+   "name": "Murti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.70516,
+   "lng": 76.61105,
+   "distance_from_ambajogai_km": 23.89,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436368",
@@ -2183,7 +3799,35 @@
    "lng": 76.49801,
    "distance_from_ambajogai_km": 23.9,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852942",
+   "name": "Shera",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.54582,
+   "lng": 76.49781,
+   "distance_from_ambajogai_km": 23.92,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852943",
+   "name": "Kumbhari",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.555,
+   "lng": 76.514,
+   "distance_from_ambajogai_km": 23.95,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434170",
@@ -2194,7 +3838,23 @@
    "lng": 76.15846,
    "distance_from_ambajogai_km": 23.98,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893258",
+   "name": "Balsingh Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83636,
+   "lng": 76.1858,
+   "distance_from_ambajogai_km": 24.01,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434153",
@@ -2205,7 +3865,36 @@
    "lng": 76.18895,
    "distance_from_ambajogai_km": 24.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893271",
+   "name": "Repewadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.86267,
+   "lng": 76.20335,
+   "distance_from_ambajogai_km": 24.04,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683528",
+   "name": "Patti Wadgaon",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.68649,
+   "lng": 76.60921,
+   "distance_from_ambajogai_km": 24.06,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436383",
@@ -2216,7 +3905,10 @@
    "lng": 76.27614,
    "distance_from_ambajogai_km": 24.09,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521817",
@@ -2227,7 +3919,23 @@
    "lng": 76.5858,
    "distance_from_ambajogai_km": 24.11,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10098058511",
+   "name": "Wakdi Estal",
+   "name_local": "",
+   "district": "Dharashiv",
+   "lat": 18.57316,
+   "lng": 76.23019,
+   "distance_from_ambajogai_km": 24.22,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436393",
@@ -2238,7 +3946,10 @@
    "lng": 76.42138,
    "distance_from_ambajogai_km": 24.26,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521793",
@@ -2249,7 +3960,10 @@
    "lng": 76.52707,
    "distance_from_ambajogai_km": 24.28,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434147",
@@ -2260,7 +3974,22 @@
    "lng": 76.23016,
    "distance_from_ambajogai_km": 24.3,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-3286415219",
+   "name": "Rui",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.51846,
+   "lng": 76.42988,
+   "distance_from_ambajogai_km": 24.31,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521818",
@@ -2271,7 +4000,10 @@
    "lng": 76.58307,
    "distance_from_ambajogai_km": 24.34,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436394",
@@ -2282,7 +4014,9 @@
    "lng": 76.43001,
    "distance_from_ambajogai_km": 24.35,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436015",
@@ -2293,7 +4027,10 @@
    "lng": 76.38727,
    "distance_from_ambajogai_km": 24.46,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434158",
@@ -2304,7 +4041,10 @@
    "lng": 76.17385,
    "distance_from_ambajogai_km": 24.51,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436396",
@@ -2315,7 +4055,22 @@
    "lng": 76.3583,
    "distance_from_ambajogai_km": 24.51,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10069119406",
+   "name": "Wanjerkheda L.T.",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.51392,
+   "lng": 76.35743,
+   "distance_from_ambajogai_km": 24.56,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521858",
@@ -2326,7 +4081,22 @@
    "lng": 76.61881,
    "distance_from_ambajogai_km": 24.61,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893256",
+   "name": "Hasnabad",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.82597,
+   "lng": 76.17335,
+   "distance_from_ambajogai_km": 24.67,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436387",
@@ -2337,7 +4107,23 @@
    "lng": 76.33262,
    "distance_from_ambajogai_km": 24.69,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852945",
+   "name": "Bitargaon Tanda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.56518,
+   "lng": 76.54091,
+   "distance_from_ambajogai_km": 24.79,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521833",
@@ -2348,7 +4134,35 @@
    "lng": 76.59795,
    "distance_from_ambajogai_km": 24.8,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688553",
+   "name": "Mandva Parli",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83131,
+   "lng": 76.59866,
+   "distance_from_ambajogai_km": 24.89,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893285",
+   "name": "Wharkarwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.89788,
+   "lng": 76.22529,
+   "distance_from_ambajogai_km": 24.95,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521810",
@@ -2359,7 +4173,9 @@
    "lng": 76.57083,
    "distance_from_ambajogai_km": 24.96,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434152",
@@ -2370,7 +4186,9 @@
    "lng": 76.17795,
    "distance_from_ambajogai_km": 24.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434149",
@@ -2381,7 +4199,10 @@
    "lng": 76.21359,
    "distance_from_ambajogai_km": 25.0,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436390",
@@ -2392,7 +4213,10 @@
    "lng": 76.46659,
    "distance_from_ambajogai_km": 25.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436392",
@@ -2403,7 +4227,10 @@
    "lng": 76.42312,
    "distance_from_ambajogai_km": 25.09,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435632",
@@ -2414,7 +4241,10 @@
    "lng": 76.3018,
    "distance_from_ambajogai_km": 25.11,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436384",
@@ -2425,7 +4255,10 @@
    "lng": 76.26163,
    "distance_from_ambajogai_km": 25.12,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434160",
@@ -2436,7 +4269,10 @@
    "lng": 76.15905,
    "distance_from_ambajogai_km": 25.15,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521857",
@@ -2447,7 +4283,23 @@
    "lng": 76.6209,
    "distance_from_ambajogai_km": 25.16,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852944",
+   "name": "Bawachi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.55553,
+   "lng": 76.5345,
+   "distance_from_ambajogai_km": 25.18,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435634",
@@ -2458,7 +4310,10 @@
    "lng": 76.33454,
    "distance_from_ambajogai_km": 25.3,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435637",
@@ -2469,7 +4324,23 @@
    "lng": 76.26289,
    "distance_from_ambajogai_km": 25.38,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893257",
+   "name": "Aswala",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83457,
+   "lng": 76.17019,
+   "distance_from_ambajogai_km": 25.38,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436010",
@@ -2480,7 +4351,23 @@
    "lng": 76.48621,
    "distance_from_ambajogai_km": 25.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893280",
+   "name": "Surnarwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.88786,
+   "lng": 76.20865,
+   "distance_from_ambajogai_km": 25.4,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434148",
@@ -2491,7 +4378,35 @@
    "lng": 76.21565,
    "distance_from_ambajogai_km": 25.42,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10098058515",
+   "name": "Saudana Amba",
+   "name_local": "",
+   "district": "Dharashiv",
+   "lat": 18.57112,
+   "lng": 76.21578,
+   "distance_from_ambajogai_km": 25.43,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081922679",
+   "name": "Chinchpur",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.76194,
+   "lng": 76.14644,
+   "distance_from_ambajogai_km": 25.44,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436391",
@@ -2502,7 +4417,10 @@
    "lng": 76.45258,
    "distance_from_ambajogai_km": 25.46,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435636",
@@ -2513,7 +4431,10 @@
    "lng": 76.26037,
    "distance_from_ambajogai_km": 25.53,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436013",
@@ -2524,7 +4445,10 @@
    "lng": 76.43409,
    "distance_from_ambajogai_km": 25.57,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1269219",
@@ -2535,7 +4459,22 @@
    "lng": 76.39281,
    "distance_from_ambajogai_km": 25.65,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10069119396",
+   "name": "Jawala Bk",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.50214,
+   "lng": 76.39202,
+   "distance_from_ambajogai_km": 25.69,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1267608",
@@ -2546,7 +4485,10 @@
    "lng": 76.39551,
    "distance_from_ambajogai_km": 25.88,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434163",
@@ -2557,7 +4499,48 @@
    "lng": 76.14692,
    "distance_from_ambajogai_km": 25.89,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852938",
+   "name": "Niwada",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.53449,
+   "lng": 76.51524,
+   "distance_from_ambajogai_km": 25.94,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893251",
+   "name": "Awargaon",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.81473,
+   "lng": 76.15513,
+   "distance_from_ambajogai_km": 25.96,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683527",
+   "name": "Bhawanwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.68658,
+   "lng": 76.62807,
+   "distance_from_ambajogai_km": 26.0,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435631",
@@ -2568,7 +4551,10 @@
    "lng": 76.30909,
    "distance_from_ambajogai_km": 26.02,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521856",
@@ -2579,7 +4565,9 @@
    "lng": 76.63078,
    "distance_from_ambajogai_km": 26.07,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434172",
@@ -2590,7 +4578,10 @@
    "lng": 76.1387,
    "distance_from_ambajogai_km": 26.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436389",
@@ -2601,7 +4592,10 @@
    "lng": 76.48513,
    "distance_from_ambajogai_km": 26.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521791",
@@ -2612,7 +4606,10 @@
    "lng": 76.56474,
    "distance_from_ambajogai_km": 26.14,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434140",
@@ -2623,7 +4620,22 @@
    "lng": 76.23415,
    "distance_from_ambajogai_km": 26.17,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893252",
+   "name": "Tandalwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79705,
+   "lng": 76.14643,
+   "distance_from_ambajogai_km": 26.22,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436388",
@@ -2634,7 +4646,23 @@
    "lng": 76.28487,
    "distance_from_ambajogai_km": 26.28,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893288",
+   "name": "Kacharwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.92768,
+   "lng": 76.24396,
+   "distance_from_ambajogai_km": 26.31,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-8442386",
@@ -2645,7 +4673,23 @@
    "lng": 76.63638,
    "distance_from_ambajogai_km": 26.35,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852946",
+   "name": "Sumthana",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.55719,
+   "lng": 76.55368,
+   "distance_from_ambajogai_km": 26.35,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436011",
@@ -2656,7 +4700,10 @@
    "lng": 76.47455,
    "distance_from_ambajogai_km": 26.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521819",
@@ -2667,7 +4714,10 @@
    "lng": 76.60402,
    "distance_from_ambajogai_km": 26.39,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434167",
@@ -2678,7 +4728,10 @@
    "lng": 76.13549,
    "distance_from_ambajogai_km": 26.5,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435627",
@@ -2689,7 +4742,23 @@
    "lng": 76.35177,
    "distance_from_ambajogai_km": 26.5,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852982",
+   "name": "Ramwadi Pangaon",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.63348,
+   "lng": 76.61478,
+   "distance_from_ambajogai_km": 26.51,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436016",
@@ -2700,7 +4769,36 @@
    "lng": 76.41359,
    "distance_from_ambajogai_km": 26.52,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852981",
+   "name": "Musalewadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.66485,
+   "lng": 76.62809,
+   "distance_from_ambajogai_km": 26.59,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-9247613893",
+   "name": "Takalgaon",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.56843,
+   "lng": 76.56972,
+   "distance_from_ambajogai_km": 26.63,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434150",
@@ -2711,7 +4809,10 @@
    "lng": 76.18123,
    "distance_from_ambajogai_km": 26.66,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434175",
@@ -2722,7 +4823,10 @@
    "lng": 76.13291,
    "distance_from_ambajogai_km": 26.67,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521820",
@@ -2733,7 +4837,23 @@
    "lng": 76.61534,
    "distance_from_ambajogai_km": 26.82,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852978",
+   "name": "Kamkheda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.5926,
+   "lng": 76.59323,
+   "distance_from_ambajogai_km": 26.83,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435628",
@@ -2744,7 +4864,10 @@
    "lng": 76.32602,
    "distance_from_ambajogai_km": 27.02,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436012",
@@ -2755,7 +4878,9 @@
    "lng": 76.47805,
    "distance_from_ambajogai_km": 27.04,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10434159",
@@ -2766,7 +4891,9 @@
    "lng": 76.14619,
    "distance_from_ambajogai_km": 27.06,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10435630",
@@ -2777,7 +4904,23 @@
    "lng": 76.28284,
    "distance_from_ambajogai_km": 27.08,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10098058513",
+   "name": "Gairan wasti",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.58189,
+   "lng": 76.18462,
+   "distance_from_ambajogai_km": 27.09,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436398",
@@ -2788,7 +4931,10 @@
    "lng": 76.29489,
    "distance_from_ambajogai_km": 27.11,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-1256049",
@@ -2799,7 +4945,10 @@
    "lng": 76.37957,
    "distance_from_ambajogai_km": 27.17,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436397",
@@ -2810,7 +4959,10 @@
    "lng": 76.2812,
    "distance_from_ambajogai_km": 27.17,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521809",
@@ -2821,7 +4973,10 @@
    "lng": 76.60086,
    "distance_from_ambajogai_km": 27.17,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436017",
@@ -2832,7 +4987,22 @@
    "lng": 76.41306,
    "distance_from_ambajogai_km": 27.2,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10069119399",
+   "name": "Pimpri Amba",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.49109,
+   "lng": 76.34584,
+   "distance_from_ambajogai_km": 27.25,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434173",
@@ -2843,7 +5013,23 @@
    "lng": 76.16186,
    "distance_from_ambajogai_km": 27.28,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683526",
+   "name": "Kusalwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.70457,
+   "lng": 76.64343,
+   "distance_from_ambajogai_km": 27.28,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521808",
@@ -2854,7 +5040,36 @@
    "lng": 76.60592,
    "distance_from_ambajogai_km": 27.29,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893272",
+   "name": "Chamdar Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.85048,
+   "lng": 76.15785,
+   "distance_from_ambajogai_km": 27.35,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893299",
+   "name": "Kandewadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.94318,
+   "lng": 76.24843,
+   "distance_from_ambajogai_km": 27.49,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434142",
@@ -2865,7 +5080,35 @@
    "lng": 76.1924,
    "distance_from_ambajogai_km": 27.58,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852979",
+   "name": "Bhandarwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.59916,
+   "lng": 76.607,
+   "distance_from_ambajogai_km": 27.62,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852937",
+   "name": "Kolgaon",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.52704,
+   "lng": 76.53286,
+   "distance_from_ambajogai_km": 27.64,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436020",
@@ -2876,7 +5119,10 @@
    "lng": 76.4458,
    "distance_from_ambajogai_km": 27.66,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521763",
@@ -2887,7 +5133,10 @@
    "lng": 76.52602,
    "distance_from_ambajogai_km": 27.66,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435629",
@@ -2898,7 +5147,10 @@
    "lng": 76.26337,
    "distance_from_ambajogai_km": 27.75,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435626",
@@ -2909,7 +5161,9 @@
    "lng": 76.34624,
    "distance_from_ambajogai_km": 27.76,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10436399",
@@ -2920,7 +5174,62 @@
    "lng": 76.2726,
    "distance_from_ambajogai_km": 27.77,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075536421",
+   "name": "Ukhali Tanda",
+   "name_local": "",
+   "district": "Parbhani",
+   "lat": 18.89551,
+   "lng": 76.58762,
+   "distance_from_ambajogai_km": 27.85,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683505",
+   "name": "Kusalwadi Tanda No 1",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.71148,
+   "lng": 76.65012,
+   "distance_from_ambajogai_km": 27.9,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075687863",
+   "name": "Khapartone",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73108,
+   "lng": 76.65165,
+   "distance_from_ambajogai_km": 27.96,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10069119397",
+   "name": "Dhoki",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.48165,
+   "lng": 76.37862,
+   "distance_from_ambajogai_km": 27.97,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1260504",
@@ -2931,7 +5240,23 @@
    "lng": 76.62807,
    "distance_from_ambajogai_km": 27.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852934",
+   "name": "Samsapur Tanda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.539,
+   "lng": 76.55567,
+   "distance_from_ambajogai_km": 28.02,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1269223",
@@ -2942,7 +5267,9 @@
    "lng": 76.37819,
    "distance_from_ambajogai_km": 28.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10521841",
@@ -2953,7 +5280,22 @@
    "lng": 76.64215,
    "distance_from_ambajogai_km": 28.03,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10068852936",
+   "name": "Kolgaon Tanda",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.53142,
+   "lng": 76.54606,
+   "distance_from_ambajogai_km": 28.05,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1261385",
@@ -2964,7 +5306,9 @@
    "lng": 76.28333,
    "distance_from_ambajogai_km": 28.1,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10521790",
@@ -2975,7 +5319,10 @@
    "lng": 76.58062,
    "distance_from_ambajogai_km": 28.13,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521792",
@@ -2986,7 +5333,23 @@
    "lng": 76.59736,
    "distance_from_ambajogai_km": 28.18,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893255",
+   "name": "Lamantanda Gopalpur",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.83589,
+   "lng": 76.14128,
+   "distance_from_ambajogai_km": 28.2,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435625",
@@ -2997,7 +5360,35 @@
    "lng": 76.35001,
    "distance_from_ambajogai_km": 28.23,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-9247613898",
+   "name": "Babhalgaon",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.68447,
+   "lng": 76.65009,
+   "distance_from_ambajogai_km": 28.32,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852933",
+   "name": "Sangvi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.49731,
+   "lng": 76.48934,
+   "distance_from_ambajogai_km": 28.39,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434095",
@@ -3008,18 +5399,23 @@
    "lng": 76.11726,
    "distance_from_ambajogai_km": 28.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
-   "id": "lm-6",
-   "name": "Pangaon Railway Station",
+   "id": "osm-10069119394",
+   "name": "Takali B",
    "name_local": "",
    "district": "Latur",
-   "lat": 18.63429,
-   "lng": 76.63532,
-   "distance_from_ambajogai_km": 28.45,
-   "type": "landmark",
-   "source": "GeoNames"
+   "lat": 18.48863,
+   "lng": 76.46894,
+   "distance_from_ambajogai_km": 28.55,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434139",
@@ -3030,7 +5426,9 @@
    "lng": 76.21135,
    "distance_from_ambajogai_km": 28.68,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
   },
   {
    "id": "gn-10521764",
@@ -3041,7 +5439,87 @@
    "lng": 76.54708,
    "distance_from_ambajogai_km": 28.7,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688826",
+   "name": "Selu Parli",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.9417,
+   "lng": 76.54734,
+   "distance_from_ambajogai_km": 28.73,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852947",
+   "name": "Kalewadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.55159,
+   "lng": 76.58109,
+   "distance_from_ambajogai_km": 28.8,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683481",
+   "name": "Somanwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.66875,
+   "lng": 76.65164,
+   "distance_from_ambajogai_km": 28.86,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893278",
+   "name": "Pimparwada",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.87547,
+   "lng": 76.15693,
+   "distance_from_ambajogai_km": 28.86,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852956",
+   "name": "Chukarwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.59034,
+   "lng": 76.6152,
+   "distance_from_ambajogai_km": 28.88,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10069119398",
+   "name": "Yelli",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.47392,
+   "lng": 76.36833,
+   "distance_from_ambajogai_km": 28.88,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521807",
@@ -3052,7 +5530,10 @@
    "lng": 76.62418,
    "distance_from_ambajogai_km": 28.91,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521800",
@@ -3063,7 +5544,23 @@
    "lng": 76.6155,
    "distance_from_ambajogai_km": 28.97,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893300",
+   "name": "Kasari",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.94226,
+   "lng": 76.22041,
+   "distance_from_ambajogai_km": 29.07,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435624",
@@ -3074,7 +5571,35 @@
    "lng": 76.3501,
    "distance_from_ambajogai_km": 29.1,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075536422",
+   "name": "Ukkadgaon Makta",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.90823,
+   "lng": 76.59216,
+   "distance_from_ambajogai_km": 29.14,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852955",
+   "name": "Patharwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.59873,
+   "lng": 76.62441,
+   "distance_from_ambajogai_km": 29.21,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434151",
@@ -3085,7 +5610,36 @@
    "lng": 76.14025,
    "distance_from_ambajogai_km": 29.22,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10080683483",
+   "name": "Bhatanwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.70408,
+   "lng": 76.66195,
+   "distance_from_ambajogai_km": 29.22,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-9748240008",
+   "name": "Dighol",
+   "name_local": "",
+   "district": "Parbhani",
+   "lat": 18.97666,
+   "lng": 76.4908,
+   "distance_from_ambajogai_km": 29.23,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436023",
@@ -3096,7 +5650,35 @@
    "lng": 76.41482,
    "distance_from_ambajogai_km": 29.25,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688844",
+   "name": "Takli Acharya",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.99485,
+   "lng": 76.41412,
+   "distance_from_ambajogai_km": 29.25,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075685973",
+   "name": "Saundana",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.74467,
+   "lng": 76.66381,
+   "distance_from_ambajogai_km": 29.26,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436019",
@@ -3107,7 +5689,22 @@
    "lng": 76.48939,
    "distance_from_ambajogai_km": 29.29,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10080683442",
+   "name": "Nirpana",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.65076,
+   "lng": 76.65043,
+   "distance_from_ambajogai_km": 29.3,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521842",
@@ -3118,7 +5715,35 @@
    "lng": 76.6568,
    "distance_from_ambajogai_km": 29.31,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10075688114",
+   "name": "Khodwa Sawargaon Tanda",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.79507,
+   "lng": 76.6569,
+   "distance_from_ambajogai_km": 29.32,
+   "type": "hamlet",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10081893302",
+   "name": "Bhoghalwadi",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.91429,
+   "lng": 76.18268,
+   "distance_from_ambajogai_km": 29.4,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-1273261",
@@ -3129,7 +5754,10 @@
    "lng": 76.26019,
    "distance_from_ambajogai_km": 29.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521765",
@@ -3140,7 +5768,23 @@
    "lng": 76.56796,
    "distance_from_ambajogai_km": 29.43,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-9090332257",
+   "name": "Bhise Wagholi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.48295,
+   "lng": 76.29501,
+   "distance_from_ambajogai_km": 29.43,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521859",
@@ -3151,7 +5795,10 @@
    "lng": 76.66496,
    "distance_from_ambajogai_km": 29.44,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521854",
@@ -3162,7 +5809,10 @@
    "lng": 76.66136,
    "distance_from_ambajogai_km": 29.47,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434138",
@@ -3173,7 +5823,10 @@
    "lng": 76.24012,
    "distance_from_ambajogai_km": 29.48,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10435622",
@@ -3184,7 +5837,35 @@
    "lng": 76.28152,
    "distance_from_ambajogai_km": 29.55,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "osm-10081893297",
+   "name": "Fakir Jawala",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.9799,
+   "lng": 76.28135,
+   "distance_from_ambajogai_km": 29.57,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10068852932",
+   "name": "Brahmwadi",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.50833,
+   "lng": 76.53991,
+   "distance_from_ambajogai_km": 29.79,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10434097",
@@ -3195,7 +5876,23 @@
    "lng": 76.10813,
    "distance_from_ambajogai_km": 29.84,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
+  },
+  {
+   "id": "osm-10075536419",
+   "name": "Ukhli Bk",
+   "name_local": "",
+   "district": "Parbhani",
+   "lat": 18.89615,
+   "lng": 76.61283,
+   "distance_from_ambajogai_km": 29.96,
+   "type": "village",
+   "sources": [
+    "OSM"
+   ]
   },
   {
    "id": "gn-10436022",
@@ -3206,7 +5903,10 @@
    "lng": 76.45015,
    "distance_from_ambajogai_km": 29.98,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames",
+    "OSM"
+   ]
   },
   {
    "id": "gn-10521787",
@@ -3217,7 +5917,541 @@
    "lng": 76.61306,
    "distance_from_ambajogai_km": 29.99,
    "type": "village",
-   "source": "GeoNames"
+   "sources": [
+    "GeoNames"
+   ]
+  },
+  {
+   "id": "lm-26",
+   "name": "Jogai Hall",
+   "name_local": "जोगाई हॉल",
+   "district": "Beed",
+   "lat": 18.73609,
+   "lng": 76.387304,
+   "distance_from_ambajogai_km": 0.35,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q99227964"
+   ]
+  },
+  {
+   "id": "lm-2",
+   "name": "Yogeshwari Temple",
+   "name_local": "योगेश्वरी मंदिर",
+   "district": "Beed",
+   "lat": 18.736554,
+   "lng": 76.387437,
+   "distance_from_ambajogai_km": 0.4,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227959"
+   ]
+  },
+  {
+   "id": "lm-1",
+   "name": "Ambajogai Bus Station",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73116,
+   "lng": 76.39004,
+   "distance_from_ambajogai_km": 0.46,
+   "type": "landmark",
+   "category": "bus",
+   "sources": [
+    "OSM way 822075503"
+   ]
+  },
+  {
+   "id": "lm-30",
+   "name": "Rural Hospital, Ambajogai",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73655,
+   "lng": 76.38932,
+   "distance_from_ambajogai_km": 0.51,
+   "type": "landmark",
+   "category": "hospital",
+   "sources": [
+    "OSM node 7226727394"
+   ]
+  },
+  {
+   "id": "lm-16",
+   "name": "Vimalnath Jain Temple",
+   "name_local": "विमलनाथ जैन मंदिर",
+   "district": "Beed",
+   "lat": 18.734279,
+   "lng": 76.391762,
+   "distance_from_ambajogai_km": 0.6,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227954"
+   ]
+  },
+  {
+   "id": "lm-6",
+   "name": "Shivleni Caves",
+   "name_local": "शिवलेणी",
+   "district": "Beed",
+   "lat": 18.739166,
+   "lng": 76.386299,
+   "distance_from_ambajogai_km": 0.67,
+   "type": "landmark",
+   "category": "heritage",
+   "sources": [
+    "Wikidata Q19898343"
+   ]
+  },
+  {
+   "id": "lm-7",
+   "name": "Jain Caves",
+   "name_local": "जैन लेणी",
+   "district": "Beed",
+   "lat": 18.739131,
+   "lng": 76.385081,
+   "distance_from_ambajogai_km": 0.68,
+   "type": "landmark",
+   "category": "heritage",
+   "sources": [
+    "Wikidata Q99227955"
+   ]
+  },
+  {
+   "id": "lm-15",
+   "name": "Choubhara Ganesh Temple",
+   "name_local": "चौभारा गणेश मंदिर",
+   "district": "Beed",
+   "lat": 18.737186,
+   "lng": 76.391762,
+   "distance_from_ambajogai_km": 0.74,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227947"
+   ]
+  },
+  {
+   "id": "lm-3",
+   "name": "Kholeshwar Temple",
+   "name_local": "खोलेश्वर मंदिर",
+   "district": "Beed",
+   "lat": 18.740985,
+   "lng": 76.389053,
+   "distance_from_ambajogai_km": 0.93,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q97142775"
+   ]
+  },
+  {
+   "id": "lm-19",
+   "name": "Lahan Jogai (Dhakti Yogeshwari) Mandir",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.73847,
+   "lng": 76.39392,
+   "distance_from_ambajogai_km": 1.01,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "OSM node 13180610669"
+   ]
+  },
+  {
+   "id": "lm-5",
+   "name": "Dasopant Samadhi",
+   "name_local": "दासोपंत समाधी स्थळ",
+   "district": "Beed",
+   "lat": 18.741256,
+   "lng": 76.380896,
+   "distance_from_ambajogai_km": 1.06,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227956"
+   ]
+  },
+  {
+   "id": "lm-25",
+   "name": "Ravivar Peth Ves",
+   "name_local": "रविवार पेठ वेस",
+   "district": "Beed",
+   "lat": 18.741555,
+   "lng": 76.391273,
+   "distance_from_ambajogai_km": 1.08,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q99227953"
+   ]
+  },
+  {
+   "id": "lm-12",
+   "name": "Kala Maruti Temple",
+   "name_local": "काळा हनुमान मंदिर",
+   "district": "Beed",
+   "lat": 18.738254,
+   "lng": 76.395309,
+   "distance_from_ambajogai_km": 1.12,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227960"
+   ]
+  },
+  {
+   "id": "lm-13",
+   "name": "Bada Hanuman Temple",
+   "name_local": "बडा हनुमान मंदिर",
+   "district": "Beed",
+   "lat": 18.730347,
+   "lng": 76.375938,
+   "distance_from_ambajogai_km": 1.12,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227961"
+   ]
+  },
+  {
+   "id": "lm-20",
+   "name": "Thorle Devghar",
+   "name_local": "थोरले देवघर",
+   "district": "Beed",
+   "lat": 18.734435,
+   "lng": 76.396831,
+   "distance_from_ambajogai_km": 1.13,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227967"
+   ]
+  },
+  {
+   "id": "lm-24",
+   "name": "Parali Ves",
+   "name_local": "परळी वेस",
+   "district": "Beed",
+   "lat": 18.738375,
+   "lng": 76.395563,
+   "distance_from_ambajogai_km": 1.15,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q99227952"
+   ]
+  },
+  {
+   "id": "lm-14",
+   "name": "Balaji Temple",
+   "name_local": "बालाजी मंदीर व बारव",
+   "district": "Beed",
+   "lat": 18.740361,
+   "lng": 76.394633,
+   "distance_from_ambajogai_km": 1.2,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227969"
+   ]
+  },
+  {
+   "id": "lm-21",
+   "name": "Dhakate Devghar",
+   "name_local": "धाकटे देवघर",
+   "district": "Beed",
+   "lat": 18.734732,
+   "lng": 76.397911,
+   "distance_from_ambajogai_km": 1.25,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227966"
+   ]
+  },
+  {
+   "id": "lm-27",
+   "name": "Company Bag (Garden)",
+   "name_local": "कंपनी बाग",
+   "district": "Beed",
+   "lat": 18.729497,
+   "lng": 76.37443,
+   "distance_from_ambajogai_km": 1.3,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q99227958"
+   ]
+  },
+  {
+   "id": "lm-29",
+   "name": "Swami Ramanand Teerth Rural Medical College & Hospital",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.7322,
+   "lng": 76.3708,
+   "distance_from_ambajogai_km": 1.62,
+   "type": "landmark",
+   "category": "hospital",
+   "sources": [
+    "Wikidata Q28173195 / OSM"
+   ]
+  },
+  {
+   "id": "lm-11",
+   "name": "Renukamata Temple",
+   "name_local": "रेणुका माता मंदिर",
+   "district": "Beed",
+   "lat": 18.746776,
+   "lng": 76.38025,
+   "distance_from_ambajogai_km": 1.64,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227977"
+   ]
+  },
+  {
+   "id": "lm-28",
+   "name": "Golabarud Maidan",
+   "name_local": "गोळाबारूद मैदान",
+   "district": "Beed",
+   "lat": 18.739676,
+   "lng": 76.371588,
+   "distance_from_ambajogai_km": 1.7,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q99227965"
+   ]
+  },
+  {
+   "id": "lm-18",
+   "name": "Mul Jogai Mandir (Mul Shaktipeeth)",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.74758,
+   "lng": 76.38068,
+   "distance_from_ambajogai_km": 1.71,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "OSM node 13180371657"
+   ]
+  },
+  {
+   "id": "lm-8",
+   "name": "Barakhambi Temple",
+   "name_local": "बाराखांबी मंदिर",
+   "district": "Beed",
+   "lat": 18.74996,
+   "lng": 76.38294,
+   "distance_from_ambajogai_km": 1.9,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227948"
+   ]
+  },
+  {
+   "id": "lm-31",
+   "name": "Yogeshwari Mahavidyalaya",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.734613,
+   "lng": 76.404145,
+   "distance_from_ambajogai_km": 1.9,
+   "type": "landmark",
+   "category": "education",
+   "sources": [
+    "Wikidata Q48726534"
+   ]
+  },
+  {
+   "id": "lm-4",
+   "name": "Mukundraj Swami Samadhi",
+   "name_local": "मुकूंदराज स्वामी समाधी",
+   "district": "Beed",
+   "lat": 18.748061,
+   "lng": 76.37662,
+   "distance_from_ambajogai_km": 1.94,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227946"
+   ]
+  },
+  {
+   "id": "lm-9",
+   "name": "Amruteshwar Temple",
+   "name_local": "अमृतेश्वर मंदिर",
+   "district": "Beed",
+   "lat": 18.751622,
+   "lng": 76.39827,
+   "distance_from_ambajogai_km": 2.42,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227944"
+   ]
+  },
+  {
+   "id": "lm-10",
+   "name": "Nagnath Temple",
+   "name_local": "नागनाध मंदिर",
+   "district": "Beed",
+   "lat": 18.749069,
+   "lng": 76.366648,
+   "distance_from_ambajogai_km": 2.71,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227978"
+   ]
+  },
+  {
+   "id": "lm-23",
+   "name": "Hazrat Khaja Masud Kirmani Dargah",
+   "name_local": "हजरत खाजा मसूद किरमाणी दर्गा",
+   "district": "Beed",
+   "lat": 18.725091,
+   "lng": 76.361754,
+   "distance_from_ambajogai_km": 2.72,
+   "type": "landmark",
+   "category": "religious",
+   "sources": [
+    "Wikidata Q99227973"
+   ]
+  },
+  {
+   "id": "lm-22",
+   "name": "Hazrat Moula Ali Dargah",
+   "name_local": "हजरत मौला अली दर्गा",
+   "district": "Beed",
+   "lat": 18.755737,
+   "lng": 76.39922,
+   "distance_from_ambajogai_km": 2.87,
+   "type": "landmark",
+   "category": "religious",
+   "sources": [
+    "Wikidata Q99227975"
+   ]
+  },
+  {
+   "id": "lm-17",
+   "name": "Khoparnath Temple, Chanai",
+   "name_local": "खोपरनाथ मंदिर चनई",
+   "district": "Beed",
+   "lat": 18.727778,
+   "lng": 76.35073,
+   "distance_from_ambajogai_km": 3.78,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q99227962"
+   ]
+  },
+  {
+   "id": "lm-37",
+   "name": "Bodhegaon Dam",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.859444,
+   "lng": 76.359444,
+   "distance_from_ambajogai_km": 14.33,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q26802861"
+   ]
+  },
+  {
+   "id": "lm-38",
+   "name": "Wan Dam",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.869722,
+   "lng": 76.433333,
+   "distance_from_ambajogai_km": 15.98,
+   "type": "landmark",
+   "category": "area",
+   "sources": [
+    "Wikidata Q7966993"
+   ]
+  },
+  {
+   "id": "lm-34",
+   "name": "Ghat Nandur Railway Station",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.722978,
+   "lng": 76.563483,
+   "distance_from_ambajogai_km": 18.71,
+   "type": "landmark",
+   "category": "rail",
+   "sources": [
+    "Wikidata Q63357831"
+   ]
+  },
+  {
+   "id": "lm-32",
+   "name": "Parli Vaijnath Railway Station",
+   "name_local": "परळी वैजनाथ रेल्वे स्थानक",
+   "district": "Beed",
+   "lat": 18.853005,
+   "lng": 76.524424,
+   "distance_from_ambajogai_km": 19.74,
+   "type": "landmark",
+   "category": "rail",
+   "sources": [
+    "Wikidata Q24948741"
+   ]
+  },
+  {
+   "id": "lm-33",
+   "name": "Shri Vaijnath Jyotirling Temple, Parli",
+   "name_local": "वैजनाथ ज्योतिर्लिंग परळी",
+   "district": "Beed",
+   "lat": 18.842772,
+   "lng": 76.535394,
+   "distance_from_ambajogai_km": 19.89,
+   "type": "landmark",
+   "category": "temple",
+   "sources": [
+    "Wikidata Q60617890"
+   ]
+  },
+  {
+   "id": "lm-35",
+   "name": "Murti Railway Station",
+   "name_local": "",
+   "district": "Beed",
+   "lat": 18.681887,
+   "lng": 76.591573,
+   "distance_from_ambajogai_km": 22.37,
+   "type": "landmark",
+   "category": "rail",
+   "sources": [
+    "Wikidata Q63355316"
+   ]
+  },
+  {
+   "id": "lm-36",
+   "name": "Pangaon Railway Station",
+   "name_local": "",
+   "district": "Latur",
+   "lat": 18.634293,
+   "lng": 76.635315,
+   "distance_from_ambajogai_km": 28.45,
+   "type": "landmark",
+   "category": "rail",
+   "sources": [
+    "Wikidata Q63355440"
+   ]
   }
  ],
  "skipped": [

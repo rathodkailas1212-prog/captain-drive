@@ -17,7 +17,7 @@ import { theme } from "@/src/theme";
 import { MapMarker } from "@/src/components/MockMap";
 import { RideMap } from "@/src/components/RideMap";
 import { PlaceSearchModal, Place } from "@/src/components/PlaceSearchModal";
-import { SERVICE_CENTER } from "@/src/maps";
+import { SERVICE_CENTER, SERVICE_RADIUS_KM, distanceKm, isInServiceArea } from "@/src/maps";
 import { Button } from "@/src/components/Button";
 import { api } from "@/src/api";
 import { useAuth } from "@/src/auth";
@@ -124,8 +124,13 @@ export default function CustomerHome() {
     return arr;
   }, [captains, drop]);
 
+  const outsideArea = [
+    !isInServiceArea(pickup) && `Pickup is ${Math.round(distanceKm(SERVICE_CENTER, pickup))} km from Ambajogai`,
+    drop && !isInServiceArea(drop) && `Drop is ${Math.round(distanceKm(SERVICE_CENTER, drop))} km from Ambajogai`,
+  ].filter(Boolean) as string[];
+
   const confirmRide = async () => {
-    if (!drop || !fareBike) return;
+    if (!drop || !fareBike || outsideArea.length) return;
     setCreating(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     try {
@@ -190,6 +195,17 @@ export default function CustomerHome() {
       {/* Bottom sheet */}
       <View style={styles.sheet}>
         <View style={styles.grabber} />
+        {outsideArea.length > 0 && (
+          <View style={styles.areaAlert} testID="service-area-alert">
+            <Ionicons name="map-outline" size={20} color={theme.colors.onSurface} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.areaAlertTitle}>We&apos;re not there yet 🙏</Text>
+              <Text style={styles.areaAlertText}>
+                ZipRides currently serves {SERVICE_RADIUS_KM} km around Ambajogai. {outsideArea.join(" · ")}. Please choose a nearer location.
+              </Text>
+            </View>
+          </View>
+        )}
         {!drop ? (
           <>
             <Text style={styles.greeting}>Hi {user?.name || "there"} 👋</Text>
@@ -356,7 +372,7 @@ export default function CustomerHome() {
               label={`Confirm ${service} · ₹${service === "ZipBike" ? fareBike?.fare ?? "…" : fareDel?.fare ?? "…"}`}
               onPress={confirmRide}
               loading={creating}
-              disabled={!fareBike}
+              disabled={!fareBike || outsideArea.length > 0}
             />
           </>
         )}
@@ -734,6 +750,17 @@ const styles = StyleSheet.create({
   },
   routeRow: { flexDirection: "row", alignItems: "center", gap: 10 },
   routeText: { flex: 1, fontSize: 14, fontWeight: "600", color: "#111" },
+  areaAlert: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "flex-start",
+    backgroundColor: theme.colors.accent,
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 12,
+  },
+  areaAlertTitle: { fontSize: 14, fontWeight: "800", color: theme.colors.onSurface },
+  areaAlertText: { fontSize: 12, fontWeight: "600", color: theme.colors.onSurface, marginTop: 2, lineHeight: 17 },
   routeMeta: { fontSize: 12, fontWeight: "700", color: theme.colors.onSurfaceSecondary, marginTop: 8 },
   routeDivider: { height: 1, backgroundColor: theme.colors.border, marginVertical: 8, marginLeft: 20 },
   serviceRow: { flexDirection: "row", gap: 10, marginBottom: 14 },

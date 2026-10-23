@@ -566,8 +566,9 @@ async def places_search(q: str = "", session_token: Optional[str] = None, limit:
         contains = [p for p in LOCAL_PLACES if p not in starts and term in p["name"].lower()]
         local = starts + contains
     else:
-        local = LOCAL_PLACES
-    local = local[: max(1, min(limit, 300))]
+        # Popular town pickup points (bus stand, temples, hospitals…) first, then villages by distance
+        local = [p for p in LOCAL_PLACES if p["type"] == "landmark"] + [p for p in LOCAL_PLACES if p["type"] != "landmark"]
+    local = local[: max(1, min(limit, 500))]
 
     google: list = []
     if term and len(term) >= 2 and GOOGLE_MAPS_SERVER_KEY:
@@ -689,6 +690,15 @@ async def create_ride(payload: RideCreate, user: dict = Depends(require_customer
     # Validate distance range (SEC-002: prevent fare abuse via extreme values)
     if payload.distance_km <= 0 or payload.distance_km > 200:
         raise HTTPException(status_code=400, detail="Invalid distance (must be 0-200 km)")
+
+    # Service area: pickup and drop must be within radius of Ambajogai
+    radius = PLACES_DATA["radius_km"]
+    for label, la, ln in (("Pickup", payload.pickup_lat, payload.pickup_lng), ("Drop", payload.drop_lat, payload.drop_lng)):
+        if haversine(SERVICE_CENTER["lat"], SERVICE_CENTER["lng"], la, ln) > radius:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{label} is outside the ZipRides service area ({radius} km around Ambajogai).",
+            )
 
     # Server-side distance + fare (SEC-002: ignore client-supplied fare/distance)
     route = await compute_route(payload.pickup_lat, payload.pickup_lng, payload.drop_lat, payload.drop_lng)

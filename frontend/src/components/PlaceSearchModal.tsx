@@ -52,7 +52,7 @@ export const PlaceSearchModal: React.FC<Props> = ({ visible, target, onClose, on
     setLoading(true);
     const t = setTimeout(async () => {
       try {
-        const res = await api.searchPlaces(query, query.trim().length >= 2 ? token.current : undefined);
+        const res = await api.searchPlaces(query, query.trim().length >= 2 ? token.current : undefined, 500);
         setLocal(res.local || []);
         setGoogle(res.google || []);
       } catch {
@@ -167,12 +167,16 @@ export const PlaceSearchModal: React.FC<Props> = ({ visible, target, onClose, on
                 {google.map((g) => (
                   <Row key={g.place_id} icon="logo-google" title={g.name} sub={g.address} onPress={() => pickGoogle(g)} testID={`g-${g.place_id}`} />
                 ))}
-                {local.length > 0 && <Text style={styles.section}>Villages near Ambajogai</Text>}
+                {local.length > 0 && <Text style={styles.section}>Pickup points & villages near Ambajogai</Text>}
               </>
             }
             renderItem={({ item }) => (
               <Row
-                icon={item.type === "landmark" ? "business" : item.type === "town" ? "home" : "location"}
+                icon={
+                  item.type === "landmark"
+                    ? ({ bus: "bus", rail: "train", temple: "flower", religious: "flower", hospital: "medkit", education: "school" } as any)[item.category] || "business"
+                    : item.type === "town" ? "home" : "location"
+                }
                 title={item.name}
                 sub={`${item.name_local ? item.name_local + " · " : ""}${item.district}`}
                 right={`${item.distance_from_ambajogai_km} km`}

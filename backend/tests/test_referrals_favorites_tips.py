@@ -206,12 +206,12 @@ class TestFavorites:
 # ============================================================
 def _create_and_complete_ride(sess, customer, captain, fare=60.0):
     payload = {
-        "pickup_address": "MG Road",
-        "pickup_lat": 12.9758,
-        "pickup_lng": 77.6068,
-        "drop_address": "Indiranagar",
-        "drop_lat": 12.9784,
-        "drop_lng": 77.6408,
+        "pickup_address": "Ambajogai Bus Stand",
+        "pickup_lat": 18.73312,
+        "pickup_lng": 76.38616,
+        "drop_address": "Morewadi",
+        "drop_lat": 18.72174,
+        "drop_lng": 76.37025,
         "service_type": "ZipBike",
         "distance_km": 4.0,
         "fare": fare,

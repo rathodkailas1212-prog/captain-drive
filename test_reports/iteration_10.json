@@ -1,0 +1,45 @@
+{
+  "summary": "Iteration 10 — Expanded Ambajogai directory (478 places incl. 38 landmarks), landmarks-first ordering, service-area 30 km enforcement. BACKEND: 117/117 pytest pass (18 maps/places/service-area + 99 regression). Verified GET /api/maps/config → local_places_count=478, google_enabled=false, radius=30, center={Ambajogai,18.73312,76.38616}. GET /api/places/search?q=empty returns landmarks first (first item Jogai Hall type='landmark'), each item has name, name_local, district, lat, lng, distance_from_ambajogai_km (all ≤30), type, sources list, id. GET /api/places/search?q=योг returns Yogeshwari Temple (Marathi). Landmarks list contains 'Ambajogai Bus Station' and 'Yogeshwari Temple'. POST /api/rides with pickup=(12.9758,77.6068) → 400 'Pickup is outside the ZipRides service area (30 km around Ambajogai)'; drop outside → 400; both inside → 200 searching. FRONTEND (390×844 web preview, customer 9876543210/1234): home shows pickup-chip 'Ambajogai' and 4 landmark quick shortcuts in order Jogai Hall, Yogeshwari Temple, Ambajogai Bus Station, Rural Hospital. Destination modal header 'Pickup points & villages near Ambajogai' visible; 112 dest items; first 8 are landmarks (Jogai Hall, Yogeshwari Temple, Ambajogai Bus Station, Rural Hospital, Vimalnath Jain Temple, Shivleni Caves, Jain Caves, Choubhara Ganesh Temple). Typing 'योग' returns only 'Yogeshwari Temple'. Typing 'more' returns Morewadi first then Moregaon. Selecting Morewadi → route-meta '2.73 km · ~7 min (approx.)', ZipBike ₹104.6, ZipDelivery ₹101.87, confirm-ride-btn enabled (aria-disabled=None), service-area-alert hidden (expected). Service-area UI pathway verified in code at /app/frontend/app/customer/index.tsx:127-130,198-205,375 (confirm disabled when outsideArea.length>0). No Bengaluru favorites exist on this preview user so the alert couldn't be triggered via tap, but logic + backend 400 both verified. Updated 4 regression test files to Ambajogai coords (Bengaluru coords now blocked by service-area). MOCKED: Google APIs disabled (no key) → fallback estimate active and tests exercise 503/null paths.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_maps_iter9.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/backend/tests/test_security_iter3.py",
+    "/app/backend/tests/test_referrals_favorites_tips.py",
+    "/app/backend/tests/test_admin_iter4.py",
+    "/app/test_reports/pytest/iter10_maps.xml",
+    "/app/test_reports/pytest/iter10_all.xml"
+  ],
+  "action_items": [
+    "No code fixes required. All specified features work. Optional: when GOOGLE_MAPS_SERVER_KEY is later provisioned, retest /places/geocode (should return real result), /places/details/{id} (200 with lat/lng), /routes/compute source='google' with polyline, and /maps/config.google_enabled=true."
+  ],
+  "critical_code_review_comments": [
+    "server.py:694-701 enforces service-area via haversine against SERVICE_CENTER for pickup and drop with human-readable 400 detail — matches frontend copy in /app/frontend/app/customer/index.tsx:198-205.",
+    "server.py:565-570 ranks landmarks before villages for empty queries and uses startswith→contains for term queries, including Marathi name_local prefix matching (correct for 'योग' → Yogeshwari Temple).",
+    "ambajogai_places.json loaded once at startup, 478 entries, 38 of type 'landmark' including Ambajogai Bus Station, Yogeshwari Temple, Rural Hospital, Vimalnath Jain Temple, Shivleni Caves, etc. All entries carry sources list (OSM/GeoNames/Wikidata). Data looks authentic — not invented.",
+    "Frontend /app/frontend/app/customer/index.tsx:67-79 fetches 4 non-town quick shortcuts via /api/places/search — now naturally landmark-first since backend sort returns landmarks first. Correct.",
+    "/app/frontend/src/components/PlaceSearchModal.tsx:170 shows 'Pickup points & villages near Ambajogai' section header exactly as specified."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_maps_iter9.py — updated local_places_count=478, replaced test_empty_query_lists_by_distance with test_empty_query_lists_landmarks_first (verifies landmarks first + required fields + ≤30km), added test_marathi_search_yogeshwari, test_landmarks_include_bus_station_and_temple, and new TestServiceArea class (3 tests: reject pickup/drop outside 30km, accept inside).",
+    "/app/backend/tests/backend_test.py — created_ride, nearby, SOS now use Ambajogai (18.73312,76.38616) / Morewadi (18.72174,76.37025) coords.",
+    "/app/backend/tests/test_security_iter3.py — create_searching_ride helper uses Ambajogai/Morewadi coords (Bengaluru coords would now 400 'outside service area').",
+    "/app/backend/tests/test_referrals_favorites_tips.py — _create_and_complete_ride helper uses Ambajogai/Morewadi coords.",
+    "/app/backend/tests/test_admin_iter4.py — ride+SOS payloads use Ambajogai/Morewadi coords."
+  ],
+  "success_rate": {
+    "backend": "100% (117/117 pytest: 18 maps/places/service-area + 99 regression)",
+    "frontend": "100% of specified flows (login → home pickup=Ambajogai → 4 landmark shortcuts → destination modal landmarks-first → Marathi योग→Yogeshwari Temple → 'more'→Morewadi → route-meta 2.73km/~7min → ZipBike ₹104.6 → confirm enabled → service-area alert hidden in-area). Service-area alert on favorite tap not exercisable (no out-of-area favorites in preview DB for this user); code verified at customer/index.tsx:127-130,198-205,375."
+  },
+  "seed_data_creation": "None. Reused mocked-OTP auth and preview Mongo.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Google Maps feature still FALLBACK (no GOOGLE_MAPS_SERVER_KEY). Local directory now 478 entries (up from 292) with 38 landmarks included (bus station, temples, hospitals, caves, Jogai Hall). Service-area 30 km hard-blocks POST /api/rides with 400; frontend blocks confirm with testID='service-area-alert' + confirm-ride-btn disabled. Bengaluru coordinates (12.9758,77.6068) will be rejected everywhere — tests MUST use Ambajogai (18.73312,76.38616) pickup + Morewadi (18.72174,76.37025) drop. Preview user 9876543210 has no favorites currently; to retest the service-area alert visually, add a favorite with lat/lng outside 30 km (e.g. 12.9758,77.6068) via POST /api/favorites, then tap it on the customer home. Marathi search uses name_local startswith match (so 'योग' matches 'योगेश्वरी मंदिर'). pytest -n 2 --dist loadscope stable; iter10_maps.xml + iter10_all.xml under /app/test_reports/pytest.",
+  "rca_of_issue": "No new bugs. Pre-existing regression tests that used Bengaluru coords (12.9758,77.6068) started failing with 400 'outside the ZipRides service area' due to the intentional service-area restriction — these were test-script hygiene issues, not product bugs. Fix applied: switched all ride-creation payloads to Ambajogai pickup + Morewadi drop coords. All 117 tests now green."
+}

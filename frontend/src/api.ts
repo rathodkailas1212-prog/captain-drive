@@ -78,9 +78,9 @@ export const api = {
 
   // maps / places
   mapsConfig: () => request<{ google_enabled: boolean; local_places_count: number }>("/maps/config"),
-  searchPlaces: (q: string, session_token?: string) =>
+  searchPlaces: (q: string, session_token?: string, limit = 30) =>
     request<{ local: any[]; google: any[] }>(
-      `/places/search?q=${encodeURIComponent(q)}${session_token ? `&session_token=${session_token}` : ""}`,
+      `/places/search?q=${encodeURIComponent(q)}&limit=${limit}${session_token ? `&session_token=${session_token}` : ""}`,
     ),
   placeDetails: (place_id: string, session_token?: string) =>
     request<{ name: string; address: string; lat: number; lng: number }>(

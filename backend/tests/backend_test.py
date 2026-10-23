@@ -138,7 +138,7 @@ def test_fare_estimate_min_applied(s):
 
 # ---------- captains nearby ----------
 def test_captains_nearby(s):
-    r = s.get(f"{API}/captains/nearby", params={"lat": 12.97, "lng": 77.59})
+    r = s.get(f"{API}/captains/nearby", params={"lat": 18.73312, "lng": 76.38616})
     assert r.status_code == 200
     caps = r.json()["captains"]
     assert len(caps) == 6
@@ -149,12 +149,12 @@ def test_captains_nearby(s):
 @pytest.fixture(scope="session")
 def created_ride(s, customer):
     payload = {
-        "pickup_address": "MG Road",
-        "pickup_lat": 12.9758,
-        "pickup_lng": 77.6068,
-        "drop_address": "Indiranagar",
-        "drop_lat": 12.9784,
-        "drop_lng": 77.6408,
+        "pickup_address": "Ambajogai Bus Stand",
+        "pickup_lat": 18.73312,
+        "pickup_lng": 76.38616,
+        "drop_address": "Morewadi",
+        "drop_lat": 18.72174,
+        "drop_lng": 76.37025,
         "service_type": "ZipBike",
         "distance_km": 4.2,
         "fare": 58.6,
@@ -216,7 +216,7 @@ def test_rate_ride(s, customer, created_ride):
 def test_sos(s, customer, created_ride):
     r = s.post(
         f"{API}/rides/{created_ride['id']}/sos",
-        json={"lat": 12.97, "lng": 77.59, "message": "TEST_help"},
+        json={"lat": 18.73312, "lng": 76.38616, "message": "TEST_help"},
         headers=customer["headers"],
     )
     assert r.status_code == 200
